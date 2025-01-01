@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
@@ -46,33 +46,73 @@ export function RegisterForm() {
       password: '',
       first_name: '',
       last_name: '',
-      role: 'student',
+      role: 'student', // Default role for registration
     },
   });
 
-  async function onSubmit(values: z.infer<typeof formSchema>) {
+  const [error, setError] = useState<string | null>(null);
+
+  const onSubmit = useCallback(async (data: z.infer<typeof formSchema>) => {
     try {
+      console.log('Form submission started with data:', data);
+      console.log('Form validation state:', form.formState);
+      console.log('Form errors:', form.formState.errors);
+      console.log('Form is valid:', form.formState.isValid);
+      console.log('Form is submitting:', form.formState.isSubmitting);
+      console.log('Form is submitted:', form.formState.isSubmitted);
+      
+      setError(null);
       setIsLoading(true);
-      await apiClient.register(values);
-      toast({
-        title: 'Success',
-        description: 'Registration successful. Please login.',
-      });
-      router.push('/login');
+      
+      const registerData = {
+        email: data.email.trim(),
+        username: data.username.trim(),
+        password: data.password,
+        first_name: data.first_name.trim(),
+        last_name: data.last_name.trim(),
+        role: data.role
+      };
+      
+      console.log('Attempting to register with data:', registerData);
+      const response = await apiClient.register(registerData);
+      console.log('Registration API response:', response);
+      
+      if (response?.data) {
+        toast({
+          title: 'Success',
+          description: 'Registration successful. Please login.',
+        });
+        router.push('/login');
+      } else {
+        throw new Error('Registration failed: No response data');
+      }
     } catch (error: any) {
+      console.error('Registration error:', error);
+      const errorMessage = error?.response?.data?.detail || error.message || 'Registration failed';
+      setError(errorMessage);
       toast({
         title: 'Error',
-        description: error.response?.data?.detail || 'Failed to register',
+        description: errorMessage,
         variant: 'destructive',
       });
+      return Promise.reject(error); // Properly reject the promise for tests
     } finally {
       setIsLoading(false);
     }
-  }
+  }, [router]);
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+      {error && (
+        <div role="alert" className="text-red-500 mb-4">
+          {error}
+        </div>
+      )}
+      <form 
+        data-testid="register-form" 
+        role="form" 
+        onSubmit={form.handleSubmit(onSubmit)}
+        className="space-y-4">
         <FormField
           control={form.control}
           name="email"
@@ -144,17 +184,21 @@ export function RegisterForm() {
           render={({ field }) => (
             <FormItem>
               <FormLabel>Role</FormLabel>
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
+              <Select 
+                onValueChange={field.onChange} 
+                value={field.value}
+                defaultValue="student"
+              >
                 <FormControl>
                   <SelectTrigger>
                     <SelectValue placeholder="Select your role" />
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
-                  <SelectItem value="student">Student</SelectItem>
-                  <SelectItem value="teacher">Teacher</SelectItem>
-                  <SelectItem value="parent">Parent</SelectItem>
-                  <SelectItem value="librarian">Librarian</SelectItem>
+                  <SelectItem value="student" role="option" data-testid="role-student">Student</SelectItem>
+                  <SelectItem value="teacher" role="option" data-testid="role-teacher">Teacher</SelectItem>
+                  <SelectItem value="parent" role="option" data-testid="role-parent">Parent</SelectItem>
+                  <SelectItem value="librarian" role="option" data-testid="role-librarian">Librarian</SelectItem>
                 </SelectContent>
               </Select>
               <FormMessage />

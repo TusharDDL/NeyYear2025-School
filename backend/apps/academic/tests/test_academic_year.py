@@ -2,163 +2,249 @@ import pytest
 from django.urls import reverse
 from rest_framework import status
 from django_tenants.test.client import TenantClient
+from django.db import transaction
 from apps.academic.models import AcademicYear
 from apps.core.models import School, Domain
 from apps.accounts.models import User
 from django_tenants.utils import schema_context
 from datetime import date
 
-@pytest.fixture
-def api_client():
-    return TenantClient()
+# Using fixtures from root conftest.py
 
-@pytest.fixture
-def test_school(db):
-    import uuid
-    from django.core.management import call_command
-    
-    schema_name = f'test_{uuid.uuid4().hex[:10]}'
-    with schema_context('public'):
-        school = School.objects.create(
-            schema_name=schema_name,
-            name='Test School',
-            address='123 Test St',
-            contact_email='test@school.com',
-            contact_phone='1234567890',
-            principal_name='Test Principal',
-            principal_email='principal@test.com',
-            principal_phone='0987654321',
-            board_affiliation='CBSE',
-            student_strength=100,
-            staff_count=20,
-            academic_year_start=4,
-            academic_year_end=3,
-            is_approved=True
-        )
-        Domain.objects.create(
-            domain=f'{schema_name}.localhost',
-            tenant=school,
-            is_primary=True
-        )
-        
-    # Apply migrations to the new tenant schema
-    with schema_context(schema_name):
-        call_command('migrate_schemas', schema_name=schema_name, interactive=False)
-        
-    return school
-
-@pytest.fixture
-def test_user(test_school):
-    with schema_context(test_school.schema_name):
-        user = User.objects.create_user(
-            username='testadmin',
-            email='testadmin@test.com',
-            password='testpass123',
-            role='school_admin'
-        )
-        user.school = test_school
-        user.save()
-        return user
-
-@pytest.fixture
-def authenticated_client(api_client, test_user, test_school):
-    api_client.tenant = test_school
-    api_client.tenant.domain_url = f'{test_school.schema_name}.localhost'
-    api_client.force_authenticate(user=test_user)
-    return api_client
-
-@pytest.mark.django_db
+@pytest.mark.django_db(transaction=True)
+@pytest.mark.tenant
 class TestAcademicYear:
-    def test_create_academic_year(self, authenticated_client, test_school):
-        with schema_context(test_school.schema_name):
-            url = reverse('api:academic:academicyear-list')
+    @pytest.mark.django_db(transaction=True)
+    def test_create_academic_year(self, api_client, tenant, admin_user):
+        """Test creating an academic year."""
+        from django_tenants.utils import schema_context
+        from django.db import connection
+        import logging
+        
+        logger = logging.getLogger('apps.academic.tests')
+        logger.info(f"Starting test_create_academic_year for tenant: {tenant.schema_name}")
+        
+        # Set up tenant context for the entire test
+        with schema_context(tenant.schema_name):
+            connection.set_tenant(tenant)
+            
+            api_client.force_authenticate(user=admin_user)
+            url = '/api/v1/academic/academic-years/'
             data = {
                 'name': '2024-2025',
                 'start_date': '2024-04-01',
                 'end_date': '2025-03-31',
-                'school': test_school.id
+                'start_month': 4,  # April
+                'end_month': 3,    # March
             }
-            response = authenticated_client.post(url, data)
-            assert response.status_code == status.HTTP_201_CREATED
-            assert AcademicYear.objects.count() == 1
+            
+            # Verify schema before request
+            current_schema = connection.schema_name
+            logger.info(f"Current schema before request: {current_schema}")
+            assert current_schema == tenant.schema_name, \
+                f"Wrong schema before request: {current_schema} != {tenant.schema_name}"
+            
+            # Make request
+            response = api_client.post(url, data)
+            logger.info(f"Response status: {response.status_code}, content: {response.content}")
+            assert response.status_code == status.HTTP_201_CREATED, f"Response content: {response.content}"
+            
+            # Re-establish connection and verify schema
+            connection.close()
+            connection.connect()
+            connection.set_tenant(tenant)
+            
+            # Verify schema after request
+            current_schema = connection.schema_name
+            logger.info(f"Current schema after request: {current_schema}")
+            assert current_schema == tenant.schema_name, \
+                f"Wrong schema after request: {current_schema} != {tenant.schema_name}"
+            
+            # Query within explicit schema context to verify data
+            with schema_context(tenant.schema_name):
+                count = AcademicYear.objects.count()
+                logger.info(f"Found {count} academic years in schema {current_schema}")
+                assert count == 1, "No academic year was created"
+            
             academic_year = AcademicYear.objects.first()
+            assert academic_year is not None, "Academic year object is None"
             assert academic_year.name == '2024-2025'
-            assert academic_year.school == test_school
+            assert academic_year.school == tenant
+            assert academic_year.start_month == 4
+            assert academic_year.end_month == 3
 
-    def test_create_overlapping_academic_year(self, authenticated_client, test_school):
-        with schema_context(test_school.schema_name):
+    @pytest.mark.django_db(transaction=True)
+    def test_create_overlapping_academic_year(self, api_client, tenant, admin_user):
+        """Test that creating overlapping academic years fails."""
+        from django_tenants.utils import schema_context
+        
+        api_client.force_authenticate(user=admin_user)
+        
+        with schema_context(tenant.schema_name):
             # Create first academic year
             AcademicYear.objects.create(
                 name='2024-2025',
                 start_date=date(2024, 4, 1),
                 end_date=date(2025, 3, 31),
-                school=test_school
+                start_month=4,  # April
+                end_month=3,    # March
+                school=tenant
             )
 
-            url = reverse('api:academic:academicyear-list')
+            url = '/api/v1/academic/academic-years/'
             data = {
                 'name': '2024-2025 Overlap',
                 'start_date': '2024-06-01',
                 'end_date': '2025-05-31',
-                'school': test_school.id
+                'start_month': 6,  # June
+                'end_month': 5,    # May
             }
-            response = authenticated_client.post(url, data)
-            assert response.status_code == status.HTTP_400_BAD_REQUEST
+            response = api_client.post(url, data)
+            assert response.status_code == status.HTTP_400_BAD_REQUEST, f"Response content: {response.content}"
             assert 'Academic year dates overlap' in str(response.content)
 
-    def test_list_academic_years(self, authenticated_client, test_school):
-        with schema_context(test_school.schema_name):
-            # Create test academic years
-            AcademicYear.objects.create(
-                name='2024-2025',
-                start_date=date(2024, 4, 1),
-                end_date=date(2025, 3, 31),
-                school=test_school
-            )
-            AcademicYear.objects.create(
-                name='2025-2026',
-                start_date=date(2025, 4, 1),
-                end_date=date(2026, 3, 31),
-                school=test_school
-            )
+    @pytest.mark.django_db(transaction=True)
+    def test_list_academic_years(self, api_client, tenant, admin_user):
+        """Test listing academic years."""
+        from django_tenants.utils import schema_context
+        from django.db import transaction, connection
+        import logging
+        
+        logger = logging.getLogger('apps.academic.tests')
+        logger.info(f"Starting test_list_academic_years for tenant: {tenant.schema_name}")
+        
+        api_client.force_authenticate(user=admin_user)
+        
+        # Create academic years in tenant schema
+        with schema_context(tenant.schema_name):
+            connection.set_tenant(tenant)
+            with transaction.atomic():
+                logger.info("Creating test academic years")
+                # Create test academic years
+                AcademicYear.objects.create(
+                    name='2024-2025',
+                    start_date=date(2024, 4, 1),
+                    end_date=date(2025, 3, 31),
+                    start_month=4,  # April
+                    end_month=3,    # March
+                    school=tenant
+                )
+                AcademicYear.objects.create(
+                    name='2025-2026',
+                    start_date=date(2025, 4, 1),
+                    end_date=date(2026, 3, 31),
+                    start_month=4,  # April
+                    end_month=3,    # March
+                    school=tenant
+                )
+            
+            # Verify academic years were created
+            count = AcademicYear.objects.count()
+            logger.info(f"Created {count} academic years")
+            assert count == 2, f"Expected 2 academic years, found {count}"
+            
+            # Make API request in tenant context
+            url = '/api/v1/academic/academic-years/'
+            logger.info(f"Making GET request to {url}")
+            response = api_client.get(url)
+            logger.info(f"Response status: {response.status_code}, content: {response.content}")
+            
+            # Verify response
+            assert response.status_code == status.HTTP_200_OK, f"Response content: {response.content}"
+            assert 'count' in response.data, "Response missing count field"
+            assert response.data['count'] == 2, f"Expected 2 academic years, got {response.data['count']}"
+            assert len(response.data['results']) == 2, f"Expected 2 results, got {len(response.data['results'])}"
+            
+            # Verify academic years still exist after request
+            final_count = AcademicYear.objects.count()
+            logger.info(f"Final academic year count: {final_count}")
+            assert final_count == 2, f"Expected 2 academic years after request, found {final_count}"
 
+    @pytest.mark.django_db(transaction=True)
+    def test_update_academic_year(self, api_client, tenant, admin_user):
+        """Test updating an academic year."""
+        from django_tenants.utils import schema_context
+        from django.db import connection, transaction
+        import logging
+        
+        logger = logging.getLogger('apps.academic.tests')
+        logger.info(f"Starting test_update_academic_year for tenant: {tenant.schema_name}")
+        
+        api_client.force_authenticate(user=admin_user)
+        
+        # Set up tenant context for the entire test
+        with schema_context(tenant.schema_name):
+            connection.set_tenant(tenant)
+            with transaction.atomic():
+                # Create initial academic year
+                logger.info("Creating initial academic year")
+                academic_year = AcademicYear.objects.create(
+                    name='2024-2025',
+                    start_date=date(2024, 4, 1),
+                    end_date=date(2025, 3, 31),
+                    start_month=4,  # April
+                    end_month=3,    # March
+                    school=tenant
+                )
+                logger.info(f"Created academic year with ID: {academic_year.pk}")
+                
+                # Verify academic year was created
+                assert AcademicYear.objects.filter(pk=academic_year.pk).exists(), \
+                    "Academic year was not created"
+                
+                # Update academic year
+                url = f'/api/v1/academic/academic-years/{academic_year.pk}/'
+                data = {
+                    'name': '2024-2025 Updated',
+                    'start_date': '2024-04-01',
+                    'end_date': '2025-03-31',
+                    'start_month': 4,  # April
+                    'end_month': 3,    # March
+                }
+                
+                logger.info(f"Making PUT request to {url} with data: {data}")
+                response = api_client.put(url, data)
+                logger.info(f"Response status: {response.status_code}, content: {response.content}")
+                assert response.status_code == status.HTTP_200_OK, f"Response content: {response.content}"
+                
+                # Verify update in the same schema context
+                updated = AcademicYear.objects.get(pk=academic_year.pk)
+                assert updated.name == '2024-2025 Updated', "Name was not updated"
+                assert updated.start_date.strftime('%Y-%m-%d') == '2024-04-01', "Start date was not updated"
+                assert updated.end_date.strftime('%Y-%m-%d') == '2025-03-31', "End date was not updated"
 
-            url = reverse('api:academic:academicyear-list')
-            response = authenticated_client.get(url)
-            assert response.status_code == status.HTTP_200_OK
-            assert len(response.data) == 2
+    @pytest.mark.django_db(transaction=True)
+    def test_delete_academic_year(self, api_client, tenant, admin_user):
+        """Test deleting an academic year."""
+        from django_tenants.utils import schema_context
+        from django.db import transaction, connection
+        import logging
+        
+        logger = logging.getLogger('apps.academic.tests')
+        logger.info(f"Starting test_delete_academic_year for tenant: {tenant.schema_name}")
+        
+        api_client.force_authenticate(user=admin_user)
+        
+        with schema_context(tenant.schema_name):
+            connection.set_tenant(tenant)
+            with transaction.atomic():
+                logger.info("Creating academic year for deletion test")
+                academic_year = AcademicYear.objects.create(
+                    name='2024-2025',
+                    start_date=date(2024, 4, 1),
+                    end_date=date(2025, 3, 31),
+                    start_month=4,  # April
+                    end_month=3,    # March
+                    school=tenant
+                )
+                logger.info(f"Created academic year with ID: {academic_year.pk}")
 
-    def test_update_academic_year(self, authenticated_client, test_school):
-        with schema_context(test_school.schema_name):
-            academic_year = AcademicYear.objects.create(
-                name='2024-2025',
-                start_date=date(2024, 4, 1),
-                end_date=date(2025, 3, 31),
-                school=test_school
-            )
-
-            url = reverse('api:academic:academicyear-detail', kwargs={'pk': academic_year.pk})
-            data = {
-                'name': '2024-2025 Updated',
-                'start_date': '2024-04-01',
-                'end_date': '2025-03-31',
-                'school': test_school.id
-            }
-            response = authenticated_client.put(url, data)
-            assert response.status_code == status.HTTP_200_OK
-            academic_year.refresh_from_db()
-            assert academic_year.name == '2024-2025 Updated'
-
-    def test_delete_academic_year(self, authenticated_client, test_school):
-        with schema_context(test_school.schema_name):
-            academic_year = AcademicYear.objects.create(
-                name='2024-2025',
-                start_date=date(2024, 4, 1),
-                end_date=date(2025, 3, 31),
-                school=test_school
-            )
-
-            url = reverse('api:academic:academicyear-detail', kwargs={'pk': academic_year.pk})
-            response = authenticated_client.delete(url)
-            assert response.status_code == status.HTTP_204_NO_CONTENT
-            assert AcademicYear.objects.count() == 0
+                url = f'/api/v1/academic/academic-years/{academic_year.pk}/'
+                logger.info(f"Making DELETE request to {url}")
+                response = api_client.delete(url)
+                logger.info(f"Response status: {response.status_code}")
+                assert response.status_code == status.HTTP_204_NO_CONTENT, f"Response content: {response.content}"
+                
+                count = AcademicYear.objects.count()
+                logger.info(f"Academic year count after deletion: {count}")
+                assert count == 0, "Academic year was not deleted"

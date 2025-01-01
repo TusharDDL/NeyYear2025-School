@@ -7,6 +7,10 @@ from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.views import TokenObtainPairView
 from .models import StudentProfile, TeacherProfile
+from .serializers import CustomTokenObtainPairSerializer
+
+class CustomTokenObtainPairView(TokenObtainPairView):
+    serializer_class = CustomTokenObtainPairSerializer
 from .serializers import (
     UserSerializer,
     UserCreateSerializer,
@@ -36,6 +40,10 @@ class UserViewSet(viewsets.ModelViewSet):
         if self.action in ["create", "login"]:
             return [AllowAny()]
         return super().get_permissions()
+        
+    def perform_create(self, serializer):
+        """Create user within tenant schema context."""
+        serializer.save()
 
     @action(detail=False, methods=["post"])
     def login(self, request):
@@ -58,20 +66,22 @@ class UserViewSet(viewsets.ModelViewSet):
             {"detail": "Invalid credentials"}, status=status.HTTP_401_UNAUTHORIZED
         )
 
-    @action(detail=False, methods=["post"], permission_classes=[IsAuthenticated])
-    def change_password(self, request):
-        serializer = ChangePasswordSerializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
+    @action(detail=True, methods=["post"], permission_classes=[IsAuthenticated])
+    def change_password(self, request, pk=None):
+        from django_tenants.utils import schema_context
+        with schema_context(self.request.tenant.schema_name):
+            user = self.get_object()
+            serializer = ChangePasswordSerializer(data=request.data)
+            serializer.is_valid(raise_exception=True)
 
-        user = request.user
-        if not user.check_password(serializer.validated_data["old_password"]):
-            return Response(
-                {"detail": "Invalid old password"}, status=status.HTTP_400_BAD_REQUEST
-            )
+            if not user.check_password(serializer.validated_data["old_password"]):
+                return Response(
+                    {"detail": "Invalid old password"}, status=status.HTTP_400_BAD_REQUEST
+                )
 
-        user.set_password(serializer.validated_data["new_password"])
-        user.save()
-        return Response({"detail": "Password changed successfully"})
+            user.set_password(serializer.validated_data["new_password"])
+            user.save()
+            return Response({"detail": "Password changed successfully"})
 
     @action(detail=False, methods=["put"], permission_classes=[IsAuthenticated])
     def update_profile(self, request):
@@ -103,26 +113,42 @@ class UserViewSet(viewsets.ModelViewSet):
         return Response({"detail": "Password reset successful"})
 
 
+from rest_framework.pagination import PageNumberPagination
+
+class StudentProfilePagination(PageNumberPagination):
+    page_size = 10
+    page_size_query_param = 'page_size'
+    max_page_size = 100
+
 class StudentProfileViewSet(viewsets.ModelViewSet):
-    queryset = StudentProfile.objects.all()
     serializer_class = StudentProfileSerializer
     permission_classes = [IsAuthenticated]
+    pagination_class = StudentProfilePagination
+
+    queryset = StudentProfile.objects.all()
+
+    def get_serializer_context(self):
+        context = super().get_serializer_context()
+        context['request'] = self.request
+        return context
 
     def get_queryset(self):
         user = self.request.user
-        if user.role == User.SUPER_ADMIN:
-            return StudentProfile.objects.all()
-        elif user.role == User.SCHOOL_ADMIN:
-            return StudentProfile.objects.filter(user__school=user.school)
-        elif user.role == User.TEACHER:
-            return StudentProfile.objects.filter(
-                user__school=user.school, section__in=user.sections.all()
-            )
-        elif user.role == User.STUDENT:
-            return StudentProfile.objects.filter(user=user)
-        elif user.role == User.PARENT:
-            return StudentProfile.objects.filter(parent=user)
-        return StudentProfile.objects.none()
+        from django_tenants.utils import schema_context
+        with schema_context(self.request.tenant.schema_name):
+            if user.role == User.SUPER_ADMIN:
+                return StudentProfile.objects.all()
+            elif user.role == User.SCHOOL_ADMIN:
+                return StudentProfile.objects.filter(user__school=user.school)
+            elif user.role == User.TEACHER:
+                return StudentProfile.objects.filter(
+                    user__school=user.school, section__in=user.sections.all()
+                )
+            elif user.role == User.STUDENT:
+                return StudentProfile.objects.filter(user=user)
+            elif user.role == User.PARENT:
+                return StudentProfile.objects.filter(parent=user)
+            return StudentProfile.objects.none()
 
 
 class TeacherProfileViewSet(viewsets.ModelViewSet):

@@ -29,7 +29,11 @@ export function StudentList() {
     search: '',
   });
 
-  const { data: students, isLoading } = useStudents(filters);
+  const { data: students, isLoading } = useStudents({
+    class_name: filters.class_name,
+    section: filters.section,
+    search: filters.search
+  });
 
   const handleSearch = (value: string) => {
     setFilters(prev => ({ ...prev, search: value }));
@@ -57,24 +61,38 @@ export function StudentList() {
           className="max-w-sm"
         />
         <Select value={filters.class_name} onValueChange={handleClassChange}>
-          <SelectTrigger className="w-[180px]">
+          <SelectTrigger 
+            data-testid="class-select" 
+            className="w-[180px]"
+            aria-label="Class"
+            aria-labelledby="class-label">
             <SelectValue placeholder="Select class" />
           </SelectTrigger>
-          <SelectContent>
-            {/* Add class options */}
-            <SelectItem value="Class 1">Class 1</SelectItem>
-            <SelectItem value="Class 2">Class 2</SelectItem>
-            {/* Add more classes */}
+          <SelectContent data-testid="class-content">
+            <SelectItem data-testid="class-option-1" value="Class 1" role="option">Class 1</SelectItem>
+            <SelectItem data-testid="class-option-2" value="Class 2" role="option">Class 2</SelectItem>
+            <SelectItem data-testid="class-option-3" value="Class 3" role="option">Class 3</SelectItem>
+            <SelectItem data-testid="class-option-4" value="Class 4" role="option">Class 4</SelectItem>
+            <SelectItem data-testid="class-option-5" value="Class 5" role="option">Class 5</SelectItem>
+            <SelectItem data-testid="class-option-6" value="Class 6" role="option">Class 6</SelectItem>
+            <SelectItem data-testid="class-option-7" value="Class 7" role="option">Class 7</SelectItem>
+            <SelectItem data-testid="class-option-8" value="Class 8" role="option">Class 8</SelectItem>
+            <SelectItem data-testid="class-option-9" value="Class 9" role="option">Class 9</SelectItem>
+            <SelectItem data-testid="class-option-10" value="Class 10" role="option">Class 10</SelectItem>
           </SelectContent>
         </Select>
         <Select value={filters.section} onValueChange={handleSectionChange}>
-          <SelectTrigger className="w-[180px]">
+          <SelectTrigger 
+            data-testid="section-select" 
+            className="w-[180px]"
+            aria-label="Section"
+            aria-labelledby="section-label">
             <SelectValue placeholder="Select section" />
           </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="A">Section A</SelectItem>
-            <SelectItem value="B">Section B</SelectItem>
-            <SelectItem value="C">Section C</SelectItem>
+          <SelectContent data-testid="section-content">
+            <SelectItem data-testid="section-option-a" value="A" role="option">Section A</SelectItem>
+            <SelectItem data-testid="section-option-b" value="B" role="option">Section B</SelectItem>
+            <SelectItem data-testid="section-option-c" value="C" role="option">Section C</SelectItem>
           </SelectContent>
         </Select>
       </div>
@@ -84,8 +102,8 @@ export function StudentList() {
           <TableRow>
             <TableHead>Admission No.</TableHead>
             <TableHead>Name</TableHead>
-            <TableHead>Class</TableHead>
-            <TableHead>Section</TableHead>
+            <TableHead id="class-label">Class</TableHead>
+            <TableHead id="section-label">Section</TableHead>
             <TableHead>Roll No.</TableHead>
             <TableHead>Parent Name</TableHead>
             <TableHead>Contact</TableHead>

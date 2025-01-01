@@ -2,8 +2,9 @@
 
 import { useState } from 'react';
 import { useBooks } from '@/lib/hooks';
-import { Book } from '@/lib/types';
+import { Book } from '@/types/book';
 import { Input } from '@/components/ui/input';
+import type { ReactElement } from 'react';
 import { Button } from '@/components/ui/button';
 import { LoadingSpinner } from '@/components/ui/loading-spinner';
 import {
@@ -39,25 +40,26 @@ export function BookCatalog() {
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           className="max-w-sm"
+          aria-label="Search books"
         />
         <Select value={category} onValueChange={setCategory}>
           <SelectTrigger className="w-[180px]">
             <SelectValue placeholder="Select category" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="">All Categories</SelectItem>
+            <SelectItem value="all">All Categories</SelectItem>
             <SelectItem value="fiction">Fiction</SelectItem>
             <SelectItem value="non-fiction">Non-Fiction</SelectItem>
             <SelectItem value="science">Science</SelectItem>
             <SelectItem value="mathematics">Mathematics</SelectItem>
-            {/* Add more categories */}
+            <SelectItem value="technology">Technology</SelectItem>
           </SelectContent>
         </Select>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        {books?.map((book: Book) => (
-          <Card key={book.id}>
+        {books?.map((book: Book): ReactElement => (
+          <Card key={book.id} role="article" data-testid="book-card">
             <CardHeader>
               <CardTitle>{book.title}</CardTitle>
               <CardDescription>{book.author}</CardDescription>

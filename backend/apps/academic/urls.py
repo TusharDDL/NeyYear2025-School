@@ -2,18 +2,20 @@ from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 from . import views
 
+app_name = 'academic'
+
 router = DefaultRouter()
-router.register(r"academic-years", views.AcademicYearViewSet)
-router.register(r"classes", views.ClassViewSet)
-router.register(r"sections", views.SectionViewSet)
-router.register(r"subjects", views.SubjectViewSet)
-router.register(r"attendance", views.AttendanceViewSet)
-router.register(r"assessments", views.AssessmentViewSet)
-router.register(r"assessment-results", views.AssessmentResultViewSet)
-router.register(r"assignments", views.AssignmentViewSet)
-router.register(r"assignment-submissions", views.AssignmentSubmissionViewSet)
-router.register(r"timetable", views.TimetableViewSet)
+router.register('academic-years', views.AcademicYearViewSet, basename='academic-year')
+router.register('classes', views.ClassViewSet, basename='class')
+router.register('sections', views.SectionViewSet, basename='section')
+router.register('subjects', views.SubjectViewSet, basename='subject')
+router.register('attendance', views.AttendanceViewSet, basename='attendance')
+router.register('assessments', views.AssessmentViewSet, basename='assessment')
+router.register('assessment-results', views.AssessmentResultViewSet, basename='assessment-result')
+router.register('assignments', views.AssignmentViewSet, basename='assignment')
+router.register('assignment-submissions', views.AssignmentSubmissionViewSet, basename='assignment-submission')
+router.register('timetable', views.TimetableViewSet, basename='timetable')
 
 urlpatterns = [
-    path("", include(router.urls)),
+    path('', include(router.urls)),
 ]

@@ -1,8 +1,23 @@
-from django.contrib.auth.models import AbstractUser
+from django.contrib.auth.models import AbstractUser, UserManager
 from django.db import models
+
+class CustomUserManager(UserManager):
+    def create_user(self, username, email=None, password=None, **extra_fields):
+        if 'school' in extra_fields:
+            school = extra_fields.pop('school')
+            user = super().create_user(username, email, password, **extra_fields)
+            user.school = school
+            user.save(update_fields=['school'])
+            return user
+        return super().create_user(username, email, password, **extra_fields)
+
+    def create_superuser(self, username, email=None, password=None, **extra_fields):
+        extra_fields.setdefault('role', 'super_admin')
+        return super().create_superuser(username, email, password, **extra_fields)
 
 
 class User(AbstractUser):
+    objects = CustomUserManager()
     SUPER_ADMIN = "super_admin"
     SCHOOL_ADMIN = "school_admin"
     TEACHER = "teacher"
@@ -23,6 +38,14 @@ class User(AbstractUser):
     profile_picture = models.ImageField(
         upload_to="profile_pictures/", blank=True, null=True
     )
+    school = models.ForeignKey(
+        'core.School',
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        related_name='users',
+        db_constraint=False  # Allow cross-schema references
+    )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -35,11 +58,16 @@ class User(AbstractUser):
 
 class StudentProfile(models.Model):
     user = models.OneToOneField(
-        User, on_delete=models.CASCADE, related_name="student_profile"
+        User, on_delete=models.CASCADE, related_name="studentprofile"
     )
     admission_number = models.CharField(max_length=20, unique=True)
     date_of_birth = models.DateField()
+    gender = models.CharField(max_length=1, choices=[('M', 'Male'), ('F', 'Female'), ('O', 'Other')])
     blood_group = models.CharField(max_length=5, blank=True)
+    address = models.TextField(blank=True)
+    parent_name = models.CharField(max_length=100)
+    parent_phone = models.CharField(max_length=20)
+    parent_email = models.EmailField()
     parent = models.ForeignKey(
         User, on_delete=models.SET_NULL, null=True, related_name="children"
     )

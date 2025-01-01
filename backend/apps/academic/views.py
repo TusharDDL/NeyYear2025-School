@@ -35,7 +35,6 @@ User = get_user_model()
 
 
 class AcademicYearViewSet(viewsets.ModelViewSet):
-    queryset = AcademicYear.objects.all()
     serializer_class = AcademicYearSerializer
     permission_classes = [IsAuthenticated]
     filter_backends = [filters.SearchFilter, filters.OrderingFilter]
@@ -43,10 +42,96 @@ class AcademicYearViewSet(viewsets.ModelViewSet):
     ordering_fields = ["start_date", "name"]
     ordering = ["-start_date"]
 
+    def get_queryset(self):
+        """Filter queryset by current tenant."""
+        import logging
+        from django.db import connection, transaction
+        from django_tenants.utils import schema_context, get_tenant_model
+        
+        logger = logging.getLogger('apps.academic')
+        tenant = self.request.tenant
+        logger.info(f"Getting academic years for tenant: {tenant.name}")
+        
+        with schema_context(tenant.schema_name):
+            connection.set_tenant(tenant)
+            with transaction.atomic():
+                try:
+                    queryset = AcademicYear.objects.select_related('school').filter(school=tenant)
+                    count = queryset.count()
+                    logger.info(f"Found {count} academic years in schema {tenant.schema_name}")
+                    return queryset.all()  # Materialize the queryset within the schema context
+                except Exception as e:
+                    logger.error(f"Error getting academic years: {str(e)}", exc_info=True)
+                    raise
+
     def get_permissions(self):
+        import logging
+        logger = logging.getLogger('apps.academic')
+        logger.info(f"Checking permissions for action: {self.action}")
         if self.action in ["create", "update", "partial_update", "destroy"]:
             return [IsAdminUser()]
         return super().get_permissions()
+
+    def perform_create(self, serializer):
+        """Create academic year."""
+        import logging
+        from django.db import connection, transaction
+        from django_tenants.utils import schema_context
+        
+        logger = logging.getLogger('apps.academic')
+        tenant = self.request.tenant
+        logger.info(f"Creating academic year for tenant: {tenant.name}")
+        
+        with schema_context(tenant.schema_name):
+            connection.set_tenant(tenant)
+            with transaction.atomic():
+                try:
+                    instance = serializer.save(school=tenant)
+                    logger.info(f"Created academic year {instance.pk} in schema {tenant.schema_name}")
+                except Exception as e:
+                    logger.error(f"Error creating academic year: {str(e)}")
+                    raise
+
+    def perform_update(self, serializer):
+        """Update academic year."""
+        import logging
+        from django.db import connection, transaction
+        from django_tenants.utils import schema_context
+        
+        logger = logging.getLogger('apps.academic')
+        tenant = self.request.tenant
+        logger.info(f"Updating academic year for tenant: {tenant.name}")
+        
+        
+        with schema_context(tenant.schema_name):
+            connection.set_tenant(tenant)
+            with transaction.atomic():
+                try:
+                    instance = serializer.save()
+                    logger.info(f"Updated academic year {instance.pk} in schema {tenant.schema_name}")
+                except Exception as e:
+                    logger.error(f"Error updating academic year: {str(e)}")
+                    raise
+
+    def perform_destroy(self, instance):
+        """Delete academic year."""
+        import logging
+        from django.db import connection, transaction
+        from django_tenants.utils import schema_context
+        
+        logger = logging.getLogger('apps.academic')
+        tenant = self.request.tenant
+        logger.info(f"Deleting academic year {instance.pk} for tenant: {tenant.name}")
+        
+        with schema_context(tenant.schema_name):
+            connection.set_tenant(tenant)
+            with transaction.atomic():
+                try:
+                    instance.delete()
+                    logger.info(f"Deleted academic year {instance.pk} in schema {tenant.schema_name}")
+                except Exception as e:
+                    logger.error(f"Error deleting academic year: {str(e)}")
+                    raise
 
 
 class ClassViewSet(viewsets.ModelViewSet):

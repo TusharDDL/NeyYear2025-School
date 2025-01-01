@@ -25,6 +25,8 @@ import {
 import { useCreateStudent } from '@/lib/hooks';
 
 const formSchema = z.object({
+  first_name: z.string().min(1, 'First name is required'),
+  last_name: z.string().min(1, 'Last name is required'),
   admission_number: z.string().min(1, 'Admission number is required'),
   roll_number: z.string().min(1, 'Roll number is required'),
   class_name: z.string().min(1, 'Class is required'),
@@ -48,6 +50,8 @@ export function StudentForm() {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
+      first_name: '',
+      last_name: '',
       admission_number: '',
       roll_number: '',
       class_name: '',
@@ -70,8 +74,34 @@ export function StudentForm() {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4" role="form" data-testid="student-form">
         <div className="grid grid-cols-2 gap-4">
+          <FormField
+            control={form.control}
+            name="first_name"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>First Name</FormLabel>
+                <FormControl>
+                  <Input {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="last_name"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Last Name</FormLabel>
+                <FormControl>
+                  <Input {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
           <FormField
             control={form.control}
             name="admission_number"
@@ -103,17 +133,19 @@ export function StudentForm() {
             name="class_name"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Class</FormLabel>
+                <FormLabel id="class-label">Class</FormLabel>
                 <Select onValueChange={field.onChange} defaultValue={field.value}>
                   <FormControl>
-                    <SelectTrigger>
+                    <SelectTrigger data-testid="class-select" aria-label="Class" aria-labelledby="class-label">
                       <SelectValue placeholder="Select class" />
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
-                    <SelectItem value="Class 1">Class 1</SelectItem>
-                    <SelectItem value="Class 2">Class 2</SelectItem>
-                    {/* Add more classes */}
+                    {Array.from({ length: 10 }, (_, i) => (
+                      <SelectItem key={i + 1} value={`Class ${i + 1}`} role="option">
+                        Class {i + 1}
+                      </SelectItem>
+                    ))}
                   </SelectContent>
                 </Select>
                 <FormMessage />
@@ -125,17 +157,19 @@ export function StudentForm() {
             name="section"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Section</FormLabel>
+                <FormLabel id="section-label">Section</FormLabel>
                 <Select onValueChange={field.onChange} defaultValue={field.value}>
                   <FormControl>
-                    <SelectTrigger>
+                    <SelectTrigger data-testid="section-select" aria-label="Section" aria-labelledby="section-label">
                       <SelectValue placeholder="Select section" />
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
-                    <SelectItem value="A">Section A</SelectItem>
-                    <SelectItem value="B">Section B</SelectItem>
-                    <SelectItem value="C">Section C</SelectItem>
+                    {['A', 'B', 'C'].map((section) => (
+                      <SelectItem key={section} value={section} role="option">
+                        Section {section}
+                      </SelectItem>
+                    ))}
                   </SelectContent>
                 </Select>
                 <FormMessage />

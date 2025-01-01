@@ -108,7 +108,7 @@ INSTALLED_APPS = list(SHARED_APPS) + [
 ]
 
 MIDDLEWARE = [
-    "django_tenants.middleware.main.TenantMainMiddleware",
+    "apps.core.middleware.CustomTenantMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "corsheaders.middleware.CorsMiddleware",
@@ -155,10 +155,19 @@ DATABASES = {
 DATABASE_ROUTERS = ("django_tenants.routers.TenantSyncRouter",)
 
 # Multi-tenancy settings
-MIDDLEWARE = ["django_tenants.middleware.main.TenantMainMiddleware"] + MIDDLEWARE
-DATABASE_ROUTERS = ("django_tenants.routers.TenantSyncRouter",)
+PUBLIC_SCHEMA_URLCONF = 'config.public_urls'
+TENANT_SCHEMAS_URLCONF = 'config.urls'  # Main URLs for tenant schemas
 TENANT_MODEL = "core.School"
 TENANT_DOMAIN_MODEL = "core.Domain"
+
+# Ensure tenant apps are properly loaded
+TENANT_APPS_EXCLUDE = []
+TENANT_APPS_INCLUDE = [
+    'apps.academic',
+    'apps.finance',
+    'apps.communication',
+    'apps.library',
+]
 
 
 # Password validation

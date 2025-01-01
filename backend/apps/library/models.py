@@ -43,6 +43,7 @@ class BookIssue(models.Model):
 
     book = models.ForeignKey(Book, on_delete=models.CASCADE, related_name='issues')
     student = models.ForeignKey(User, on_delete=models.CASCADE, related_name='book_issues')
+    school = models.ForeignKey(School, on_delete=models.CASCADE, related_name='book_issues')
     issue_date = models.DateField()
     due_date = models.DateField()
     return_date = models.DateField(null=True, blank=True)
@@ -61,6 +62,9 @@ class BookIssue(models.Model):
         return f"{self.book.title} - {self.student.get_full_name()}"
 
     def save(self, *args, **kwargs):
+        if not self.pk:  # New book issue
+            self.school = self.book.school
+        
         if self.status == 'returned' and not self.return_date:
             self.return_date = models.timezone.now().date()
         super().save(*args, **kwargs)
