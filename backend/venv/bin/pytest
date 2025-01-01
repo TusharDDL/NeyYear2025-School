@@ -1,8 +1,10 @@
-#!/workspace/school-management-system/backend/venv/bin/python
+#!/bin/sh
+'''exec' /home/tusharlinux/School_management_Django_project_January_2025/NewDevinSchoolManagement/NeyYear2025-School/backend/venv/bin/python3 "$0" "$@"
+' '''
 # -*- coding: utf-8 -*-
 import re
 import sys
 from pytest import console_main
-if __name__ == "__main__":
-    sys.argv[0] = re.sub(r"(-script\.pyw|\.exe)?$", "", sys.argv[0])
+if __name__ == '__main__':
+    sys.argv[0] = re.sub(r'(-script\.pyw|\.exe)?$', '', sys.argv[0])
     sys.exit(console_main())

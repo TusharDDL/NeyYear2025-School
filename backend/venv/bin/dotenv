@@ -1,4 +1,6 @@
-#!/workspace/school-management-system/backend/venv/bin/python3.12
+#!/bin/sh
+'''exec' /home/tusharlinux/School_management_Django_project_January_2025/NewDevinSchoolManagement/NeyYear2025-School/backend/venv/bin/python3 "$0" "$@"
+' '''
 # -*- coding: utf-8 -*-
 import re
 import sys

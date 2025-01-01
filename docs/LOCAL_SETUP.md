@@ -8,7 +8,7 @@
 
 ## Clone the Repository
 ```bash
-git clone https://github.com/TusharDDL/School-Management.git
+git clone https://github.com/TusharDDL/NeyYear2025-School.git
 cd School-Management
 ```
 

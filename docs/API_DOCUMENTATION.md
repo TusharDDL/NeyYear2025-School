@@ -44,7 +44,7 @@ This documentation provides a comprehensive guide to the School Management Syste
 
 2. Clone and Setup:
    ```bash
-   git clone https://github.com/TusharDDL/School-Management.git
+   git clone https://github.com/TusharDDL/NeyYear2025-School.git
    cd School-Management/backend
    python -m venv venv
    source venv/bin/activate

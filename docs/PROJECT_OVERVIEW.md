@@ -78,7 +78,7 @@ The School Management System is a multi-tenant application built with Django and
 ### Backend Setup
 1. Clone repository:
    ```bash
-   git clone https://github.com/TusharDDL/School-Management.git
+   git clone https://github.com/TusharDDL/NeyYear2025-School.git
    cd School-Management/backend
    ```
 
