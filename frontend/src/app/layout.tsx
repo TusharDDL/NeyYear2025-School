@@ -1,9 +1,8 @@
 import type { Metadata } from 'next'
-import { Inter } from 'next/font/google'
-import './globals.css'
 import { Providers } from '@/components/providers'
+import './globals.css'
 
-const inter = Inter({ subsets: ['latin'] })
+// Remove Inter font import temporarily until we fix the font issue
 
 export const metadata: Metadata = {
   title: 'School Management System',
@@ -17,7 +16,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={inter.className}>
+      <body>
         <Providers>{children}</Providers>
       </body>
     </html>

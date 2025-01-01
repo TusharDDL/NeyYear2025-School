@@ -4,6 +4,11 @@ const nextConfig = {
   images: {
     domains: ['localhost'],
   },
+  // Add SWC configuration
+  swcMinify: true,
+  experimental: {
+    forceSwcTransforms: true,
+  },
   async rewrites() {
     return [
       {
@@ -13,3 +18,5 @@ const nextConfig = {
     ]
   },
 }
+
+module.exports = nextConfig
