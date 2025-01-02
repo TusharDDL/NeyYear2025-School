@@ -67,7 +67,7 @@ export default function LoginForm() {
       document.cookie = `accessToken=${data.access}; path=/`
       document.cookie = `refreshToken=${data.refresh}; path=/`
       
-      // Store user data
+      // Store user data in cookies
       const userData = {
         id: data.user_id,
         username: data.username,
@@ -75,7 +75,7 @@ export default function LoginForm() {
         role: data.role,
         school_id: data.school_id
       }
-      localStorage.setItem('user', JSON.stringify(userData))
+      document.cookie = `userData=${JSON.stringify(userData)}; path=/`
 
       // Show success message
       toast({
