@@ -2,29 +2,30 @@ import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
 
 export function middleware(request: NextRequest) {
-  const token = request.cookies.get('access_token')
-  
-  const isAuthPage = request.nextUrl.pathname === '/login' || 
-                    request.nextUrl.pathname === '/register'
-  const isApiRequest = request.nextUrl.pathname.startsWith('/api')
-  const isPublicPath = request.nextUrl.pathname === '/' || 
-                      request.nextUrl.pathname.startsWith('/_next') ||
-                      request.nextUrl.pathname.startsWith('/static') ||
-                      request.nextUrl.pathname === '/favicon.ico'
+  // Get the pathname of the request (e.g. /, /dashboard)
+  const path = request.nextUrl.pathname
 
-  if (!isApiRequest && !isPublicPath) {
-    if (!token && !isAuthPage) {
-      return NextResponse.redirect(new URL('/login', request.url))
-    }
+  // Define public paths that don't require authentication
+  const isPublicPath = path === '/login' || path === '/register'
 
-    if (token && isAuthPage) {
-      return NextResponse.redirect(new URL('/dashboard', request.url))
-    }
+  // Get the token from cookies
+  const token = request.cookies.get('accessToken')?.value || ''
+
+  // If the user is on a public path and has a token, redirect to dashboard
+  if (isPublicPath && token) {
+    return NextResponse.redirect(new URL('/dashboard', request.url))
+  }
+
+  // If the user is not on a public path and doesn't have a token,
+  // redirect to login
+  if (!isPublicPath && !token) {
+    return NextResponse.redirect(new URL('/login', request.url))
   }
 
   return NextResponse.next()
 }
 
+// See "Matching Paths" below to learn more
 export const config = {
   matcher: [
     /*

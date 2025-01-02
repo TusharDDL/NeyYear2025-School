@@ -96,6 +96,8 @@ TENANT_APPS = (
     "corsheaders",
     "django_filters",
     "drf_spectacular",
+
+    'django_extensions',
     # Local apps
     "apps.academic",
     "apps.finance",
@@ -110,8 +112,8 @@ INSTALLED_APPS = list(SHARED_APPS) + [
 MIDDLEWARE = [
     "apps.core.middleware.CustomTenantMiddleware",
     "django.middleware.security.SecurityMiddleware",
-    "django.contrib.sessions.middleware.SessionMiddleware",
     "corsheaders.middleware.CorsMiddleware",
+    "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
@@ -139,6 +141,10 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "config.wsgi.application"
 
+
+# settings.py
+
+APPEND_SLASH = False
 
 # Database
 DATABASES = {
@@ -241,7 +247,6 @@ SIMPLE_JWT = {
 # CORS settings
 CORS_ALLOWED_ORIGINS = config('CORS_ALLOWED_ORIGINS', default='http://localhost:3000', cast=Csv())
 CORS_ALLOW_CREDENTIALS = True
-
 # API Documentation
 SPECTACULAR_SETTINGS = {
     "TITLE": "School Management System API",
@@ -249,6 +254,19 @@ SPECTACULAR_SETTINGS = {
     "VERSION": "1.0.0",
     "SERVE_INCLUDE_SCHEMA": False,
 }
+
+CORS_ALLOW_HEADERS = [
+    'accept',
+    'accept-encoding',
+    'authorization',
+    'content-type',
+    'dnt',
+    'origin',
+    'user-agent',
+    'x-csrftoken',
+    'x-requested-with',
+    'x-school-domain',  # Add this custom header
+]
 
 # Email settings
 EMAIL_BACKEND = config('EMAIL_BACKEND', default='django.core.mail.backends.console.EmailBackend')

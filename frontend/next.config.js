@@ -4,7 +4,6 @@ const nextConfig = {
   images: {
     domains: ['localhost'],
   },
-  // Add SWC configuration
   swcMinify: true,
   experimental: {
     forceSwcTransforms: true,
@@ -12,8 +11,12 @@ const nextConfig = {
   async rewrites() {
     return [
       {
+        source: '/api/:path*/',
+        destination: 'http://localhost:8000/api/:path*/',
+      },
+      {
         source: '/api/:path*',
-        destination: 'http://localhost:8000/api/:path*',
+        destination: 'http://localhost:8000/api/:path*/',
       },
     ]
   },

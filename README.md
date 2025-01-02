@@ -14,7 +14,7 @@ A comprehensive multi-tenant School Management System built with Next.js and Dja
 ## Tech Stack
 
 ### Frontend
-- Next.js (Latest) with TypeScript
+- Next.js (Latest) with TypeScript (requires Node.js 18+)
 - TailwindCSS + shadcn/ui components
 - React Query for data fetching
 - React Hook Form for form handling
