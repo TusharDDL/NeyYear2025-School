@@ -11,6 +11,7 @@ from .serializers import SchoolSerializer,SchoolRegistrationSerializer
 from .permissions import IsSuperAdmin
 import logging
 
+
 logger = logging.getLogger(__name__)
 
 class SchoolViewSet(viewsets.ModelViewSet):
