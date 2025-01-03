@@ -19,6 +19,6 @@ export interface BookCirculation {
   issue_date: string;
   due_date: string;
   return_date: string | null;
-  status: "issued" | "returned" | "overdue";
+  status: 'issued' | 'returned' | 'overdue';
   fine_amount: number;
 }

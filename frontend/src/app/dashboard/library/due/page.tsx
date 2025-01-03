@@ -1,9 +1,9 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import { useQuery, useMutation } from "@tanstack/react-query";
-import { Card } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+import { useState } from 'react';
+import { useQuery, useMutation } from '@tanstack/react-query';
+import { Card } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
 import {
   Table,
   TableBody,
@@ -11,7 +11,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
+} from '@/components/ui/table';
 import {
   Dialog,
   DialogContent,
@@ -20,17 +20,17 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog";
+} from '@/components/ui/dialog';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { Input } from "@/components/ui/input";
-import { useToast } from "@/components/ui/use-toast";
-import { format, differenceInDays } from "date-fns";
+} from '@/components/ui/select';
+import { Input } from '@/components/ui/input';
+import { useToast } from '@/components/ui/use-toast';
+import { format, differenceInDays } from 'date-fns';
 import {
   Search,
   Filter,
@@ -42,65 +42,65 @@ import {
   MessageSquare,
   ArrowLeftRight,
   BookOpen,
-} from "lucide-react";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Progress } from "@/components/ui/progress";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+} from 'lucide-react';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Progress } from '@/components/ui/progress';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 export default function DueBooksPage() {
   const { toast } = useToast();
-  const [selectedDays, setSelectedDays] = useState<string>("");
-  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedDays, setSelectedDays] = useState<string>('');
+  const [searchTerm, setSearchTerm] = useState('');
 
   // Get overdue books data
   const { data: overdueData, isLoading } = useQuery({
-    queryKey: ["overdue-books", selectedDays, searchTerm],
+    queryKey: ['overdue-books', selectedDays, searchTerm],
     queryFn: () => {
       // This would be replaced with an actual API call
       return Promise.resolve([
         {
           id: 1,
           student: {
-            id: "1",
-            name: "John Smith",
-            class: "Class 10",
-            section: "A",
-            roll_number: "101",
+            id: '1',
+            name: 'John Smith',
+            class: 'Class 10',
+            section: 'A',
+            roll_number: '101',
             avatar: null,
           },
           book: {
-            id: "1",
-            title: "Introduction to Physics",
-            isbn: "978-3-16-148410-0",
-            author: "Dr. Robert Smith",
+            id: '1',
+            title: 'Introduction to Physics',
+            isbn: '978-3-16-148410-0',
+            author: 'Dr. Robert Smith',
             cover_image: null,
           },
-          issue_date: "2024-01-01",
-          due_date: "2024-01-15",
+          issue_date: '2024-01-01',
+          due_date: '2024-01-15',
           days_overdue: 5,
           fine_amount: 5,
           reminders_sent: 2,
-          last_reminder: "2024-01-18",
+          last_reminder: '2024-01-18',
         },
         {
           id: 2,
           student: {
-            id: "2",
-            name: "Sarah Johnson",
-            class: "Class 10",
-            section: "B",
-            roll_number: "102",
+            id: '2',
+            name: 'Sarah Johnson',
+            class: 'Class 10',
+            section: 'B',
+            roll_number: '102',
             avatar: null,
           },
           book: {
-            id: "2",
-            title: "World History",
-            isbn: "978-3-16-148410-1",
-            author: "Sarah Williams",
+            id: '2',
+            title: 'World History',
+            isbn: '978-3-16-148410-1',
+            author: 'Sarah Williams',
             cover_image: null,
           },
-          issue_date: "2024-01-05",
-          due_date: "2024-01-19",
+          issue_date: '2024-01-05',
+          due_date: '2024-01-19',
           days_overdue: 1,
           fine_amount: 1,
           reminders_sent: 0,
@@ -112,7 +112,7 @@ export default function DueBooksPage() {
 
   // Get overdue statistics
   const { data: statsData } = useQuery({
-    queryKey: ["overdue-stats"],
+    queryKey: ['overdue-stats'],
     queryFn: () => {
       // This would be replaced with an actual API call
       return Promise.resolve({
@@ -121,10 +121,10 @@ export default function DueBooksPage() {
         books_returned: 285,
         reminders_sent: 125,
         overdue_breakdown: {
-          "1-7 days": 25,
-          "8-14 days": 12,
-          "15-30 days": 6,
-          "30+ days": 2,
+          '1-7 days': 25,
+          '8-14 days': 12,
+          '15-30 days': 6,
+          '30+ days': 2,
         },
       });
     },
@@ -133,19 +133,19 @@ export default function DueBooksPage() {
   const { mutate: sendReminder, isLoading: isSending } = useMutation({
     mutationFn: (studentIds: string[]) => {
       // This would be replaced with an actual API call
-      return new Promise((resolve) => setTimeout(resolve, 1000));
+      return new Promise(resolve => setTimeout(resolve, 1000));
     },
     onSuccess: () => {
       toast({
-        title: "Success",
-        description: "Reminder sent successfully.",
+        title: 'Success',
+        description: 'Reminder sent successfully.',
       });
     },
     onError: () => {
       toast({
-        title: "Error",
-        description: "Failed to send reminder.",
-        variant: "destructive",
+        title: 'Error',
+        description: 'Failed to send reminder.',
+        variant: 'destructive',
       });
     },
   });
@@ -153,19 +153,19 @@ export default function DueBooksPage() {
   const { mutate: returnBook, isLoading: isReturning } = useMutation({
     mutationFn: (circulationId: number) => {
       // This would be replaced with an actual API call
-      return new Promise((resolve) => setTimeout(resolve, 1000));
+      return new Promise(resolve => setTimeout(resolve, 1000));
     },
     onSuccess: () => {
       toast({
-        title: "Success",
-        description: "Book returned successfully.",
+        title: 'Success',
+        description: 'Book returned successfully.',
       });
     },
     onError: () => {
       toast({
-        title: "Error",
-        description: "Failed to return book.",
-        variant: "destructive",
+        title: 'Error',
+        description: 'Failed to return book.',
+        variant: 'destructive',
       });
     },
   });
@@ -183,9 +183,7 @@ export default function DueBooksPage() {
             Export
           </Button>
           <Button
-            onClick={() =>
-              sendReminder(overdueData?.map((item) => item.student.id))
-            }
+            onClick={() => sendReminder(overdueData?.map(item => item.student.id))}
             disabled={isSending}
           >
             <MessageSquare className="h-4 w-4 mr-2" />
@@ -220,9 +218,7 @@ export default function DueBooksPage() {
           <div className="space-y-2">
             <p className="text-sm text-gray-500">Books Returned</p>
             <div className="flex items-center justify-between">
-              <h4 className="text-2xl font-bold">
-                {statsData?.books_returned}
-              </h4>
+              <h4 className="text-2xl font-bold">{statsData?.books_returned}</h4>
               <ArrowLeftRight className="h-8 w-8 text-green-500 opacity-50" />
             </div>
           </div>
@@ -232,9 +228,7 @@ export default function DueBooksPage() {
           <div className="space-y-2">
             <p className="text-sm text-gray-500">Reminders Sent</p>
             <div className="flex items-center justify-between">
-              <h4 className="text-2xl font-bold">
-                {statsData?.reminders_sent}
-              </h4>
+              <h4 className="text-2xl font-bold">{statsData?.reminders_sent}</h4>
               <Mail className="h-8 w-8 text-blue-500 opacity-50" />
             </div>
           </div>
@@ -246,17 +240,15 @@ export default function DueBooksPage() {
         <div className="p-6">
           <h3 className="text-lg font-semibold mb-4">Overdue Breakdown</h3>
           <div className="grid grid-cols-4 gap-4">
-            {Object.entries(statsData?.overdue_breakdown || {}).map(
-              ([range, count]) => (
-                <div key={range} className="space-y-2">
-                  <div className="flex justify-between text-sm">
-                    <span>{range}</span>
-                    <span>{count} books</span>
-                  </div>
-                  <Progress value={(count / statsData?.total_overdue) * 100} />
+            {Object.entries(statsData?.overdue_breakdown || {}).map(([range, count]) => (
+              <div key={range} className="space-y-2">
+                <div className="flex justify-between text-sm">
+                  <span>{range}</span>
+                  <span>{count} books</span>
                 </div>
-              ),
-            )}
+                <Progress value={(count / statsData?.total_overdue) * 100} />
+              </div>
+            ))}
           </div>
         </div>
       </Card>
@@ -273,15 +265,13 @@ export default function DueBooksPage() {
                   placeholder="Search by student or book..."
                   className="pl-8"
                   value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
+                  onChange={e => setSearchTerm(e.target.value)}
                 />
               </div>
             </div>
 
             <div>
-              <label className="text-sm font-medium mb-1 block">
-                Days Overdue
-              </label>
+              <label className="text-sm font-medium mb-1 block">Days Overdue</label>
               <Select value={selectedDays} onValueChange={setSelectedDays}>
                 <SelectTrigger>
                   <SelectValue placeholder="All" />
@@ -322,17 +312,17 @@ export default function DueBooksPage() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {overdueData?.map((item) => (
+              {overdueData?.map(item => (
                 <TableRow key={item.id}>
                   <TableCell>
                     <div className="flex items-center space-x-3">
                       <Avatar>
-                        <AvatarImage src={item.student.avatar || ""} />
+                        <AvatarImage src={item.student.avatar || ''} />
                         <AvatarFallback>
                           {item.student.name
-                            .split(" ")
-                            .map((n) => n[0])
-                            .join("")}
+                            .split(' ')
+                            .map(n => n[0])
+                            .join('')}
                         </AvatarFallback>
                       </Avatar>
                       <div>
@@ -347,24 +337,20 @@ export default function DueBooksPage() {
                   <TableCell>
                     <div className="flex items-center space-x-3">
                       <Avatar>
-                        <AvatarImage src={item.book.cover_image || ""} />
+                        <AvatarImage src={item.book.cover_image || ''} />
                         <AvatarFallback>{item.book.title[0]}</AvatarFallback>
                       </Avatar>
                       <div>
                         <p className="font-medium">{item.book.title}</p>
-                        <p className="text-sm text-gray-500">
-                          {item.book.author}
-                        </p>
+                        <p className="text-sm text-gray-500">{item.book.author}</p>
                       </div>
                     </div>
                   </TableCell>
                   <TableCell>
                     <div className="space-y-1">
-                      <p className="font-medium">
-                        {format(new Date(item.due_date), "PPP")}
-                      </p>
+                      <p className="font-medium">{format(new Date(item.due_date), 'PPP')}</p>
                       <p className="text-sm text-gray-500">
-                        Issued: {format(new Date(item.issue_date), "PPP")}
+                        Issued: {format(new Date(item.issue_date), 'PPP')}
                       </p>
                     </div>
                   </TableCell>
@@ -372,10 +358,10 @@ export default function DueBooksPage() {
                     <div
                       className={`px-2 py-1 rounded-full text-xs inline-flex items-center ${
                         item.days_overdue <= 7
-                          ? "bg-yellow-100 text-yellow-700"
+                          ? 'bg-yellow-100 text-yellow-700'
                           : item.days_overdue <= 14
-                            ? "bg-orange-100 text-orange-700"
-                            : "bg-red-100 text-red-700"
+                            ? 'bg-orange-100 text-orange-700'
+                            : 'bg-red-100 text-red-700'
                       }`}
                     >
                       <AlertTriangle className="h-3 w-3 mr-1" />
@@ -393,7 +379,7 @@ export default function DueBooksPage() {
                       <p className="text-sm">{item.reminders_sent} sent</p>
                       {item.last_reminder && (
                         <p className="text-xs text-gray-500">
-                          Last: {format(new Date(item.last_reminder), "PPP")}
+                          Last: {format(new Date(item.last_reminder), 'PPP')}
                         </p>
                       )}
                     </div>

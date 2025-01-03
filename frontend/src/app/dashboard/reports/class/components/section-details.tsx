@@ -1,9 +1,9 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import { ClassReport } from "@/services/reports";
-import { Card } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
+import { useState } from 'react';
+import { ClassReport } from '@/services/reports';
+import { Card } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
 import {
   Table,
   TableBody,
@@ -11,7 +11,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
+} from '@/components/ui/table';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -19,24 +19,22 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { MoreHorizontal } from "lucide-react";
-import { SectionAnalysisDialog } from "./section-analysis-dialog";
+} from '@/components/ui/dropdown-menu';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { MoreHorizontal } from 'lucide-react';
+import { SectionAnalysisDialog } from './section-analysis-dialog';
 
 interface SectionDetailsProps {
-  data: ClassReport["sections"];
+  data: ClassReport['sections'];
 }
 
 export function SectionDetails({ data }: SectionDetailsProps) {
-  const [searchTerm, setSearchTerm] = useState("");
-  const [selectedSection, setSelectedSection] = useState<
-    ClassReport["sections"][0] | null
-  >(null);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [selectedSection, setSelectedSection] = useState<ClassReport['sections'][0] | null>(null);
 
-  const filteredData = data.filter((section) =>
-    section.section_name.toLowerCase().includes(searchTerm.toLowerCase()),
+  const filteredData = data.filter(section =>
+    section.section_name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   const getPerformanceStatus = (percentage: number) => {
@@ -71,7 +69,7 @@ export function SectionDetails({ data }: SectionDetailsProps) {
           <Input
             placeholder="Search sections..."
             value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
+            onChange={e => setSearchTerm(e.target.value)}
             className="max-w-xs"
           />
         </div>
@@ -89,11 +87,9 @@ export function SectionDetails({ data }: SectionDetailsProps) {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {filteredData.map((section) => (
+              {filteredData.map(section => (
                 <TableRow key={section.section_id}>
-                  <TableCell className="font-medium">
-                    {section.section_name}
-                  </TableCell>
+                  <TableCell className="font-medium">{section.section_name}</TableCell>
                   <TableCell>{section.total_students}</TableCell>
                   <TableCell>
                     <div className="flex items-center space-x-2">
@@ -121,9 +117,7 @@ export function SectionDetails({ data }: SectionDetailsProps) {
                       <span>{section.average_performance}%</span>
                     </div>
                   </TableCell>
-                  <TableCell>
-                    {getPerformanceStatus(section.average_performance)}
-                  </TableCell>
+                  <TableCell>{getPerformanceStatus(section.average_performance)}</TableCell>
                   <TableCell>
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
@@ -135,9 +129,7 @@ export function SectionDetails({ data }: SectionDetailsProps) {
                       <DropdownMenuContent align="end">
                         <DropdownMenuLabel>Actions</DropdownMenuLabel>
                         <DropdownMenuSeparator />
-                        <DropdownMenuItem
-                          onClick={() => setSelectedSection(section)}
-                        >
+                        <DropdownMenuItem onClick={() => setSelectedSection(section)}>
                           View Detailed Analysis
                         </DropdownMenuItem>
                       </DropdownMenuContent>
@@ -151,10 +143,7 @@ export function SectionDetails({ data }: SectionDetailsProps) {
       </Card>
 
       {selectedSection && (
-        <SectionAnalysisDialog
-          section={selectedSection}
-          onClose={() => setSelectedSection(null)}
-        />
+        <SectionAnalysisDialog section={selectedSection} onClose={() => setSelectedSection(null)} />
       )}
     </>
   );

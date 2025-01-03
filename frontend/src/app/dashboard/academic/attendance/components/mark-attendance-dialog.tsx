@@ -1,16 +1,16 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { format } from "date-fns";
+import { useState } from 'react';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { format } from 'date-fns';
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
+} from '@/components/ui/dialog';
+import { Button } from '@/components/ui/button';
 import {
   Table,
   TableBody,
@@ -18,10 +18,10 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Input } from "@/components/ui/input";
-import academicService from "@/services/academic";
+} from '@/components/ui/table';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Input } from '@/components/ui/input';
+import academicService from '@/services/academic';
 
 interface MarkAttendanceDialogProps {
   sectionId: number;
@@ -36,46 +36,39 @@ interface AttendanceRecord {
   remarks?: string;
 }
 
-export function MarkAttendanceDialog({
-  sectionId,
-  date,
-}: MarkAttendanceDialogProps) {
+export function MarkAttendanceDialog({ sectionId, date }: MarkAttendanceDialogProps) {
   const [open, setOpen] = useState(false);
-  const [attendanceRecords, setAttendanceRecords] = useState<
-    Record<number, AttendanceRecord>
-  >({});
+  const [attendanceRecords, setAttendanceRecords] = useState<Record<number, AttendanceRecord>>({});
   const queryClient = useQueryClient();
 
   // Get section details to get the list of students
   const { data: section } = useQuery({
-    queryKey: ["sections", sectionId],
+    queryKey: ['sections', sectionId],
     queryFn: () => academicService.getSections(),
-    select: (data) => data.find((s) => s.id === sectionId),
+    select: data => data.find(s => s.id === sectionId),
   });
 
   // Get existing attendance records for the date
   const { data: existingAttendance } = useQuery({
-    queryKey: ["attendance", sectionId, date],
+    queryKey: ['attendance', sectionId, date],
     queryFn: () =>
       academicService.getAttendance({
         section: sectionId,
-        date: format(date, "yyyy-MM-dd"),
+        date: format(date, 'yyyy-MM-dd'),
       }),
   });
 
   // Initialize attendance records when dialog opens
   const initializeAttendance = () => {
     const records: Record<number, AttendanceRecord> = {};
-    section?.students?.forEach((student) => {
-      const existing = existingAttendance?.find(
-        (a) => a.student.id === student.id,
-      );
+    section?.students?.forEach(student => {
+      const existing = existingAttendance?.find(a => a.student.id === student.id);
       records[student.id] = {
         student_id: student.id,
         section_id: sectionId,
-        date: format(date, "yyyy-MM-dd"),
+        date: format(date, 'yyyy-MM-dd'),
         is_present: existing?.is_present ?? true,
-        remarks: existing?.remarks ?? "",
+        remarks: existing?.remarks ?? '',
       };
     });
     setAttendanceRecords(records);
@@ -85,7 +78,7 @@ export function MarkAttendanceDialog({
     mutationFn: academicService.markAttendance,
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: ["attendance", sectionId, date],
+        queryKey: ['attendance', sectionId, date],
       });
       setOpen(false);
     },
@@ -98,7 +91,7 @@ export function MarkAttendanceDialog({
   return (
     <Dialog
       open={open}
-      onOpenChange={(isOpen) => {
+      onOpenChange={isOpen => {
         setOpen(isOpen);
         if (isOpen) {
           initializeAttendance();
@@ -110,9 +103,7 @@ export function MarkAttendanceDialog({
       </DialogTrigger>
       <DialogContent className="max-w-3xl">
         <DialogHeader>
-          <DialogTitle>
-            Mark Attendance for {format(date, "MMMM d, yyyy")}
-          </DialogTitle>
+          <DialogTitle>Mark Attendance for {format(date, 'MMMM d, yyyy')}</DialogTitle>
         </DialogHeader>
 
         <div className="mt-4">
@@ -125,7 +116,7 @@ export function MarkAttendanceDialog({
               </TableRow>
             </TableHeader>
             <TableBody>
-              {section?.students?.map((student) => (
+              {section?.students?.map(student => (
                 <TableRow key={student.id}>
                   <TableCell>
                     {student.first_name} {student.last_name}
@@ -133,8 +124,8 @@ export function MarkAttendanceDialog({
                   <TableCell>
                     <Checkbox
                       checked={attendanceRecords[student.id]?.is_present}
-                      onCheckedChange={(checked) => {
-                        setAttendanceRecords((prev) => ({
+                      onCheckedChange={checked => {
+                        setAttendanceRecords(prev => ({
                           ...prev,
                           [student.id]: {
                             ...prev[student.id],
@@ -146,9 +137,9 @@ export function MarkAttendanceDialog({
                   </TableCell>
                   <TableCell>
                     <Input
-                      value={attendanceRecords[student.id]?.remarks || ""}
-                      onChange={(e) => {
-                        setAttendanceRecords((prev) => ({
+                      value={attendanceRecords[student.id]?.remarks || ''}
+                      onChange={e => {
+                        setAttendanceRecords(prev => ({
                           ...prev,
                           [student.id]: {
                             ...prev[student.id],
@@ -170,7 +161,7 @@ export function MarkAttendanceDialog({
             Cancel
           </Button>
           <Button onClick={handleSubmit} disabled={isLoading}>
-            {isLoading ? "Saving..." : "Save Attendance"}
+            {isLoading ? 'Saving...' : 'Save Attendance'}
           </Button>
         </div>
       </DialogContent>

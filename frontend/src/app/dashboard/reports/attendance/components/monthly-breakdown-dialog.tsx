@@ -1,13 +1,8 @@
-"use client";
+'use client';
 
-import { AttendanceReport } from "@/services/reports";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
-import { Card } from "@/components/ui/card";
+import { AttendanceReport } from '@/services/reports';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Card } from '@/components/ui/card';
 import {
   Table,
   TableBody,
@@ -15,7 +10,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
+} from '@/components/ui/table';
 import {
   BarChart,
   Bar,
@@ -25,17 +20,14 @@ import {
   Tooltip,
   Legend,
   ResponsiveContainer,
-} from "recharts";
+} from 'recharts';
 
 interface MonthlyBreakdownDialogProps {
   student: AttendanceReport;
   onClose: () => void;
 }
 
-export function MonthlyBreakdownDialog({
-  student,
-  onClose,
-}: MonthlyBreakdownDialogProps) {
+export function MonthlyBreakdownDialog({ student, onClose }: MonthlyBreakdownDialogProps) {
   return (
     <Dialog open onOpenChange={onClose}>
       <DialogContent className="max-w-4xl">
@@ -52,25 +44,17 @@ export function MonthlyBreakdownDialog({
             </Card>
 
             <Card className="p-4">
-              <h3 className="text-sm font-medium text-gray-500">
-                Present Days
-              </h3>
-              <p className="text-2xl font-bold text-green-600 mt-1">
-                {student.present_days}
-              </p>
+              <h3 className="text-sm font-medium text-gray-500">Present Days</h3>
+              <p className="text-2xl font-bold text-green-600 mt-1">{student.present_days}</p>
             </Card>
 
             <Card className="p-4">
               <h3 className="text-sm font-medium text-gray-500">Absent Days</h3>
-              <p className="text-2xl font-bold text-red-600 mt-1">
-                {student.absent_days}
-              </p>
+              <p className="text-2xl font-bold text-red-600 mt-1">{student.absent_days}</p>
             </Card>
 
             <Card className="p-4">
-              <h3 className="text-sm font-medium text-gray-500">
-                Attendance Rate
-              </h3>
+              <h3 className="text-sm font-medium text-gray-500">Attendance Rate</h3>
               <p className="text-2xl font-bold text-blue-600 mt-1">
                 {student.attendance_percentage.toFixed(1)}%
               </p>
@@ -79,9 +63,7 @@ export function MonthlyBreakdownDialog({
 
           {/* Monthly Chart */}
           <Card className="p-6">
-            <h2 className="text-lg font-semibold mb-4">
-              Monthly Attendance Trend
-            </h2>
+            <h2 className="text-lg font-semibold mb-4">Monthly Attendance Trend</h2>
             <div className="h-[300px]">
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={student.monthly_breakdown}>
@@ -90,16 +72,8 @@ export function MonthlyBreakdownDialog({
                   <YAxis />
                   <Tooltip />
                   <Legend />
-                  <Bar
-                    dataKey="present_days"
-                    name="Present Days"
-                    fill="#22c55e"
-                  />
-                  <Bar
-                    dataKey="absent_days"
-                    name="Absent Days"
-                    fill="#ef4444"
-                  />
+                  <Bar dataKey="present_days" name="Present Days" fill="#22c55e" />
+                  <Bar dataKey="absent_days" name="Absent Days" fill="#ef4444" />
                 </BarChart>
               </ResponsiveContainer>
             </div>
@@ -120,18 +94,12 @@ export function MonthlyBreakdownDialog({
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {student.monthly_breakdown.map((month) => (
+                  {student.monthly_breakdown.map(month => (
                     <TableRow key={month.month}>
-                      <TableCell className="font-medium">
-                        {month.month}
-                      </TableCell>
+                      <TableCell className="font-medium">{month.month}</TableCell>
                       <TableCell>{month.total_days}</TableCell>
-                      <TableCell className="text-green-600">
-                        {month.present_days}
-                      </TableCell>
-                      <TableCell className="text-red-600">
-                        {month.absent_days}
-                      </TableCell>
+                      <TableCell className="text-green-600">{month.present_days}</TableCell>
+                      <TableCell className="text-red-600">{month.absent_days}</TableCell>
                       <TableCell>{month.percentage.toFixed(1)}%</TableCell>
                     </TableRow>
                   ))}

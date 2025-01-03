@@ -1,9 +1,9 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import { useQuery, useMutation } from "@tanstack/react-query";
-import { Card } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+import { useState } from 'react';
+import { useQuery, useMutation } from '@tanstack/react-query';
+import { Card } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
 import {
   Table,
   TableBody,
@@ -11,22 +11,18 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
+} from '@/components/ui/table';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { Calendar } from "@/components/ui/calendar";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import { useToast } from "@/components/ui/use-toast";
-import { format } from "date-fns";
+} from '@/components/ui/select';
+import { Calendar } from '@/components/ui/calendar';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { useToast } from '@/components/ui/use-toast';
+import { format } from 'date-fns';
 import {
   Calendar as CalendarIcon,
   Download,
@@ -37,43 +33,37 @@ import {
   BarChart2,
   Mail,
   MessageSquare,
-} from "lucide-react";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Switch } from "@/components/ui/switch";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+} from 'lucide-react';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Switch } from '@/components/ui/switch';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 export default function StudentAttendancePage() {
   const { toast } = useToast();
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
-  const [selectedClass, setSelectedClass] = useState<string>("");
-  const [selectedSection, setSelectedSection] = useState<string>("");
-  const [selectedSubject, setSelectedSubject] = useState<string>("");
+  const [selectedClass, setSelectedClass] = useState<string>('');
+  const [selectedSection, setSelectedSection] = useState<string>('');
+  const [selectedSubject, setSelectedSubject] = useState<string>('');
 
   // Get attendance data
   const { data: attendanceData, isLoading } = useQuery({
-    queryKey: [
-      "attendance",
-      selectedDate,
-      selectedClass,
-      selectedSection,
-      selectedSubject,
-    ],
+    queryKey: ['attendance', selectedDate, selectedClass, selectedSection, selectedSubject],
     queryFn: () => {
       // This would be replaced with an actual API call
       return Promise.resolve([
         {
           id: 1,
           student_id: 1,
-          first_name: "John",
-          last_name: "Smith",
-          class: "Class 10",
-          section: "A",
-          roll_number: "101",
+          first_name: 'John',
+          last_name: 'Smith',
+          class: 'Class 10',
+          section: 'A',
+          roll_number: '101',
           avatar: null,
           attendance: {
-            status: "present",
-            check_in: "08:30",
-            check_out: "14:30",
+            status: 'present',
+            check_in: '08:30',
+            check_out: '14:30',
             subjects: {
               Mathematics: true,
               Science: true,
@@ -81,21 +71,21 @@ export default function StudentAttendancePage() {
               History: true,
             },
           },
-          parent_phone: "+1234567890",
-          parent_email: "parent@example.com",
+          parent_phone: '+1234567890',
+          parent_email: 'parent@example.com',
           attendance_percentage: 95,
         },
         {
           id: 2,
           student_id: 2,
-          first_name: "Sarah",
-          last_name: "Johnson",
-          class: "Class 10",
-          section: "A",
-          roll_number: "102",
+          first_name: 'Sarah',
+          last_name: 'Johnson',
+          class: 'Class 10',
+          section: 'A',
+          roll_number: '102',
           avatar: null,
           attendance: {
-            status: "absent",
+            status: 'absent',
             check_in: null,
             check_out: null,
             subjects: {
@@ -105,8 +95,8 @@ export default function StudentAttendancePage() {
               History: false,
             },
           },
-          parent_phone: "+1234567891",
-          parent_email: "parent2@example.com",
+          parent_phone: '+1234567891',
+          parent_email: 'parent2@example.com',
           attendance_percentage: 92,
         },
       ]);
@@ -115,29 +105,29 @@ export default function StudentAttendancePage() {
 
   // Get class schedule
   const { data: scheduleData } = useQuery({
-    queryKey: ["schedule", selectedClass, selectedSection],
+    queryKey: ['schedule', selectedClass, selectedSection],
     queryFn: () => {
       // This would be replaced with an actual API call
       return Promise.resolve([
         {
-          subject: "Mathematics",
-          time: "08:30 - 09:30",
-          teacher: "Mr. Anderson",
+          subject: 'Mathematics',
+          time: '08:30 - 09:30',
+          teacher: 'Mr. Anderson',
         },
         {
-          subject: "Science",
-          time: "09:30 - 10:30",
-          teacher: "Mrs. Smith",
+          subject: 'Science',
+          time: '09:30 - 10:30',
+          teacher: 'Mrs. Smith',
         },
         {
-          subject: "English",
-          time: "11:00 - 12:00",
-          teacher: "Ms. Johnson",
+          subject: 'English',
+          time: '11:00 - 12:00',
+          teacher: 'Ms. Johnson',
         },
         {
-          subject: "History",
-          time: "12:00 - 13:00",
-          teacher: "Mr. Wilson",
+          subject: 'History',
+          time: '12:00 - 13:00',
+          teacher: 'Mr. Wilson',
         },
       ]);
     },
@@ -154,19 +144,19 @@ export default function StudentAttendancePage() {
       subject?: string;
     }) => {
       // This would be replaced with an actual API call
-      return new Promise((resolve) => setTimeout(resolve, 1000));
+      return new Promise(resolve => setTimeout(resolve, 1000));
     },
     onSuccess: () => {
       toast({
-        title: "Success",
-        description: "Attendance marked successfully.",
+        title: 'Success',
+        description: 'Attendance marked successfully.',
       });
     },
     onError: () => {
       toast({
-        title: "Error",
-        description: "Failed to mark attendance.",
-        variant: "destructive",
+        title: 'Error',
+        description: 'Failed to mark attendance.',
+        variant: 'destructive',
       });
     },
   });
@@ -174,19 +164,19 @@ export default function StudentAttendancePage() {
   const { mutate: notifyParents, isLoading: isNotifying } = useMutation({
     mutationFn: (absentStudents: any[]) => {
       // This would be replaced with an actual API call
-      return new Promise((resolve) => setTimeout(resolve, 1000));
+      return new Promise(resolve => setTimeout(resolve, 1000));
     },
     onSuccess: () => {
       toast({
-        title: "Success",
-        description: "Parents notified successfully.",
+        title: 'Success',
+        description: 'Parents notified successfully.',
       });
     },
     onError: () => {
       toast({
-        title: "Error",
-        description: "Failed to notify parents.",
-        variant: "destructive",
+        title: 'Error',
+        description: 'Failed to notify parents.',
+        variant: 'destructive',
       });
     },
   });
@@ -194,9 +184,9 @@ export default function StudentAttendancePage() {
   // Calculate statistics
   const stats = attendanceData?.reduce(
     (acc, student) => {
-      if (student.attendance.status === "present") acc.present += 1;
-      else if (student.attendance.status === "absent") acc.absent += 1;
-      else if (student.attendance.status === "late") acc.late += 1;
+      if (student.attendance.status === 'present') acc.present += 1;
+      else if (student.attendance.status === 'absent') acc.absent += 1;
+      else if (student.attendance.status === 'late') acc.late += 1;
 
       acc.total += 1;
       acc.attendance_percentage = (acc.present / acc.total) * 100;
@@ -209,7 +199,7 @@ export default function StudentAttendancePage() {
       late: 0,
       total: 0,
       attendance_percentage: 0,
-    },
+    }
   );
 
   return (
@@ -288,9 +278,7 @@ export default function StudentAttendancePage() {
             </div>
             <div>
               <p className="text-sm text-gray-500">Attendance Rate</p>
-              <h4 className="text-2xl font-bold">
-                {stats?.attendance_percentage.toFixed(1)}%
-              </h4>
+              <h4 className="text-2xl font-bold">{stats?.attendance_percentage.toFixed(1)}%</h4>
             </div>
           </div>
         </Card>
@@ -304,11 +292,8 @@ export default function StudentAttendancePage() {
               <label className="text-sm font-medium mb-1 block">Date</label>
               <Popover>
                 <PopoverTrigger asChild>
-                  <Button
-                    variant="outline"
-                    className="w-full justify-start text-left font-normal"
-                  >
-                    {format(selectedDate, "PPP")}
+                  <Button variant="outline" className="w-full justify-start text-left font-normal">
+                    {format(selectedDate, 'PPP')}
                     <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
                   </Button>
                 </PopoverTrigger>
@@ -316,7 +301,7 @@ export default function StudentAttendancePage() {
                   <Calendar
                     mode="single"
                     selected={selectedDate}
-                    onSelect={(date) => date && setSelectedDate(date)}
+                    onSelect={date => date && setSelectedDate(date)}
                     initialFocus
                   />
                 </PopoverContent>
@@ -341,15 +326,12 @@ export default function StudentAttendancePage() {
 
             <div>
               <label className="text-sm font-medium mb-1 block">Section</label>
-              <Select
-                value={selectedSection}
-                onValueChange={setSelectedSection}
-              >
+              <Select value={selectedSection} onValueChange={setSelectedSection}>
                 <SelectTrigger>
                   <SelectValue placeholder="Select section" />
                 </SelectTrigger>
                 <SelectContent>
-                  {["A", "B", "C", "D"].map((section) => (
+                  {['A', 'B', 'C', 'D'].map(section => (
                     <SelectItem key={section} value={section}>
                       Section {section}
                     </SelectItem>
@@ -360,16 +342,13 @@ export default function StudentAttendancePage() {
 
             <div>
               <label className="text-sm font-medium mb-1 block">Subject</label>
-              <Select
-                value={selectedSubject}
-                onValueChange={setSelectedSubject}
-              >
+              <Select value={selectedSubject} onValueChange={setSelectedSubject}>
                 <SelectTrigger>
                   <SelectValue placeholder="All Subjects" />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="">All Subjects</SelectItem>
-                  {scheduleData?.map((schedule) => (
+                  {scheduleData?.map(schedule => (
                     <SelectItem key={schedule.subject} value={schedule.subject}>
                       {schedule.subject}
                     </SelectItem>
@@ -397,11 +376,7 @@ export default function StudentAttendancePage() {
                 <Button
                   variant="outline"
                   onClick={() =>
-                    notifyParents(
-                      attendanceData?.filter(
-                        (s) => s.attendance.status === "absent",
-                      ),
-                    )
+                    notifyParents(attendanceData?.filter(s => s.attendance.status === 'absent'))
                   }
                   disabled={isNotifying}
                 >
@@ -422,12 +397,12 @@ export default function StudentAttendancePage() {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {attendanceData?.map((student) => (
+                  {attendanceData?.map(student => (
                     <TableRow key={student.id}>
                       <TableCell>
                         <div className="flex items-center space-x-3">
                           <Avatar>
-                            <AvatarImage src={student.avatar || ""} />
+                            <AvatarImage src={student.avatar || ''} />
                             <AvatarFallback>
                               {student.first_name[0]}
                               {student.last_name[0]}
@@ -444,16 +419,12 @@ export default function StudentAttendancePage() {
                         </div>
                       </TableCell>
                       <TableCell>{student.roll_number}</TableCell>
-                      <TableCell>
-                        {student.attendance.check_in || "-"}
-                      </TableCell>
-                      <TableCell>
-                        {student.attendance.check_out || "-"}
-                      </TableCell>
+                      <TableCell>{student.attendance.check_in || '-'}</TableCell>
+                      <TableCell>{student.attendance.check_out || '-'}</TableCell>
                       <TableCell>
                         <Switch
-                          checked={student.attendance.status === "present"}
-                          onCheckedChange={(checked) =>
+                          checked={student.attendance.status === 'present'}
+                          onCheckedChange={checked =>
                             markAttendance({
                               studentId: student.student_id,
                               status: checked,
@@ -489,17 +460,11 @@ export default function StudentAttendancePage() {
           <Card>
             <div className="p-6">
               <div className="flex justify-between items-center mb-4">
-                <h3 className="text-lg font-semibold">
-                  Subject-wise Attendance
-                </h3>
+                <h3 className="text-lg font-semibold">Subject-wise Attendance</h3>
                 <div className="flex items-center gap-2">
                   <p className="text-sm text-gray-500">Today's Schedule:</p>
-                  {scheduleData?.map((schedule) => (
-                    <Badge
-                      key={schedule.subject}
-                      variant="secondary"
-                      className="text-xs"
-                    >
+                  {scheduleData?.map(schedule => (
+                    <Badge key={schedule.subject} variant="secondary" className="text-xs">
                       {schedule.subject} ({schedule.time})
                     </Badge>
                   ))}
@@ -511,21 +476,19 @@ export default function StudentAttendancePage() {
                   <TableRow>
                     <TableHead>Student</TableHead>
                     <TableHead>Roll Number</TableHead>
-                    {scheduleData?.map((schedule) => (
-                      <TableHead key={schedule.subject}>
-                        {schedule.subject}
-                      </TableHead>
+                    {scheduleData?.map(schedule => (
+                      <TableHead key={schedule.subject}>{schedule.subject}</TableHead>
                     ))}
                     <TableHead>Actions</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {attendanceData?.map((student) => (
+                  {attendanceData?.map(student => (
                     <TableRow key={student.id}>
                       <TableCell>
                         <div className="flex items-center space-x-3">
                           <Avatar>
-                            <AvatarImage src={student.avatar || ""} />
+                            <AvatarImage src={student.avatar || ''} />
                             <AvatarFallback>
                               {student.first_name[0]}
                               {student.last_name[0]}
@@ -542,13 +505,11 @@ export default function StudentAttendancePage() {
                         </div>
                       </TableCell>
                       <TableCell>{student.roll_number}</TableCell>
-                      {scheduleData?.map((schedule) => (
+                      {scheduleData?.map(schedule => (
                         <TableCell key={schedule.subject}>
                           <Switch
-                            checked={
-                              student.attendance.subjects[schedule.subject]
-                            }
-                            onCheckedChange={(checked) =>
+                            checked={student.attendance.subjects[schedule.subject]}
+                            onCheckedChange={checked =>
                               markAttendance({
                                 studentId: student.student_id,
                                 status: checked,

@@ -1,9 +1,9 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import { useQuery, useMutation } from "@tanstack/react-query";
-import { Card } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+import { useState } from 'react';
+import { useQuery, useMutation } from '@tanstack/react-query';
+import { Card } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
 import {
   Table,
   TableBody,
@@ -11,7 +11,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
+} from '@/components/ui/table';
 import {
   Dialog,
   DialogContent,
@@ -20,7 +20,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog";
+} from '@/components/ui/dialog';
 import {
   Form,
   FormControl,
@@ -29,26 +29,22 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
+} from '@/components/ui/form';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { Input } from "@/components/ui/input";
-import { Calendar } from "@/components/ui/calendar";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import { useToast } from "@/components/ui/use-toast";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import * as z from "zod";
-import { format, addDays } from "date-fns";
+} from '@/components/ui/select';
+import { Input } from '@/components/ui/input';
+import { Calendar } from '@/components/ui/calendar';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { useToast } from '@/components/ui/use-toast';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import * as z from 'zod';
+import { format, addDays } from 'date-fns';
 import {
   Plus,
   Calendar as CalendarIcon,
@@ -61,19 +57,19 @@ import {
   Mail,
   MessageSquare,
   ArrowLeftRight,
-} from "lucide-react";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Progress } from "@/components/ui/progress";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+} from 'lucide-react';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Progress } from '@/components/ui/progress';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 const circulationSchema = z.object({
-  student_id: z.string().min(1, "Student is required"),
-  book_id: z.string().min(1, "Book is required"),
+  student_id: z.string().min(1, 'Student is required'),
+  book_id: z.string().min(1, 'Book is required'),
   issue_date: z.date({
-    required_error: "Issue date is required",
+    required_error: 'Issue date is required',
   }),
   due_date: z.date({
-    required_error: "Due date is required",
+    required_error: 'Due date is required',
   }),
   remarks: z.string().optional(),
 });
@@ -84,68 +80,68 @@ export default function CirculationPage() {
   const { toast } = useToast();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [selectedCirculation, setSelectedCirculation] = useState<any>(null);
-  const [selectedStatus, setSelectedStatus] = useState<string>("");
-  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedStatus, setSelectedStatus] = useState<string>('');
+  const [searchTerm, setSearchTerm] = useState('');
 
   const form = useForm<CirculationFormData>({
     resolver: zodResolver(circulationSchema),
     defaultValues: {
-      student_id: "",
-      book_id: "",
-      remarks: "",
+      student_id: '',
+      book_id: '',
+      remarks: '',
     },
   });
 
   // Get circulation data
   const { data: circulationData, isLoading } = useQuery({
-    queryKey: ["circulation", selectedStatus, searchTerm],
+    queryKey: ['circulation', selectedStatus, searchTerm],
     queryFn: () => {
       // This would be replaced with an actual API call
       return Promise.resolve([
         {
           id: 1,
           student: {
-            id: "1",
-            name: "John Smith",
-            class: "Class 10",
-            section: "A",
-            roll_number: "101",
+            id: '1',
+            name: 'John Smith',
+            class: 'Class 10',
+            section: 'A',
+            roll_number: '101',
             avatar: null,
           },
           book: {
-            id: "1",
-            title: "Introduction to Physics",
-            isbn: "978-3-16-148410-0",
-            author: "Dr. Robert Smith",
+            id: '1',
+            title: 'Introduction to Physics',
+            isbn: '978-3-16-148410-0',
+            author: 'Dr. Robert Smith',
             cover_image: null,
           },
-          issue_date: "2024-01-15",
-          due_date: "2024-01-29",
+          issue_date: '2024-01-15',
+          due_date: '2024-01-29',
           return_date: null,
-          status: "issued",
+          status: 'issued',
           fine_amount: 0,
         },
         {
           id: 2,
           student: {
-            id: "2",
-            name: "Sarah Johnson",
-            class: "Class 10",
-            section: "B",
-            roll_number: "102",
+            id: '2',
+            name: 'Sarah Johnson',
+            class: 'Class 10',
+            section: 'B',
+            roll_number: '102',
             avatar: null,
           },
           book: {
-            id: "2",
-            title: "World History",
-            isbn: "978-3-16-148410-1",
-            author: "Sarah Williams",
+            id: '2',
+            title: 'World History',
+            isbn: '978-3-16-148410-1',
+            author: 'Sarah Williams',
             cover_image: null,
           },
-          issue_date: "2024-01-10",
-          due_date: "2024-01-24",
+          issue_date: '2024-01-10',
+          due_date: '2024-01-24',
           return_date: null,
-          status: "overdue",
+          status: 'overdue',
           fine_amount: 5,
         },
       ]);
@@ -154,23 +150,23 @@ export default function CirculationPage() {
 
   // Get students data
   const { data: studentsData } = useQuery({
-    queryKey: ["students"],
+    queryKey: ['students'],
     queryFn: () => {
       // This would be replaced with an actual API call
       return Promise.resolve([
         {
-          id: "1",
-          name: "John Smith",
-          class: "Class 10",
-          section: "A",
-          roll_number: "101",
+          id: '1',
+          name: 'John Smith',
+          class: 'Class 10',
+          section: 'A',
+          roll_number: '101',
         },
         {
-          id: "2",
-          name: "Sarah Johnson",
-          class: "Class 10",
-          section: "B",
-          roll_number: "102",
+          id: '2',
+          name: 'Sarah Johnson',
+          class: 'Class 10',
+          section: 'B',
+          roll_number: '102',
         },
       ]);
     },
@@ -178,22 +174,22 @@ export default function CirculationPage() {
 
   // Get books data
   const { data: booksData } = useQuery({
-    queryKey: ["available-books"],
+    queryKey: ['available-books'],
     queryFn: () => {
       // This would be replaced with an actual API call
       return Promise.resolve([
         {
-          id: "1",
-          title: "Introduction to Physics",
-          author: "Dr. Robert Smith",
-          isbn: "978-3-16-148410-0",
+          id: '1',
+          title: 'Introduction to Physics',
+          author: 'Dr. Robert Smith',
+          isbn: '978-3-16-148410-0',
           available_copies: 3,
         },
         {
-          id: "2",
-          title: "World History",
-          author: "Sarah Williams",
-          isbn: "978-3-16-148410-1",
+          id: '2',
+          title: 'World History',
+          author: 'Sarah Williams',
+          isbn: '978-3-16-148410-1',
           available_copies: 6,
         },
       ]);
@@ -203,21 +199,21 @@ export default function CirculationPage() {
   const { mutate: saveCirculation, isLoading: isSaving } = useMutation({
     mutationFn: (data: CirculationFormData) => {
       // This would be replaced with an actual API call
-      return new Promise((resolve) => setTimeout(resolve, 1000));
+      return new Promise(resolve => setTimeout(resolve, 1000));
     },
     onSuccess: () => {
       toast({
-        title: "Success",
-        description: "Book issued successfully.",
+        title: 'Success',
+        description: 'Book issued successfully.',
       });
       setIsDialogOpen(false);
       form.reset();
     },
     onError: () => {
       toast({
-        title: "Error",
-        description: "Failed to issue book.",
-        variant: "destructive",
+        title: 'Error',
+        description: 'Failed to issue book.',
+        variant: 'destructive',
       });
     },
   });
@@ -225,19 +221,19 @@ export default function CirculationPage() {
   const { mutate: returnBook, isLoading: isReturning } = useMutation({
     mutationFn: (circulationId: number) => {
       // This would be replaced with an actual API call
-      return new Promise((resolve) => setTimeout(resolve, 1000));
+      return new Promise(resolve => setTimeout(resolve, 1000));
     },
     onSuccess: () => {
       toast({
-        title: "Success",
-        description: "Book returned successfully.",
+        title: 'Success',
+        description: 'Book returned successfully.',
       });
     },
     onError: () => {
       toast({
-        title: "Error",
-        description: "Failed to return book.",
-        variant: "destructive",
+        title: 'Error',
+        description: 'Failed to return book.',
+        variant: 'destructive',
       });
     },
   });
@@ -245,19 +241,19 @@ export default function CirculationPage() {
   const { mutate: sendReminder, isLoading: isSending } = useMutation({
     mutationFn: (studentIds: string[]) => {
       // This would be replaced with an actual API call
-      return new Promise((resolve) => setTimeout(resolve, 1000));
+      return new Promise(resolve => setTimeout(resolve, 1000));
     },
     onSuccess: () => {
       toast({
-        title: "Success",
-        description: "Reminder sent successfully.",
+        title: 'Success',
+        description: 'Reminder sent successfully.',
       });
     },
     onError: () => {
       toast({
-        title: "Error",
-        description: "Failed to send reminder.",
-        variant: "destructive",
+        title: 'Error',
+        description: 'Failed to send reminder.',
+        variant: 'destructive',
       });
     },
   });
@@ -267,9 +263,9 @@ export default function CirculationPage() {
   };
 
   // Watch the issue date to automatically set due date
-  const issueDate = form.watch("issue_date");
-  if (issueDate && !form.getValues("due_date")) {
-    form.setValue("due_date", addDays(issueDate, 14));
+  const issueDate = form.watch('issue_date');
+  if (issueDate && !form.getValues('due_date')) {
+    form.setValue('due_date', addDays(issueDate, 14));
   }
 
   return (
@@ -298,27 +294,21 @@ export default function CirculationPage() {
               </DialogHeader>
 
               <Form {...form}>
-                <form
-                  onSubmit={form.handleSubmit(onSubmit)}
-                  className="space-y-4"
-                >
+                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
                   <FormField
                     control={form.control}
                     name="student_id"
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>Student</FormLabel>
-                        <Select
-                          onValueChange={field.onChange}
-                          defaultValue={field.value}
-                        >
+                        <Select onValueChange={field.onChange} defaultValue={field.value}>
                           <FormControl>
                             <SelectTrigger>
                               <SelectValue placeholder="Select student" />
                             </SelectTrigger>
                           </FormControl>
                           <SelectContent>
-                            {studentsData?.map((student) => (
+                            {studentsData?.map(student => (
                               <SelectItem key={student.id} value={student.id}>
                                 {student.name} ({student.roll_number})
                               </SelectItem>
@@ -336,17 +326,14 @@ export default function CirculationPage() {
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>Book</FormLabel>
-                        <Select
-                          onValueChange={field.onChange}
-                          defaultValue={field.value}
-                        >
+                        <Select onValueChange={field.onChange} defaultValue={field.value}>
                           <FormControl>
                             <SelectTrigger>
                               <SelectValue placeholder="Select book" />
                             </SelectTrigger>
                           </FormControl>
                           <SelectContent>
-                            {booksData?.map((book) => (
+                            {booksData?.map(book => (
                               <SelectItem
                                 key={book.id}
                                 value={book.id}
@@ -375,11 +362,11 @@ export default function CirculationPage() {
                                 <Button
                                   variant="outline"
                                   className={`w-full pl-3 text-left font-normal ${
-                                    !field.value && "text-muted-foreground"
+                                    !field.value && 'text-muted-foreground'
                                   }`}
                                 >
                                   {field.value ? (
-                                    format(field.value, "PPP")
+                                    format(field.value, 'PPP')
                                   ) : (
                                     <span>Pick a date</span>
                                   )}
@@ -387,15 +374,12 @@ export default function CirculationPage() {
                                 </Button>
                               </FormControl>
                             </PopoverTrigger>
-                            <PopoverContent
-                              className="w-auto p-0"
-                              align="start"
-                            >
+                            <PopoverContent className="w-auto p-0" align="start">
                               <Calendar
                                 mode="single"
                                 selected={field.value}
                                 onSelect={field.onChange}
-                                disabled={(date) => date < new Date()}
+                                disabled={date => date < new Date()}
                                 initialFocus
                               />
                             </PopoverContent>
@@ -417,11 +401,11 @@ export default function CirculationPage() {
                                 <Button
                                   variant="outline"
                                   className={`w-full pl-3 text-left font-normal ${
-                                    !field.value && "text-muted-foreground"
+                                    !field.value && 'text-muted-foreground'
                                   }`}
                                 >
                                   {field.value ? (
-                                    format(field.value, "PPP")
+                                    format(field.value, 'PPP')
                                   ) : (
                                     <span>Pick a date</span>
                                   )}
@@ -429,17 +413,12 @@ export default function CirculationPage() {
                                 </Button>
                               </FormControl>
                             </PopoverTrigger>
-                            <PopoverContent
-                              className="w-auto p-0"
-                              align="start"
-                            >
+                            <PopoverContent className="w-auto p-0" align="start">
                               <Calendar
                                 mode="single"
                                 selected={field.value}
                                 onSelect={field.onChange}
-                                disabled={(date) =>
-                                  !issueDate || date <= issueDate
-                                }
+                                disabled={date => !issueDate || date <= issueDate}
                                 initialFocus
                               />
                             </PopoverContent>
@@ -465,15 +444,11 @@ export default function CirculationPage() {
                   />
 
                   <DialogFooter>
-                    <Button
-                      type="button"
-                      variant="outline"
-                      onClick={() => setIsDialogOpen(false)}
-                    >
+                    <Button type="button" variant="outline" onClick={() => setIsDialogOpen(false)}>
                       Cancel
                     </Button>
                     <Button type="submit" disabled={isSaving}>
-                      {isSaving ? "Issuing..." : "Issue Book"}
+                      {isSaving ? 'Issuing...' : 'Issue Book'}
                     </Button>
                   </DialogFooter>
                 </form>
@@ -538,7 +513,7 @@ export default function CirculationPage() {
                   placeholder="Search by student or book..."
                   className="pl-8"
                   value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
+                  onChange={e => setSearchTerm(e.target.value)}
                 />
               </div>
             </div>
@@ -577,9 +552,7 @@ export default function CirculationPage() {
               variant="outline"
               onClick={() =>
                 sendReminder(
-                  circulationData
-                    ?.filter((c) => c.status === "overdue")
-                    .map((c) => c.student.id),
+                  circulationData?.filter(c => c.status === 'overdue').map(c => c.student.id)
                 )
               }
               disabled={isSending}
@@ -603,24 +576,24 @@ export default function CirculationPage() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {circulationData?.map((record) => (
+              {circulationData?.map(record => (
                 <TableRow key={record.id}>
                   <TableCell>
                     <div className="flex items-center space-x-3">
                       <Avatar>
-                        <AvatarImage src={record.student.avatar || ""} />
+                        <AvatarImage src={record.student.avatar || ''} />
                         <AvatarFallback>
                           {record.student.name
-                            .split(" ")
-                            .map((n) => n[0])
-                            .join("")}
+                            .split(' ')
+                            .map(n => n[0])
+                            .join('')}
                         </AvatarFallback>
                       </Avatar>
                       <div>
                         <p className="font-medium">{record.student.name}</p>
                         <p className="text-sm text-gray-500">
-                          {record.student.class} - {record.student.section} |
-                          Roll #{record.student.roll_number}
+                          {record.student.class} - {record.student.section} | Roll #
+                          {record.student.roll_number}
                         </p>
                       </div>
                     </div>
@@ -628,47 +601,37 @@ export default function CirculationPage() {
                   <TableCell>
                     <div className="flex items-center space-x-3">
                       <Avatar>
-                        <AvatarImage src={record.book.cover_image || ""} />
+                        <AvatarImage src={record.book.cover_image || ''} />
                         <AvatarFallback>{record.book.title[0]}</AvatarFallback>
                       </Avatar>
                       <div>
                         <p className="font-medium">{record.book.title}</p>
-                        <p className="text-sm text-gray-500">
-                          {record.book.author}
-                        </p>
+                        <p className="text-sm text-gray-500">{record.book.author}</p>
                       </div>
                     </div>
                   </TableCell>
+                  <TableCell>{format(new Date(record.issue_date), 'PPP')}</TableCell>
+                  <TableCell>{format(new Date(record.due_date), 'PPP')}</TableCell>
                   <TableCell>
-                    {format(new Date(record.issue_date), "PPP")}
-                  </TableCell>
-                  <TableCell>
-                    {format(new Date(record.due_date), "PPP")}
-                  </TableCell>
-                  <TableCell>
-                    {record.return_date
-                      ? format(new Date(record.return_date), "PPP")
-                      : "-"}
+                    {record.return_date ? format(new Date(record.return_date), 'PPP') : '-'}
                   </TableCell>
                   <TableCell>
                     <span
                       className={`px-2 py-1 rounded-full text-xs ${
-                        record.status === "issued"
-                          ? "bg-blue-100 text-blue-700"
-                          : record.status === "returned"
-                            ? "bg-green-100 text-green-700"
-                            : "bg-red-100 text-red-700"
+                        record.status === 'issued'
+                          ? 'bg-blue-100 text-blue-700'
+                          : record.status === 'returned'
+                            ? 'bg-green-100 text-green-700'
+                            : 'bg-red-100 text-red-700'
                       }`}
                     >
                       {record.status}
                     </span>
                   </TableCell>
-                  <TableCell>
-                    {record.fine_amount > 0 ? `$${record.fine_amount}` : "-"}
-                  </TableCell>
+                  <TableCell>{record.fine_amount > 0 ? `$${record.fine_amount}` : '-'}</TableCell>
                   <TableCell>
                     <div className="flex items-center gap-2">
-                      {record.status === "issued" && (
+                      {record.status === 'issued' && (
                         <Button
                           variant="outline"
                           size="sm"
@@ -678,7 +641,7 @@ export default function CirculationPage() {
                           Return
                         </Button>
                       )}
-                      {record.status === "overdue" && (
+                      {record.status === 'overdue' && (
                         <Button
                           variant="ghost"
                           size="sm"

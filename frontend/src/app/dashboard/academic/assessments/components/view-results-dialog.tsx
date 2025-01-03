@@ -1,15 +1,15 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
+} from '@/components/ui/dialog';
+import { Button } from '@/components/ui/button';
 import {
   Table,
   TableBody,
@@ -17,29 +17,26 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
-import { Assessment } from "@/services/academic";
-import academicService from "@/services/academic";
-import { useAuth } from "@/lib/auth";
+} from '@/components/ui/table';
+import { Assessment } from '@/services/academic';
+import academicService from '@/services/academic';
+import { useAuth } from '@/lib/auth';
 
 interface ViewResultsDialogProps {
   assessment: Assessment;
   sectionId: number;
 }
 
-export function ViewResultsDialog({
-  assessment,
-  sectionId,
-}: ViewResultsDialogProps) {
+export function ViewResultsDialog({ assessment, sectionId }: ViewResultsDialogProps) {
   const [open, setOpen] = useState(false);
   const { user } = useAuth();
 
   const { data: results } = useQuery({
-    queryKey: ["assessment-results", assessment.id],
+    queryKey: ['assessment-results', assessment.id],
     queryFn: () => academicService.getAssessmentResults(assessment.id),
   });
 
-  const userResult = results?.find((r) => r.student.id === user?.id);
+  const userResult = results?.find(r => r.student.id === user?.id);
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -52,7 +49,7 @@ export function ViewResultsDialog({
         </DialogHeader>
 
         <div className="mt-4">
-          {user?.role === "student" ? (
+          {user?.role === 'student' ? (
             userResult ? (
               <div className="space-y-4">
                 <div className="grid grid-cols-2 gap-4">
@@ -65,11 +62,7 @@ export function ViewResultsDialog({
                   <div>
                     <p className="text-sm text-gray-500">Percentage</p>
                     <p className="text-2xl font-bold">
-                      {Math.round(
-                        (userResult.marks_obtained / assessment.total_marks) *
-                          100,
-                      )}
-                      %
+                      {Math.round((userResult.marks_obtained / assessment.total_marks) * 100)}%
                     </p>
                   </div>
                 </div>
@@ -94,7 +87,7 @@ export function ViewResultsDialog({
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {results?.map((result) => (
+                {results?.map(result => (
                   <TableRow key={result.id}>
                     <TableCell>
                       {result.student.first_name} {result.student.last_name}
@@ -103,20 +96,14 @@ export function ViewResultsDialog({
                       {result.marks_obtained}/{assessment.total_marks}
                     </TableCell>
                     <TableCell>
-                      {Math.round(
-                        (result.marks_obtained / assessment.total_marks) * 100,
-                      )}
-                      %
+                      {Math.round((result.marks_obtained / assessment.total_marks) * 100)}%
                     </TableCell>
                     <TableCell>{result.remarks}</TableCell>
                   </TableRow>
                 ))}
                 {!results?.length && (
                   <TableRow>
-                    <TableCell
-                      colSpan={4}
-                      className="text-center text-gray-500"
-                    >
+                    <TableCell colSpan={4} className="text-center text-gray-500">
                       No results found
                     </TableCell>
                   </TableRow>

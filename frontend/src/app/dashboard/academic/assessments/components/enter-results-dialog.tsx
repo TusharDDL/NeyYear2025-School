@@ -1,15 +1,15 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useState } from 'react';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
+} from '@/components/ui/dialog';
+import { Button } from '@/components/ui/button';
 import {
   Table,
   TableBody,
@@ -17,10 +17,10 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
-import { Input } from "@/components/ui/input";
-import { Assessment } from "@/services/academic";
-import academicService from "@/services/academic";
+} from '@/components/ui/table';
+import { Input } from '@/components/ui/input';
+import { Assessment } from '@/services/academic';
+import academicService from '@/services/academic';
 
 interface EnterResultsDialogProps {
   assessment: Assessment;
@@ -33,38 +33,33 @@ interface ResultRecord {
   remarks?: string;
 }
 
-export function EnterResultsDialog({
-  assessment,
-  sectionId,
-}: EnterResultsDialogProps) {
+export function EnterResultsDialog({ assessment, sectionId }: EnterResultsDialogProps) {
   const [open, setOpen] = useState(false);
   const [results, setResults] = useState<Record<number, ResultRecord>>({});
   const queryClient = useQueryClient();
 
   // Get section details to get the list of students
   const { data: section } = useQuery({
-    queryKey: ["sections", sectionId],
+    queryKey: ['sections', sectionId],
     queryFn: () => academicService.getSections(),
-    select: (data) => data.find((s) => s.id === sectionId),
+    select: data => data.find(s => s.id === sectionId),
   });
 
   // Get existing results
   const { data: existingResults } = useQuery({
-    queryKey: ["assessment-results", assessment.id],
+    queryKey: ['assessment-results', assessment.id],
     queryFn: () => academicService.getAssessmentResults(assessment.id),
   });
 
   // Initialize results when dialog opens
   const initializeResults = () => {
     const records: Record<number, ResultRecord> = {};
-    section?.students?.forEach((student) => {
-      const existing = existingResults?.find(
-        (r) => r.student.id === student.id,
-      );
+    section?.students?.forEach(student => {
+      const existing = existingResults?.find(r => r.student.id === student.id);
       records[student.id] = {
         student_id: student.id,
         marks_obtained: existing?.marks_obtained ?? 0,
-        remarks: existing?.remarks ?? "",
+        remarks: existing?.remarks ?? '',
       };
     });
     setResults(records);
@@ -73,14 +68,14 @@ export function EnterResultsDialog({
   const { mutate: submitResults, isLoading } = useMutation({
     mutationFn: (data: ResultRecord[]) =>
       academicService.submitAssessmentResults(
-        data.map((result) => ({
+        data.map(result => ({
           ...result,
           assessment_id: assessment.id,
-        })),
+        }))
       ),
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: ["assessment-results", assessment.id],
+        queryKey: ['assessment-results', assessment.id],
       });
       setOpen(false);
     },
@@ -93,7 +88,7 @@ export function EnterResultsDialog({
   return (
     <Dialog
       open={open}
-      onOpenChange={(isOpen) => {
+      onOpenChange={isOpen => {
         setOpen(isOpen);
         if (isOpen) {
           initializeResults();
@@ -118,7 +113,7 @@ export function EnterResultsDialog({
               </TableRow>
             </TableHeader>
             <TableBody>
-              {section?.students?.map((student) => (
+              {section?.students?.map(student => (
                 <TableRow key={student.id}>
                   <TableCell>
                     {student.first_name} {student.last_name}
@@ -128,15 +123,11 @@ export function EnterResultsDialog({
                       type="number"
                       min={0}
                       max={assessment.total_marks}
-                      value={results[student.id]?.marks_obtained || ""}
-                      onChange={(e) => {
+                      value={results[student.id]?.marks_obtained || ''}
+                      onChange={e => {
                         const value = parseInt(e.target.value);
-                        if (
-                          !isNaN(value) &&
-                          value >= 0 &&
-                          value <= assessment.total_marks
-                        ) {
-                          setResults((prev) => ({
+                        if (!isNaN(value) && value >= 0 && value <= assessment.total_marks) {
+                          setResults(prev => ({
                             ...prev,
                             [student.id]: {
                               ...prev[student.id],
@@ -149,9 +140,9 @@ export function EnterResultsDialog({
                   </TableCell>
                   <TableCell>
                     <Input
-                      value={results[student.id]?.remarks || ""}
-                      onChange={(e) => {
-                        setResults((prev) => ({
+                      value={results[student.id]?.remarks || ''}
+                      onChange={e => {
+                        setResults(prev => ({
                           ...prev,
                           [student.id]: {
                             ...prev[student.id],
@@ -173,7 +164,7 @@ export function EnterResultsDialog({
             Cancel
           </Button>
           <Button onClick={handleSubmit} disabled={isLoading}>
-            {isLoading ? "Saving..." : "Save Results"}
+            {isLoading ? 'Saving...' : 'Save Results'}
           </Button>
         </div>
       </DialogContent>

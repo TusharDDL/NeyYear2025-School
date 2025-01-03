@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import { useState } from "react";
+import { useState } from 'react';
 import {
   Table,
   TableBody,
@@ -8,25 +8,25 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+} from '@/components/ui/table';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { useStudents } from "@/lib/hooks";
-import { Student } from "@/lib/types";
-import { LoadingSpinner } from "@/components/ui/loading-spinner";
+} from '@/components/ui/select';
+import { useStudents } from '@/lib/hooks';
+import { Student } from '@/lib/types';
+import { LoadingSpinner } from '@/components/ui/loading-spinner';
 
 export function StudentList() {
   const [filters, setFilters] = useState({
-    class_name: "",
-    section: "",
-    search: "",
+    class_name: '',
+    section: '',
+    search: '',
   });
 
   const { data: students, isLoading } = useStudents({
@@ -36,15 +36,15 @@ export function StudentList() {
   });
 
   const handleSearch = (value: string) => {
-    setFilters((prev) => ({ ...prev, search: value }));
+    setFilters(prev => ({ ...prev, search: value }));
   };
 
   const handleClassChange = (value: string) => {
-    setFilters((prev) => ({ ...prev, class_name: value }));
+    setFilters(prev => ({ ...prev, class_name: value }));
   };
 
   const handleSectionChange = (value: string) => {
-    setFilters((prev) => ({ ...prev, section: value }));
+    setFilters(prev => ({ ...prev, section: value }));
   };
 
   if (isLoading) {
@@ -57,7 +57,7 @@ export function StudentList() {
         <Input
           placeholder="Search students..."
           value={filters.search}
-          onChange={(e) => handleSearch(e.target.value)}
+          onChange={e => handleSearch(e.target.value)}
           className="max-w-sm"
         />
         <Select value={filters.class_name} onValueChange={handleClassChange}>
@@ -70,74 +70,34 @@ export function StudentList() {
             <SelectValue placeholder="Select class" />
           </SelectTrigger>
           <SelectContent data-testid="class-content">
-            <SelectItem
-              data-testid="class-option-1"
-              value="Class 1"
-              role="option"
-            >
+            <SelectItem data-testid="class-option-1" value="Class 1" role="option">
               Class 1
             </SelectItem>
-            <SelectItem
-              data-testid="class-option-2"
-              value="Class 2"
-              role="option"
-            >
+            <SelectItem data-testid="class-option-2" value="Class 2" role="option">
               Class 2
             </SelectItem>
-            <SelectItem
-              data-testid="class-option-3"
-              value="Class 3"
-              role="option"
-            >
+            <SelectItem data-testid="class-option-3" value="Class 3" role="option">
               Class 3
             </SelectItem>
-            <SelectItem
-              data-testid="class-option-4"
-              value="Class 4"
-              role="option"
-            >
+            <SelectItem data-testid="class-option-4" value="Class 4" role="option">
               Class 4
             </SelectItem>
-            <SelectItem
-              data-testid="class-option-5"
-              value="Class 5"
-              role="option"
-            >
+            <SelectItem data-testid="class-option-5" value="Class 5" role="option">
               Class 5
             </SelectItem>
-            <SelectItem
-              data-testid="class-option-6"
-              value="Class 6"
-              role="option"
-            >
+            <SelectItem data-testid="class-option-6" value="Class 6" role="option">
               Class 6
             </SelectItem>
-            <SelectItem
-              data-testid="class-option-7"
-              value="Class 7"
-              role="option"
-            >
+            <SelectItem data-testid="class-option-7" value="Class 7" role="option">
               Class 7
             </SelectItem>
-            <SelectItem
-              data-testid="class-option-8"
-              value="Class 8"
-              role="option"
-            >
+            <SelectItem data-testid="class-option-8" value="Class 8" role="option">
               Class 8
             </SelectItem>
-            <SelectItem
-              data-testid="class-option-9"
-              value="Class 9"
-              role="option"
-            >
+            <SelectItem data-testid="class-option-9" value="Class 9" role="option">
               Class 9
             </SelectItem>
-            <SelectItem
-              data-testid="class-option-10"
-              value="Class 10"
-              role="option"
-            >
+            <SelectItem data-testid="class-option-10" value="Class 10" role="option">
               Class 10
             </SelectItem>
           </SelectContent>

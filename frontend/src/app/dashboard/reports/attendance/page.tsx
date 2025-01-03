@@ -1,24 +1,20 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
-import { format } from "date-fns";
-import { useAuth } from "@/lib/auth";
-import { Card } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+import { useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
+import { format } from 'date-fns';
+import { useAuth } from '@/lib/auth';
+import { Card } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { Calendar } from "@/components/ui/calendar";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
+} from '@/components/ui/select';
+import { Calendar } from '@/components/ui/calendar';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import {
   BarChart,
   Bar,
@@ -33,18 +29,18 @@ import {
   PieChart,
   Pie,
   Cell,
-} from "recharts";
-import { Download } from "lucide-react";
-import academicService from "@/services/academic";
-import reportsService from "@/services/reports";
-import { AttendanceDetails } from "./components/attendance-details";
+} from 'recharts';
+import { Download } from 'lucide-react';
+import academicService from '@/services/academic';
+import reportsService from '@/services/reports';
+import { AttendanceDetails } from './components/attendance-details';
 
-const COLORS = ["#22c55e", "#ef4444"];
+const COLORS = ['#22c55e', '#ef4444'];
 
 export default function AttendanceReportsPage() {
   const { user } = useAuth();
-  const [selectedClass, setSelectedClass] = useState<string>("");
-  const [selectedSection, setSelectedSection] = useState<string>("");
+  const [selectedClass, setSelectedClass] = useState<string>('');
+  const [selectedSection, setSelectedSection] = useState<string>('');
   const [dateRange, setDateRange] = useState<{
     from: Date | undefined;
     to: Date | undefined;
@@ -55,43 +51,39 @@ export default function AttendanceReportsPage() {
 
   // Get filter options
   const { data: classes } = useQuery({
-    queryKey: ["classes"],
+    queryKey: ['classes'],
     queryFn: academicService.getClasses,
   });
 
   const { data: sections } = useQuery({
-    queryKey: ["sections", selectedClass],
+    queryKey: ['sections', selectedClass],
     queryFn: academicService.getSections,
     enabled: !!selectedClass,
   });
 
   // Get attendance data
   const { data: attendanceData } = useQuery({
-    queryKey: ["attendance-report", selectedClass, selectedSection, dateRange],
+    queryKey: ['attendance-report', selectedClass, selectedSection, dateRange],
     queryFn: () =>
       reportsService.getAttendanceReport({
         class_id: selectedClass ? parseInt(selectedClass) : undefined,
         section_id: selectedSection ? parseInt(selectedSection) : undefined,
-        from_date: dateRange.from
-          ? format(dateRange.from, "yyyy-MM-dd")
-          : undefined,
-        to_date: dateRange.to ? format(dateRange.to, "yyyy-MM-dd") : undefined,
+        from_date: dateRange.from ? format(dateRange.from, 'yyyy-MM-dd') : undefined,
+        to_date: dateRange.to ? format(dateRange.to, 'yyyy-MM-dd') : undefined,
       }),
     enabled: !!user,
   });
 
-  const handleExport = async (format: "pdf" | "excel") => {
+  const handleExport = async (format: 'pdf' | 'excel') => {
     const blob = await reportsService.exportAttendanceReport({
       class_id: selectedClass ? parseInt(selectedClass) : undefined,
       section_id: selectedSection ? parseInt(selectedSection) : undefined,
-      from_date: dateRange.from
-        ? format(dateRange.from, "yyyy-MM-dd")
-        : undefined,
-      to_date: dateRange.to ? format(dateRange.to, "yyyy-MM-dd") : undefined,
+      from_date: dateRange.from ? format(dateRange.from, 'yyyy-MM-dd') : undefined,
+      to_date: dateRange.to ? format(dateRange.to, 'yyyy-MM-dd') : undefined,
       format,
     });
 
-    const filename = `attendance-report-${format === "pdf" ? "pdf" : "xlsx"}`;
+    const filename = `attendance-report-${format === 'pdf' ? 'pdf' : 'xlsx'}`;
     reportsService.downloadFile(blob, filename);
   };
 
@@ -103,7 +95,7 @@ export default function AttendanceReportsPage() {
       acc.absentDays += student.absent_days;
       return acc;
     },
-    { totalDays: 0, presentDays: 0, absentDays: 0 },
+    { totalDays: 0, presentDays: 0, absentDays: 0 }
   );
 
   const attendancePercentage = overallStats
@@ -115,11 +107,11 @@ export default function AttendanceReportsPage() {
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold">Attendance Reports</h1>
         <div className="space-x-2">
-          <Button variant="outline" onClick={() => handleExport("excel")}>
+          <Button variant="outline" onClick={() => handleExport('excel')}>
             <Download className="h-4 w-4 mr-2" />
             Export Excel
           </Button>
-          <Button variant="outline" onClick={() => handleExport("pdf")}>
+          <Button variant="outline" onClick={() => handleExport('pdf')}>
             <Download className="h-4 w-4 mr-2" />
             Export PDF
           </Button>
@@ -136,7 +128,7 @@ export default function AttendanceReportsPage() {
                 <SelectValue placeholder="Select class" />
               </SelectTrigger>
               <SelectContent>
-                {classes?.map((cls) => (
+                {classes?.map(cls => (
                   <SelectItem key={cls.id} value={cls.id.toString()}>
                     {cls.name}
                   </SelectItem>
@@ -156,7 +148,7 @@ export default function AttendanceReportsPage() {
                 <SelectValue placeholder="Select section" />
               </SelectTrigger>
               <SelectContent>
-                {sections?.map((section) => (
+                {sections?.map(section => (
                   <SelectItem key={section.id} value={section.id.toString()}>
                     {section.name}
                   </SelectItem>
@@ -172,17 +164,16 @@ export default function AttendanceReportsPage() {
                 <Button
                   variant="outline"
                   className={`w-full justify-start text-left font-normal ${
-                    !dateRange.from && "text-muted-foreground"
+                    !dateRange.from && 'text-muted-foreground'
                   }`}
                 >
                   {dateRange.from ? (
                     dateRange.to ? (
                       <>
-                        {format(dateRange.from, "LLL dd, y")} -{" "}
-                        {format(dateRange.to, "LLL dd, y")}
+                        {format(dateRange.from, 'LLL dd, y')} - {format(dateRange.to, 'LLL dd, y')}
                       </>
                     ) : (
-                      format(dateRange.from, "LLL dd, y")
+                      format(dateRange.from, 'LLL dd, y')
                     )
                   ) : (
                     <span>Pick a date range</span>
@@ -197,7 +188,7 @@ export default function AttendanceReportsPage() {
                     from: dateRange.from,
                     to: dateRange.to,
                   }}
-                  onSelect={(range) =>
+                  onSelect={range =>
                     setDateRange({
                       from: range?.from,
                       to: range?.to,
@@ -214,33 +205,23 @@ export default function AttendanceReportsPage() {
       {/* Overview Cards */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
         <Card className="p-4">
-          <h3 className="text-sm font-medium text-gray-500">
-            Total Working Days
-          </h3>
-          <p className="text-2xl font-bold mt-1">
-            {overallStats?.totalDays || 0}
-          </p>
+          <h3 className="text-sm font-medium text-gray-500">Total Working Days</h3>
+          <p className="text-2xl font-bold mt-1">{overallStats?.totalDays || 0}</p>
         </Card>
 
         <Card className="p-4">
           <h3 className="text-sm font-medium text-gray-500">Present Days</h3>
-          <p className="text-2xl font-bold text-green-600 mt-1">
-            {overallStats?.presentDays || 0}
-          </p>
+          <p className="text-2xl font-bold text-green-600 mt-1">{overallStats?.presentDays || 0}</p>
         </Card>
 
         <Card className="p-4">
           <h3 className="text-sm font-medium text-gray-500">Absent Days</h3>
-          <p className="text-2xl font-bold text-red-600 mt-1">
-            {overallStats?.absentDays || 0}
-          </p>
+          <p className="text-2xl font-bold text-red-600 mt-1">{overallStats?.absentDays || 0}</p>
         </Card>
 
         <Card className="p-4">
           <h3 className="text-sm font-medium text-gray-500">Attendance Rate</h3>
-          <p className="text-2xl font-bold text-blue-600 mt-1">
-            {attendancePercentage}%
-          </p>
+          <p className="text-2xl font-bold text-blue-600 mt-1">{attendancePercentage}%</p>
         </Card>
       </div>
 
@@ -256,12 +237,7 @@ export default function AttendanceReportsPage() {
                 <YAxis />
                 <Tooltip />
                 <Legend />
-                <Line
-                  type="monotone"
-                  dataKey="percentage"
-                  name="Attendance %"
-                  stroke="#3b82f6"
-                />
+                <Line type="monotone" dataKey="percentage" name="Attendance %" stroke="#3b82f6" />
               </LineChart>
             </ResponsiveContainer>
           </div>
@@ -275,39 +251,28 @@ export default function AttendanceReportsPage() {
                 <Pie
                   data={[
                     {
-                      name: "Present",
+                      name: 'Present',
                       value: overallStats?.presentDays || 0,
                     },
                     {
-                      name: "Absent",
+                      name: 'Absent',
                       value: overallStats?.absentDays || 0,
                     },
                   ]}
                   cx="50%"
                   cy="50%"
                   labelLine={false}
-                  label={({
-                    cx,
-                    cy,
-                    midAngle,
-                    innerRadius,
-                    outerRadius,
-                    percent,
-                    name,
-                  }) => {
-                    const radius =
-                      innerRadius + (outerRadius - innerRadius) * 0.5;
-                    const x =
-                      cx + radius * Math.cos((-midAngle * Math.PI) / 180);
-                    const y =
-                      cy + radius * Math.sin((-midAngle * Math.PI) / 180);
+                  label={({ cx, cy, midAngle, innerRadius, outerRadius, percent, name }) => {
+                    const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
+                    const x = cx + radius * Math.cos((-midAngle * Math.PI) / 180);
+                    const y = cy + radius * Math.sin((-midAngle * Math.PI) / 180);
 
                     return (
                       <text
                         x={x}
                         y={y}
                         fill="white"
-                        textAnchor={x > cx ? "start" : "end"}
+                        textAnchor={x > cx ? 'start' : 'end'}
                         dominantBaseline="central"
                       >
                         {`${name} ${(percent * 100).toFixed(0)}%`}

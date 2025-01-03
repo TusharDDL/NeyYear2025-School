@@ -1,31 +1,22 @@
-"use client";
+'use client';
 
-import { format } from "date-fns";
-import { useAuth } from "@/lib/auth";
-import { Assessment } from "@/services/academic";
-import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { EnterResultsDialog } from "./enter-results-dialog";
-import { ViewResultsDialog } from "./view-results-dialog";
+import { format } from 'date-fns';
+import { useAuth } from '@/lib/auth';
+import { Assessment } from '@/services/academic';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { EnterResultsDialog } from './enter-results-dialog';
+import { ViewResultsDialog } from './view-results-dialog';
 
 interface AssessmentListProps {
   assessments: Assessment[];
   sectionId: number;
 }
 
-export function AssessmentList({
-  assessments,
-  sectionId,
-}: AssessmentListProps) {
+export function AssessmentList({ assessments, sectionId }: AssessmentListProps) {
   const { user } = useAuth();
-  const isTeacher = user?.role === "teacher";
+  const isTeacher = user?.role === 'teacher';
 
   const getStatusBadge = (date: string) => {
     const assessmentDate = new Date(date);
@@ -50,15 +41,14 @@ export function AssessmentList({
 
   return (
     <div className="grid grid-cols-1 gap-4">
-      {assessments.map((assessment) => (
+      {assessments.map(assessment => (
         <Card key={assessment.id}>
           <CardHeader>
             <div className="flex justify-between items-start">
               <div>
                 <CardTitle>{assessment.name}</CardTitle>
                 <CardDescription>
-                  {assessment.subject.name} |{" "}
-                  {format(new Date(assessment.date), "MMMM d, yyyy")}
+                  {assessment.subject.name} | {format(new Date(assessment.date), 'MMMM d, yyyy')}
                 </CardDescription>
               </div>
               {getStatusBadge(assessment.date)}
@@ -68,21 +58,13 @@ export function AssessmentList({
             <div className="flex justify-between items-center">
               <div>
                 <p className="text-sm text-gray-500">Total Marks</p>
-                <p className="text-lg font-semibold">
-                  {assessment.total_marks}
-                </p>
+                <p className="text-lg font-semibold">{assessment.total_marks}</p>
               </div>
               <div className="space-x-2">
                 {isTeacher ? (
-                  <EnterResultsDialog
-                    assessment={assessment}
-                    sectionId={sectionId}
-                  />
+                  <EnterResultsDialog assessment={assessment} sectionId={sectionId} />
                 ) : (
-                  <ViewResultsDialog
-                    assessment={assessment}
-                    sectionId={sectionId}
-                  />
+                  <ViewResultsDialog assessment={assessment} sectionId={sectionId} />
                 )}
               </div>
             </div>

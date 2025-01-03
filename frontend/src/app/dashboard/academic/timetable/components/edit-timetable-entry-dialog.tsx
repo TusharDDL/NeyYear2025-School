@@ -1,19 +1,19 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import * as z from "zod";
-import { format } from "date-fns";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import * as z from 'zod';
+import { format } from 'date-fns';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
+} from '@/components/ui/dialog';
+import { Button } from '@/components/ui/button';
 import {
   Form,
   FormControl,
@@ -21,15 +21,15 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
+} from '@/components/ui/form';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { Input } from "@/components/ui/input";
+} from '@/components/ui/select';
+import { Input } from '@/components/ui/input';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -40,25 +40,17 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
-import { Timetable } from "@/services/academic";
-import academicService from "@/services/academic";
+} from '@/components/ui/alert-dialog';
+import { Timetable } from '@/services/academic';
+import academicService from '@/services/academic';
 
-const WEEKDAYS = [
-  "Monday",
-  "Tuesday",
-  "Wednesday",
-  "Thursday",
-  "Friday",
-  "Saturday",
-  "Sunday",
-];
+const WEEKDAYS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
 
 const timetableEntrySchema = z.object({
-  subject_id: z.string().min(1, "Subject is required"),
-  weekday: z.string().min(1, "Day is required"),
-  start_time: z.string().min(1, "Start time is required"),
-  end_time: z.string().min(1, "End time is required"),
+  subject_id: z.string().min(1, 'Subject is required'),
+  weekday: z.string().min(1, 'Day is required'),
+  start_time: z.string().min(1, 'Start time is required'),
+  end_time: z.string().min(1, 'End time is required'),
 });
 
 type TimetableEntryFormData = z.infer<typeof timetableEntrySchema>;
@@ -68,15 +60,12 @@ interface EditTimetableEntryDialogProps {
   sectionId: number;
 }
 
-export function EditTimetableEntryDialog({
-  entry,
-  sectionId,
-}: EditTimetableEntryDialogProps) {
+export function EditTimetableEntryDialog({ entry, sectionId }: EditTimetableEntryDialogProps) {
   const [open, setOpen] = useState(false);
   const queryClient = useQueryClient();
 
   const { data: subjects } = useQuery({
-    queryKey: ["subjects", sectionId],
+    queryKey: ['subjects', sectionId],
     queryFn: academicService.getSubjects,
   });
 
@@ -99,7 +88,7 @@ export function EditTimetableEntryDialog({
         weekday: parseInt(data.weekday),
       }),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["timetable"] });
+      queryClient.invalidateQueries({ queryKey: ['timetable'] });
       setOpen(false);
     },
   });
@@ -107,7 +96,7 @@ export function EditTimetableEntryDialog({
   const { mutate: deleteEntry, isLoading: isDeleting } = useMutation({
     mutationFn: () => academicService.deleteTimetableEntry(entry.id),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["timetable"] });
+      queryClient.invalidateQueries({ queryKey: ['timetable'] });
       setOpen(false);
     },
   });
@@ -117,8 +106,8 @@ export function EditTimetableEntryDialog({
     const start = new Date(`1970-01-01T${data.start_time}`);
     const end = new Date(`1970-01-01T${data.end_time}`);
     if (end <= start) {
-      form.setError("end_time", {
-        message: "End time must be after start time",
+      form.setError('end_time', {
+        message: 'End time must be after start time',
       });
       return;
     }
@@ -146,21 +135,15 @@ export function EditTimetableEntryDialog({
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Subject</FormLabel>
-                  <Select
-                    onValueChange={field.onChange}
-                    defaultValue={field.value}
-                  >
+                  <Select onValueChange={field.onChange} defaultValue={field.value}>
                     <FormControl>
                       <SelectTrigger>
                         <SelectValue placeholder="Select subject" />
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      {subjects?.map((subject) => (
-                        <SelectItem
-                          key={subject.id}
-                          value={subject.id.toString()}
-                        >
+                      {subjects?.map(subject => (
+                        <SelectItem key={subject.id} value={subject.id.toString()}>
                           {subject.name}
                         </SelectItem>
                       ))}
@@ -177,10 +160,7 @@ export function EditTimetableEntryDialog({
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Day</FormLabel>
-                  <Select
-                    onValueChange={field.onChange}
-                    defaultValue={field.value}
-                  >
+                  <Select onValueChange={field.onChange} defaultValue={field.value}>
                     <FormControl>
                       <SelectTrigger>
                         <SelectValue placeholder="Select day" />
@@ -240,32 +220,24 @@ export function EditTimetableEntryDialog({
                   <AlertDialogHeader>
                     <AlertDialogTitle>Delete Class</AlertDialogTitle>
                     <AlertDialogDescription>
-                      Are you sure you want to delete this class? This action
-                      cannot be undone.
+                      Are you sure you want to delete this class? This action cannot be undone.
                     </AlertDialogDescription>
                   </AlertDialogHeader>
                   <AlertDialogFooter>
                     <AlertDialogCancel>Cancel</AlertDialogCancel>
-                    <AlertDialogAction
-                      onClick={() => deleteEntry()}
-                      disabled={isDeleting}
-                    >
-                      {isDeleting ? "Deleting..." : "Delete"}
+                    <AlertDialogAction onClick={() => deleteEntry()} disabled={isDeleting}>
+                      {isDeleting ? 'Deleting...' : 'Delete'}
                     </AlertDialogAction>
                   </AlertDialogFooter>
                 </AlertDialogContent>
               </AlertDialog>
 
               <div className="space-x-2">
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick={() => setOpen(false)}
-                >
+                <Button type="button" variant="outline" onClick={() => setOpen(false)}>
                   Cancel
                 </Button>
                 <Button type="submit" disabled={isUpdating}>
-                  {isUpdating ? "Saving..." : "Save Changes"}
+                  {isUpdating ? 'Saving...' : 'Save Changes'}
                 </Button>
               </div>
             </div>

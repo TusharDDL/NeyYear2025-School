@@ -1,9 +1,9 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import { useQuery, useMutation } from "@tanstack/react-query";
-import { Card } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+import { useState } from 'react';
+import { useQuery, useMutation } from '@tanstack/react-query';
+import { Card } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
 import {
   Table,
   TableBody,
@@ -11,7 +11,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
+} from '@/components/ui/table';
 import {
   Dialog,
   DialogContent,
@@ -20,7 +20,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog";
+} from '@/components/ui/dialog';
 import {
   Form,
   FormControl,
@@ -29,27 +29,23 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
+} from '@/components/ui/form';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { Calendar } from "@/components/ui/calendar";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import { useToast } from "@/components/ui/use-toast";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import * as z from "zod";
-import { format } from "date-fns";
+} from '@/components/ui/select';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import { Calendar } from '@/components/ui/calendar';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { useToast } from '@/components/ui/use-toast';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import * as z from 'zod';
+import { format } from 'date-fns';
 import {
   Plus,
   Calendar as CalendarIcon,
@@ -60,19 +56,19 @@ import {
   Clock,
   Download,
   Eye,
-} from "lucide-react";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+} from 'lucide-react';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 
 const leaveSchema = z.object({
-  staff_id: z.string().min(1, "Staff member is required"),
-  leave_type: z.string().min(1, "Leave type is required"),
+  staff_id: z.string().min(1, 'Staff member is required'),
+  leave_type: z.string().min(1, 'Leave type is required'),
   start_date: z.date({
-    required_error: "Start date is required",
+    required_error: 'Start date is required',
   }),
   end_date: z.date({
-    required_error: "End date is required",
+    required_error: 'End date is required',
   }),
-  reason: z.string().min(1, "Reason is required"),
+  reason: z.string().min(1, 'Reason is required'),
   attachment: z.any().optional(),
 });
 
@@ -82,33 +78,33 @@ export default function LeaveManagementPage() {
   const { toast } = useToast();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [selectedLeave, setSelectedLeave] = useState<any>(null);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [selectedStatus, setSelectedStatus] = useState<string>("");
+  const [searchTerm, setSearchTerm] = useState('');
+  const [selectedStatus, setSelectedStatus] = useState<string>('');
 
   const form = useForm<LeaveFormData>({
     resolver: zodResolver(leaveSchema),
     defaultValues: {
-      staff_id: "",
-      leave_type: "",
-      reason: "",
+      staff_id: '',
+      leave_type: '',
+      reason: '',
     },
   });
 
   // Get staff list
   const { data: staffList } = useQuery({
-    queryKey: ["staff-list"],
+    queryKey: ['staff-list'],
     queryFn: () => {
       // This would be replaced with an actual API call
       return Promise.resolve([
         {
-          id: "1",
-          name: "John Smith",
-          department: "Mathematics",
+          id: '1',
+          name: 'John Smith',
+          department: 'Mathematics',
         },
         {
-          id: "2",
-          name: "Sarah Johnson",
-          department: "Science",
+          id: '2',
+          name: 'Sarah Johnson',
+          department: 'Science',
         },
       ]);
     },
@@ -116,41 +112,41 @@ export default function LeaveManagementPage() {
 
   // Get leave data
   const { data: leaveData, isLoading } = useQuery({
-    queryKey: ["leave-applications", searchTerm, selectedStatus],
+    queryKey: ['leave-applications', searchTerm, selectedStatus],
     queryFn: () => {
       // This would be replaced with an actual API call
       return Promise.resolve([
         {
           id: 1,
-          staff_id: "1",
-          staff_name: "John Smith",
-          department: "Mathematics",
-          designation: "Senior Teacher",
+          staff_id: '1',
+          staff_name: 'John Smith',
+          department: 'Mathematics',
+          designation: 'Senior Teacher',
           avatar: null,
-          leave_type: "Sick Leave",
-          start_date: "2024-01-20",
-          end_date: "2024-01-22",
+          leave_type: 'Sick Leave',
+          start_date: '2024-01-20',
+          end_date: '2024-01-22',
           days: 3,
-          reason: "Medical appointment and recovery",
-          attachment: "medical_certificate.pdf",
-          status: "pending",
-          applied_on: "2024-01-15",
+          reason: 'Medical appointment and recovery',
+          attachment: 'medical_certificate.pdf',
+          status: 'pending',
+          applied_on: '2024-01-15',
         },
         {
           id: 2,
-          staff_id: "2",
-          staff_name: "Sarah Johnson",
-          department: "Science",
-          designation: "Lab Coordinator",
+          staff_id: '2',
+          staff_name: 'Sarah Johnson',
+          department: 'Science',
+          designation: 'Lab Coordinator',
           avatar: null,
-          leave_type: "Casual Leave",
-          start_date: "2024-01-25",
-          end_date: "2024-01-25",
+          leave_type: 'Casual Leave',
+          start_date: '2024-01-25',
+          end_date: '2024-01-25',
           days: 1,
-          reason: "Personal work",
+          reason: 'Personal work',
           attachment: null,
-          status: "approved",
-          applied_on: "2024-01-18",
+          status: 'approved',
+          applied_on: '2024-01-18',
         },
       ]);
     },
@@ -159,21 +155,21 @@ export default function LeaveManagementPage() {
   const { mutate: saveLeave, isLoading: isSaving } = useMutation({
     mutationFn: (data: LeaveFormData) => {
       // This would be replaced with an actual API call
-      return new Promise((resolve) => setTimeout(resolve, 1000));
+      return new Promise(resolve => setTimeout(resolve, 1000));
     },
     onSuccess: () => {
       toast({
-        title: "Success",
-        description: "Leave application submitted successfully.",
+        title: 'Success',
+        description: 'Leave application submitted successfully.',
       });
       setIsDialogOpen(false);
       form.reset();
     },
     onError: () => {
       toast({
-        title: "Error",
-        description: "Failed to submit leave application.",
-        variant: "destructive",
+        title: 'Error',
+        description: 'Failed to submit leave application.',
+        variant: 'destructive',
       });
     },
   });
@@ -185,23 +181,23 @@ export default function LeaveManagementPage() {
       remarks,
     }: {
       leaveId: number;
-      status: "approved" | "rejected";
+      status: 'approved' | 'rejected';
       remarks?: string;
     }) => {
       // This would be replaced with an actual API call
-      return new Promise((resolve) => setTimeout(resolve, 1000));
+      return new Promise(resolve => setTimeout(resolve, 1000));
     },
     onSuccess: () => {
       toast({
-        title: "Success",
-        description: "Leave application status updated successfully.",
+        title: 'Success',
+        description: 'Leave application status updated successfully.',
       });
     },
     onError: () => {
       toast({
-        title: "Error",
-        description: "Failed to update leave application status.",
-        variant: "destructive",
+        title: 'Error',
+        description: 'Failed to update leave application status.',
+        variant: 'destructive',
       });
     },
   });
@@ -210,10 +206,10 @@ export default function LeaveManagementPage() {
     const formData = new FormData();
     Object.entries(data).forEach(([key, value]) => {
       if (value) {
-        if (key === "attachment" && value[0]) {
+        if (key === 'attachment' && value[0]) {
           formData.append(key, value[0]);
-        } else if (key === "start_date" || key === "end_date") {
-          formData.append(key, format(value, "yyyy-MM-dd"));
+        } else if (key === 'start_date' || key === 'end_date') {
+          formData.append(key, format(value, 'yyyy-MM-dd'));
         } else {
           formData.append(key, value);
         }
@@ -224,21 +220,21 @@ export default function LeaveManagementPage() {
 
   const getStatusBadge = (status: string) => {
     switch (status) {
-      case "approved":
+      case 'approved':
         return (
           <span className="flex items-center text-green-600">
             <CheckCircle className="h-4 w-4 mr-1" />
             Approved
           </span>
         );
-      case "rejected":
+      case 'rejected':
         return (
           <span className="flex items-center text-red-600">
             <XCircle className="h-4 w-4 mr-1" />
             Rejected
           </span>
         );
-      case "pending":
+      case 'pending':
         return (
           <span className="flex items-center text-yellow-600">
             <Clock className="h-4 w-4 mr-1" />
@@ -272,33 +268,25 @@ export default function LeaveManagementPage() {
             <DialogContent className="max-w-2xl">
               <DialogHeader>
                 <DialogTitle>Apply for Leave</DialogTitle>
-                <DialogDescription>
-                  Submit a new leave application
-                </DialogDescription>
+                <DialogDescription>Submit a new leave application</DialogDescription>
               </DialogHeader>
 
               <Form {...form}>
-                <form
-                  onSubmit={form.handleSubmit(onSubmit)}
-                  className="space-y-4"
-                >
+                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
                   <FormField
                     control={form.control}
                     name="staff_id"
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>Staff Member</FormLabel>
-                        <Select
-                          onValueChange={field.onChange}
-                          defaultValue={field.value}
-                        >
+                        <Select onValueChange={field.onChange} defaultValue={field.value}>
                           <FormControl>
                             <SelectTrigger>
                               <SelectValue placeholder="Select staff member" />
                             </SelectTrigger>
                           </FormControl>
                           <SelectContent>
-                            {staffList?.map((staff) => (
+                            {staffList?.map(staff => (
                               <SelectItem key={staff.id} value={staff.id}>
                                 {staff.name} - {staff.department}
                               </SelectItem>
@@ -316,10 +304,7 @@ export default function LeaveManagementPage() {
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>Leave Type</FormLabel>
-                        <Select
-                          onValueChange={field.onChange}
-                          defaultValue={field.value}
-                        >
+                        <Select onValueChange={field.onChange} defaultValue={field.value}>
                           <FormControl>
                             <SelectTrigger>
                               <SelectValue placeholder="Select leave type" />
@@ -327,13 +312,13 @@ export default function LeaveManagementPage() {
                           </FormControl>
                           <SelectContent>
                             {[
-                              "Casual Leave",
-                              "Sick Leave",
-                              "Annual Leave",
-                              "Maternity Leave",
-                              "Paternity Leave",
-                              "Study Leave",
-                            ].map((type) => (
+                              'Casual Leave',
+                              'Sick Leave',
+                              'Annual Leave',
+                              'Maternity Leave',
+                              'Paternity Leave',
+                              'Study Leave',
+                            ].map(type => (
                               <SelectItem key={type} value={type}>
                                 {type}
                               </SelectItem>
@@ -358,11 +343,11 @@ export default function LeaveManagementPage() {
                                 <Button
                                   variant="outline"
                                   className={`w-full pl-3 text-left font-normal ${
-                                    !field.value && "text-muted-foreground"
+                                    !field.value && 'text-muted-foreground'
                                   }`}
                                 >
                                   {field.value ? (
-                                    format(field.value, "PPP")
+                                    format(field.value, 'PPP')
                                   ) : (
                                     <span>Pick a date</span>
                                   )}
@@ -370,15 +355,12 @@ export default function LeaveManagementPage() {
                                 </Button>
                               </FormControl>
                             </PopoverTrigger>
-                            <PopoverContent
-                              className="w-auto p-0"
-                              align="start"
-                            >
+                            <PopoverContent className="w-auto p-0" align="start">
                               <Calendar
                                 mode="single"
                                 selected={field.value}
                                 onSelect={field.onChange}
-                                disabled={(date) => date < new Date()}
+                                disabled={date => date < new Date()}
                                 initialFocus
                               />
                             </PopoverContent>
@@ -400,11 +382,11 @@ export default function LeaveManagementPage() {
                                 <Button
                                   variant="outline"
                                   className={`w-full pl-3 text-left font-normal ${
-                                    !field.value && "text-muted-foreground"
+                                    !field.value && 'text-muted-foreground'
                                   }`}
                                 >
                                   {field.value ? (
-                                    format(field.value, "PPP")
+                                    format(field.value, 'PPP')
                                   ) : (
                                     <span>Pick a date</span>
                                   )}
@@ -412,15 +394,12 @@ export default function LeaveManagementPage() {
                                 </Button>
                               </FormControl>
                             </PopoverTrigger>
-                            <PopoverContent
-                              className="w-auto p-0"
-                              align="start"
-                            >
+                            <PopoverContent className="w-auto p-0" align="start">
                               <Calendar
                                 mode="single"
                                 selected={field.value}
                                 onSelect={field.onChange}
-                                disabled={(date) => date < new Date()}
+                                disabled={date => date < new Date()}
                                 initialFocus
                               />
                             </PopoverContent>
@@ -452,11 +431,7 @@ export default function LeaveManagementPage() {
                       <FormItem>
                         <FormLabel>Attachment</FormLabel>
                         <FormControl>
-                          <Input
-                            type="file"
-                            onChange={(e) => onChange(e.target.files)}
-                            {...field}
-                          />
+                          <Input type="file" onChange={e => onChange(e.target.files)} {...field} />
                         </FormControl>
                         <FormDescription>
                           Upload any supporting documents (optional)
@@ -467,15 +442,11 @@ export default function LeaveManagementPage() {
                   />
 
                   <DialogFooter>
-                    <Button
-                      type="button"
-                      variant="outline"
-                      onClick={() => setIsDialogOpen(false)}
-                    >
+                    <Button type="button" variant="outline" onClick={() => setIsDialogOpen(false)}>
                       Cancel
                     </Button>
                     <Button type="submit" disabled={isSaving}>
-                      {isSaving ? "Submitting..." : "Submit"}
+                      {isSaving ? 'Submitting...' : 'Submit'}
                     </Button>
                   </DialogFooter>
                 </form>
@@ -497,7 +468,7 @@ export default function LeaveManagementPage() {
                   placeholder="Search by name or department..."
                   className="pl-8"
                   value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
+                  onChange={e => setSearchTerm(e.target.value)}
                 />
               </div>
             </div>
@@ -542,24 +513,22 @@ export default function LeaveManagementPage() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {leaveData?.map((leave) => (
+              {leaveData?.map(leave => (
                 <TableRow key={leave.id}>
                   <TableCell>
                     <div className="flex items-center space-x-3">
                       <Avatar>
-                        <AvatarImage src={leave.avatar || ""} />
+                        <AvatarImage src={leave.avatar || ''} />
                         <AvatarFallback>
                           {leave.staff_name
-                            .split(" ")
-                            .map((n) => n[0])
-                            .join("")}
+                            .split(' ')
+                            .map(n => n[0])
+                            .join('')}
                         </AvatarFallback>
                       </Avatar>
                       <div>
                         <p className="font-medium">{leave.staff_name}</p>
-                        <p className="text-sm text-gray-500">
-                          {leave.department}
-                        </p>
+                        <p className="text-sm text-gray-500">{leave.department}</p>
                       </div>
                     </div>
                   </TableCell>
@@ -567,17 +536,15 @@ export default function LeaveManagementPage() {
                   <TableCell>
                     <div className="space-y-1">
                       <p className="text-sm">
-                        {format(new Date(leave.start_date), "PPP")} -{" "}
-                        {format(new Date(leave.end_date), "PPP")}
+                        {format(new Date(leave.start_date), 'PPP')} -{' '}
+                        {format(new Date(leave.end_date), 'PPP')}
                       </p>
                       <p className="text-sm text-gray-500">
-                        {leave.days} day{leave.days > 1 ? "s" : ""}
+                        {leave.days} day{leave.days > 1 ? 's' : ''}
                       </p>
                     </div>
                   </TableCell>
-                  <TableCell>
-                    {format(new Date(leave.applied_on), "PPP")}
-                  </TableCell>
+                  <TableCell>{format(new Date(leave.applied_on), 'PPP')}</TableCell>
                   <TableCell>{getStatusBadge(leave.status)}</TableCell>
                   <TableCell>
                     <div className="flex items-center gap-2">
@@ -590,7 +557,7 @@ export default function LeaveManagementPage() {
                       >
                         <Eye className="h-4 w-4" />
                       </Button>
-                      {leave.status === "pending" && (
+                      {leave.status === 'pending' && (
                         <>
                           <Button
                             variant="outline"
@@ -598,7 +565,7 @@ export default function LeaveManagementPage() {
                             onClick={() =>
                               updateLeaveStatus({
                                 leaveId: leave.id,
-                                status: "approved",
+                                status: 'approved',
                               })
                             }
                             disabled={isUpdating}
@@ -611,7 +578,7 @@ export default function LeaveManagementPage() {
                             onClick={() =>
                               updateLeaveStatus({
                                 leaveId: leave.id,
-                                status: "rejected",
+                                status: 'rejected',
                               })
                             }
                             disabled={isUpdating}

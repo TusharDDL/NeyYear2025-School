@@ -1,4 +1,4 @@
-import axiosInstance from "@/lib/axios";
+import axiosInstance from '@/lib/axios';
 
 export interface StudentPerformanceReport {
   student_id: number;
@@ -78,12 +78,9 @@ const reportsService = {
     from_date?: string;
     to_date?: string;
   }) {
-    const response = await axiosInstance.get(
-      "/api/reports/student-performance/",
-      {
-        params,
-      },
-    );
+    const response = await axiosInstance.get('/api/reports/student-performance/', {
+      params,
+    });
     return response.data;
   },
 
@@ -94,15 +91,12 @@ const reportsService = {
     subject_id?: number;
     from_date?: string;
     to_date?: string;
-    format: "pdf" | "excel";
+    format: 'pdf' | 'excel';
   }) {
-    const response = await axiosInstance.get(
-      "/api/reports/student-performance/export/",
-      {
-        params,
-        responseType: "blob",
-      },
-    );
+    const response = await axiosInstance.get('/api/reports/student-performance/export/', {
+      params,
+      responseType: 'blob',
+    });
     return response.data;
   },
 
@@ -114,7 +108,7 @@ const reportsService = {
     from_date?: string;
     to_date?: string;
   }) {
-    const response = await axiosInstance.get("/api/reports/attendance/", {
+    const response = await axiosInstance.get('/api/reports/attendance/', {
       params,
     });
     return response.data;
@@ -126,15 +120,12 @@ const reportsService = {
     section_id?: number;
     from_date?: string;
     to_date?: string;
-    format: "pdf" | "excel";
+    format: 'pdf' | 'excel';
   }) {
-    const response = await axiosInstance.get(
-      "/api/reports/attendance/export/",
-      {
-        params,
-        responseType: "blob",
-      },
-    );
+    const response = await axiosInstance.get('/api/reports/attendance/export/', {
+      params,
+      responseType: 'blob',
+    });
     return response.data;
   },
 
@@ -145,9 +136,9 @@ const reportsService = {
     section_id?: number;
     from_date?: string;
     to_date?: string;
-    payment_status?: "paid" | "pending" | "overdue";
+    payment_status?: 'paid' | 'pending' | 'overdue';
   }) {
-    const response = await axiosInstance.get("/api/reports/fees/", {
+    const response = await axiosInstance.get('/api/reports/fees/', {
       params,
     });
     return response.data;
@@ -159,12 +150,12 @@ const reportsService = {
     section_id?: number;
     from_date?: string;
     to_date?: string;
-    payment_status?: "paid" | "pending" | "overdue";
-    format: "pdf" | "excel";
+    payment_status?: 'paid' | 'pending' | 'overdue';
+    format: 'pdf' | 'excel';
   }) {
-    const response = await axiosInstance.get("/api/reports/fees/export/", {
+    const response = await axiosInstance.get('/api/reports/fees/export/', {
       params,
-      responseType: "blob",
+      responseType: 'blob',
     });
     return response.data;
   },
@@ -176,7 +167,7 @@ const reportsService = {
     from_date?: string;
     to_date?: string;
   }) {
-    const response = await axiosInstance.get("/api/reports/class/", {
+    const response = await axiosInstance.get('/api/reports/class/', {
       params,
     });
     return response.data;
@@ -187,11 +178,11 @@ const reportsService = {
     section_id?: number;
     from_date?: string;
     to_date?: string;
-    format: "pdf" | "excel";
+    format: 'pdf' | 'excel';
   }) {
-    const response = await axiosInstance.get("/api/reports/class/export/", {
+    const response = await axiosInstance.get('/api/reports/class/export/', {
       params,
-      responseType: "blob",
+      responseType: 'blob',
     });
     return response.data;
   },
@@ -199,9 +190,9 @@ const reportsService = {
   // Helper function to download exported files
   downloadFile(blob: Blob, filename: string) {
     const url = window.URL.createObjectURL(blob);
-    const link = document.createElement("a");
+    const link = document.createElement('a');
     link.href = url;
-    link.setAttribute("download", filename);
+    link.setAttribute('download', filename);
     document.body.appendChild(link);
     link.click();
     link.remove();

@@ -1,18 +1,18 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import * as z from "zod";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import * as z from 'zod';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
+} from '@/components/ui/dialog';
+import { Button } from '@/components/ui/button';
 import {
   Form,
   FormControl,
@@ -20,13 +20,13 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import academicService from "@/services/academic";
+} from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import academicService from '@/services/academic';
 
 const classSchema = z.object({
-  name: z.string().min(1, "Class name is required"),
+  name: z.string().min(1, 'Class name is required'),
   description: z.string().optional(),
 });
 
@@ -39,15 +39,15 @@ export function AddClassDialog() {
   const form = useForm<ClassFormData>({
     resolver: zodResolver(classSchema),
     defaultValues: {
-      name: "",
-      description: "",
+      name: '',
+      description: '',
     },
   });
 
   const { mutate: createClass, isLoading } = useMutation({
     mutationFn: academicService.createClass,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["classes"] });
+      queryClient.invalidateQueries({ queryKey: ['classes'] });
       setOpen(false);
       form.reset();
     },
@@ -90,10 +90,7 @@ export function AddClassDialog() {
                 <FormItem>
                   <FormLabel>Description (Optional)</FormLabel>
                   <FormControl>
-                    <Textarea
-                      placeholder="Enter class description"
-                      {...field}
-                    />
+                    <Textarea placeholder="Enter class description" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -101,15 +98,11 @@ export function AddClassDialog() {
             />
 
             <div className="flex justify-end space-x-2">
-              <Button
-                type="button"
-                variant="outline"
-                onClick={() => setOpen(false)}
-              >
+              <Button type="button" variant="outline" onClick={() => setOpen(false)}>
                 Cancel
               </Button>
               <Button type="submit" disabled={isLoading}>
-                {isLoading ? "Creating..." : "Create Class"}
+                {isLoading ? 'Creating...' : 'Create Class'}
               </Button>
             </div>
           </form>

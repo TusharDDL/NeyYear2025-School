@@ -1,25 +1,19 @@
-"use client";
+'use client';
 
-import { useEffect, useRef } from "react";
-import { format } from "date-fns";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import * as z from "zod";
-import { Message } from "@/services/communication";
-import { useAuth } from "@/lib/auth";
-import { Button } from "@/components/ui/button";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { X } from "lucide-react";
-import communicationService from "@/services/communication";
+import { useEffect, useRef } from 'react';
+import { format } from 'date-fns';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import * as z from 'zod';
+import { Message } from '@/services/communication';
+import { useAuth } from '@/lib/auth';
+import { Button } from '@/components/ui/button';
+import { Form, FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import { X } from 'lucide-react';
+import communicationService from '@/services/communication';
 
 interface MessageThreadProps {
   thread: {
@@ -33,8 +27,8 @@ interface MessageThreadProps {
 }
 
 const replySchema = z.object({
-  subject: z.string().min(1, "Subject is required"),
-  content: z.string().min(1, "Message is required"),
+  subject: z.string().min(1, 'Subject is required'),
+  content: z.string().min(1, 'Message is required'),
   file: z.any().optional(),
 });
 
@@ -48,32 +42,31 @@ export function MessageThread({ thread, onClose }: MessageThreadProps) {
   const form = useForm<ReplyFormData>({
     resolver: zodResolver(replySchema),
     defaultValues: {
-      subject: thread.lastMessage?.subject.startsWith("Re:")
+      subject: thread.lastMessage?.subject.startsWith('Re:')
         ? thread.lastMessage.subject
-        : `Re: ${thread.lastMessage?.subject || ""}`,
-      content: "",
+        : `Re: ${thread.lastMessage?.subject || ''}`,
+      content: '',
     },
   });
 
   const { mutate: sendMessage, isLoading } = useMutation({
     mutationFn: (data: FormData) => communicationService.sendMessage(data),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["messages"] });
+      queryClient.invalidateQueries({ queryKey: ['messages'] });
       form.reset();
     },
   });
 
   const { mutate: markAsRead } = useMutation({
-    mutationFn: (messageId: number) =>
-      communicationService.markMessageAsRead(messageId),
+    mutationFn: (messageId: number) => communicationService.markMessageAsRead(messageId),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["messages"] });
+      queryClient.invalidateQueries({ queryKey: ['messages'] });
     },
   });
 
   useEffect(() => {
     // Mark unread messages as read
-    thread.messages.forEach((message) => {
+    thread.messages.forEach(message => {
       if (!message.is_read && message.recipient.id === user?.id) {
         markAsRead(message.id);
       }
@@ -82,16 +75,16 @@ export function MessageThread({ thread, onClose }: MessageThreadProps) {
 
   useEffect(() => {
     // Scroll to bottom when new messages arrive
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [thread.messages]);
 
   const onSubmit = (data: ReplyFormData) => {
     const formData = new FormData();
-    formData.append("subject", data.subject);
-    formData.append("content", data.content);
-    formData.append("recipient_id", thread.otherUser.id);
+    formData.append('subject', data.subject);
+    formData.append('content', data.content);
+    formData.append('recipient_id', thread.otherUser.id);
     if (data.file?.[0]) {
-      formData.append("attachment", data.file[0]);
+      formData.append('attachment', data.file[0]);
     }
     sendMessage(formData);
   };
@@ -104,9 +97,7 @@ export function MessageThread({ thread, onClose }: MessageThreadProps) {
           <h2 className="font-semibold">
             {thread.otherUser.first_name} {thread.otherUser.last_name}
           </h2>
-          <p className="text-sm text-gray-500">
-            {thread.otherUser.role.replace("_", " ")}
-          </p>
+          <p className="text-sm text-gray-500">{thread.otherUser.role.replace('_', ' ')}</p>
         </div>
         <Button variant="ghost" size="icon" onClick={onClose}>
           <X className="h-4 w-4" />
@@ -115,40 +106,30 @@ export function MessageThread({ thread, onClose }: MessageThreadProps) {
 
       {/* Messages */}
       <div className="flex-1 overflow-y-auto p-4 space-y-4">
-        {thread.messages.map((message) => {
+        {thread.messages.map(message => {
           const isOwnMessage = message.sender.id === user?.id;
 
           return (
             <div
               key={message.id}
-              className={`flex ${isOwnMessage ? "justify-end" : "justify-start"}`}
+              className={`flex ${isOwnMessage ? 'justify-end' : 'justify-start'}`}
             >
               <div
                 className={`max-w-[70%] rounded-lg p-4 ${
-                  isOwnMessage
-                    ? "bg-primary text-primary-foreground"
-                    : "bg-secondary"
+                  isOwnMessage ? 'bg-primary text-primary-foreground' : 'bg-secondary'
                 }`}
               >
                 <div className="flex justify-between items-start gap-4 mb-1">
                   <p className="font-medium">{message.subject}</p>
                   <p className="text-xs opacity-70">
-                    {format(new Date(message.created_at), "MMM d, h:mm a")}
+                    {format(new Date(message.created_at), 'MMM d, h:mm a')}
                   </p>
                 </div>
                 <p className="whitespace-pre-wrap">{message.content}</p>
                 {message.attachment && (
                   <div className="mt-2">
-                    <Button
-                      variant={isOwnMessage ? "secondary" : "outline"}
-                      size="sm"
-                      asChild
-                    >
-                      <a
-                        href={message.attachment}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
+                    <Button variant={isOwnMessage ? 'secondary' : 'outline'} size="sm" asChild>
+                      <a href={message.attachment} target="_blank" rel="noopener noreferrer">
                         View Attachment
                       </a>
                     </Button>
@@ -203,11 +184,7 @@ export function MessageThread({ thread, onClose }: MessageThreadProps) {
                   render={({ field: { value, onChange, ...field } }) => (
                     <FormItem>
                       <FormControl>
-                        <Input
-                          type="file"
-                          onChange={(e) => onChange(e.target.files)}
-                          {...field}
-                        />
+                        <Input type="file" onChange={e => onChange(e.target.files)} {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -215,7 +192,7 @@ export function MessageThread({ thread, onClose }: MessageThreadProps) {
                 />
 
                 <Button type="submit" className="w-full" disabled={isLoading}>
-                  {isLoading ? "Sending..." : "Send"}
+                  {isLoading ? 'Sending...' : 'Send'}
                 </Button>
               </div>
             </div>

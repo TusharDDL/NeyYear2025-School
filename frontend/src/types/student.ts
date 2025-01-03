@@ -6,5 +6,5 @@ export interface Student {
   registration_number: string;
   class_section?: string;
   admission_date: string;
-  status: "active" | "inactive" | "graduated";
+  status: 'active' | 'inactive' | 'graduated';
 }

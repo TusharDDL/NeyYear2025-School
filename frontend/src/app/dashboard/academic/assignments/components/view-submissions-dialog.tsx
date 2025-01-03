@@ -1,16 +1,16 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import { format } from "date-fns";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useState } from 'react';
+import { format } from 'date-fns';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
+} from '@/components/ui/dialog';
+import { Button } from '@/components/ui/button';
 import {
   Table,
   TableBody,
@@ -18,11 +18,11 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
-import { Input } from "@/components/ui/input";
-import { Badge } from "@/components/ui/badge";
-import { Assignment } from "@/services/academic";
-import academicService from "@/services/academic";
+} from '@/components/ui/table';
+import { Input } from '@/components/ui/input';
+import { Badge } from '@/components/ui/badge';
+import { Assignment } from '@/services/academic';
+import academicService from '@/services/academic';
 
 interface ViewSubmissionsDialogProps {
   assignment: Assignment;
@@ -35,23 +35,20 @@ interface GradeSubmissionData {
   remarks?: string;
 }
 
-export function ViewSubmissionsDialog({
-  assignment,
-  sectionId,
-}: ViewSubmissionsDialogProps) {
+export function ViewSubmissionsDialog({ assignment, sectionId }: ViewSubmissionsDialogProps) {
   const [open, setOpen] = useState(false);
   const queryClient = useQueryClient();
 
   // Get section details to get the list of students
   const { data: section } = useQuery({
-    queryKey: ["sections", sectionId],
+    queryKey: ['sections', sectionId],
     queryFn: () => academicService.getSections(),
-    select: (data) => data.find((s) => s.id === sectionId),
+    select: data => data.find(s => s.id === sectionId),
   });
 
   // Get submissions
   const { data: submissions } = useQuery({
-    queryKey: ["assignment-submissions", assignment.id],
+    queryKey: ['assignment-submissions', assignment.id],
     queryFn: () => academicService.getAssignmentSubmissions(assignment.id),
   });
 
@@ -60,16 +57,12 @@ export function ViewSubmissionsDialog({
       academicService.gradeAssignment(submissionId, data),
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: ["assignment-submissions", assignment.id],
+        queryKey: ['assignment-submissions', assignment.id],
       });
     },
   });
 
-  const handleGrade = (
-    submissionId: number,
-    score: number,
-    remarks?: string,
-  ) => {
+  const handleGrade = (submissionId: number, score: number, remarks?: string) => {
     gradeSubmission({ submissionId, score, remarks });
   };
 
@@ -95,10 +88,8 @@ export function ViewSubmissionsDialog({
               </TableRow>
             </TableHeader>
             <TableBody>
-              {section?.students?.map((student) => {
-                const submission = submissions?.find(
-                  (s) => s.student.id === student.id,
-                );
+              {section?.students?.map(student => {
+                const submission = submissions?.find(s => s.student.id === student.id);
 
                 return (
                   <TableRow key={student.id}>
@@ -114,10 +105,7 @@ export function ViewSubmissionsDialog({
                     </TableCell>
                     <TableCell>
                       {submission?.submitted_at &&
-                        format(
-                          new Date(submission.submitted_at),
-                          "MMM d, yyyy h:mm a",
-                        )}
+                        format(new Date(submission.submitted_at), 'MMM d, yyyy h:mm a')}
                     </TableCell>
                     <TableCell>
                       {submission && (
@@ -125,15 +113,11 @@ export function ViewSubmissionsDialog({
                           type="number"
                           min={0}
                           max={100}
-                          value={submission.score || ""}
-                          onChange={(e) => {
+                          value={submission.score || ''}
+                          onChange={e => {
                             const score = parseInt(e.target.value);
                             if (!isNaN(score) && score >= 0 && score <= 100) {
-                              handleGrade(
-                                submission.id,
-                                score,
-                                submission.remarks,
-                              );
+                              handleGrade(submission.id, score, submission.remarks);
                             }
                           }}
                           className="w-20"
@@ -144,23 +128,15 @@ export function ViewSubmissionsDialog({
                       {submission && (
                         <div className="space-x-2">
                           <Button variant="outline" size="sm" asChild>
-                            <a
-                              href={submission.file}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                            >
+                            <a href={submission.file} target="_blank" rel="noopener noreferrer">
                               View
                             </a>
                           </Button>
                           <Input
                             placeholder="Add remarks"
-                            value={submission.remarks || ""}
-                            onChange={(e) =>
-                              handleGrade(
-                                submission.id,
-                                submission.score || 0,
-                                e.target.value,
-                              )
+                            value={submission.remarks || ''}
+                            onChange={e =>
+                              handleGrade(submission.id, submission.score || 0, e.target.value)
                             }
                             className="w-40 inline-block"
                           />

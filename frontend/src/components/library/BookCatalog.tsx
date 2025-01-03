@@ -1,12 +1,12 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import { useBooks } from "@/lib/hooks";
-import { Book } from "@/types/book";
-import { Input } from "@/components/ui/input";
-import type { ReactElement } from "react";
-import { Button } from "@/components/ui/button";
-import { LoadingSpinner } from "@/components/ui/loading-spinner";
+import { useState } from 'react';
+import { useBooks } from '@/lib/hooks';
+import { Book } from '@/types/book';
+import { Input } from '@/components/ui/input';
+import type { ReactElement } from 'react';
+import { Button } from '@/components/ui/button';
+import { LoadingSpinner } from '@/components/ui/loading-spinner';
 import {
   Card,
   CardContent,
@@ -14,18 +14,18 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
+} from '@/components/ui/card';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
+} from '@/components/ui/select';
 
 export function BookCatalog() {
-  const [search, setSearch] = useState("");
-  const [category, setCategory] = useState("");
+  const [search, setSearch] = useState('');
+  const [category, setCategory] = useState('');
   const { data: books, isLoading } = useBooks({ search, category });
 
   if (isLoading) {
@@ -38,7 +38,7 @@ export function BookCatalog() {
         <Input
           placeholder="Search books..."
           value={search}
-          onChange={(e) => setSearch(e.target.value)}
+          onChange={e => setSearch(e.target.value)}
           className="max-w-sm"
           aria-label="Search books"
         />
@@ -85,15 +85,12 @@ export function BookCatalog() {
                 </div>
               </CardContent>
               <CardFooter>
-                <Button
-                  variant="outline"
-                  disabled={book.available_copies === 0}
-                >
-                  {book.available_copies > 0 ? "Issue Book" : "Not Available"}
+                <Button variant="outline" disabled={book.available_copies === 0}>
+                  {book.available_copies > 0 ? 'Issue Book' : 'Not Available'}
                 </Button>
               </CardFooter>
             </Card>
-          ),
+          )
         )}
       </div>
     </div>

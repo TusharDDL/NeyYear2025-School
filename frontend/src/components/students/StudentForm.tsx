@@ -1,11 +1,11 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import * as z from "zod";
-import { Button } from "@/components/ui/button";
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useForm } from 'react-hook-form';
+import * as z from 'zod';
+import { Button } from '@/components/ui/button';
 import {
   Form,
   FormControl,
@@ -13,32 +13,32 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
+} from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { useCreateStudent } from "@/lib/hooks";
+} from '@/components/ui/select';
+import { useCreateStudent } from '@/lib/hooks';
 
 const formSchema = z.object({
-  first_name: z.string().min(1, "First name is required"),
-  last_name: z.string().min(1, "Last name is required"),
-  admission_number: z.string().min(1, "Admission number is required"),
-  roll_number: z.string().min(1, "Roll number is required"),
-  class_name: z.string().min(1, "Class is required"),
-  section: z.string().min(1, "Section is required"),
-  date_of_birth: z.string().min(1, "Date of birth is required"),
-  gender: z.enum(["male", "female", "other"]),
+  first_name: z.string().min(1, 'First name is required'),
+  last_name: z.string().min(1, 'Last name is required'),
+  admission_number: z.string().min(1, 'Admission number is required'),
+  roll_number: z.string().min(1, 'Roll number is required'),
+  class_name: z.string().min(1, 'Class is required'),
+  section: z.string().min(1, 'Section is required'),
+  date_of_birth: z.string().min(1, 'Date of birth is required'),
+  gender: z.enum(['male', 'female', 'other']),
   blood_group: z.string().optional(),
   address: z.string().optional(),
   phone: z.string().optional(),
-  parent_name: z.string().min(1, "Parent name is required"),
-  parent_phone: z.string().min(1, "Parent phone is required"),
-  parent_email: z.string().email("Invalid email address"),
+  parent_name: z.string().min(1, 'Parent name is required'),
+  parent_phone: z.string().min(1, 'Parent phone is required'),
+  parent_email: z.string().email('Invalid email address'),
   emergency_contact: z.string().optional(),
   medical_conditions: z.string().optional(),
 });
@@ -50,24 +50,24 @@ export function StudentForm() {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      first_name: "",
-      last_name: "",
-      admission_number: "",
-      roll_number: "",
-      class_name: "",
-      section: "",
-      date_of_birth: "",
-      gender: "male",
-      parent_name: "",
-      parent_phone: "",
-      parent_email: "",
+      first_name: '',
+      last_name: '',
+      admission_number: '',
+      roll_number: '',
+      class_name: '',
+      section: '',
+      date_of_birth: '',
+      gender: 'male',
+      parent_name: '',
+      parent_phone: '',
+      parent_email: '',
     },
   });
 
   function onSubmit(values: z.infer<typeof formSchema>) {
     createStudent(values, {
       onSuccess: () => {
-        router.push("/students");
+        router.push('/students');
       },
     });
   }
@@ -139,10 +139,7 @@ export function StudentForm() {
             render={({ field }) => (
               <FormItem>
                 <FormLabel id="class-label">Class</FormLabel>
-                <Select
-                  onValueChange={field.onChange}
-                  defaultValue={field.value}
-                >
+                <Select onValueChange={field.onChange} defaultValue={field.value}>
                   <FormControl>
                     <SelectTrigger
                       data-testid="class-select"
@@ -154,11 +151,7 @@ export function StudentForm() {
                   </FormControl>
                   <SelectContent>
                     {Array.from({ length: 10 }, (_, i) => (
-                      <SelectItem
-                        key={i + 1}
-                        value={`Class ${i + 1}`}
-                        role="option"
-                      >
+                      <SelectItem key={i + 1} value={`Class ${i + 1}`} role="option">
                         Class {i + 1}
                       </SelectItem>
                     ))}
@@ -174,10 +167,7 @@ export function StudentForm() {
             render={({ field }) => (
               <FormItem>
                 <FormLabel id="section-label">Section</FormLabel>
-                <Select
-                  onValueChange={field.onChange}
-                  defaultValue={field.value}
-                >
+                <Select onValueChange={field.onChange} defaultValue={field.value}>
                   <FormControl>
                     <SelectTrigger
                       data-testid="section-select"
@@ -188,7 +178,7 @@ export function StudentForm() {
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
-                    {["A", "B", "C"].map((section) => (
+                    {['A', 'B', 'C'].map(section => (
                       <SelectItem key={section} value={section} role="option">
                         Section {section}
                       </SelectItem>
@@ -218,10 +208,7 @@ export function StudentForm() {
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Gender</FormLabel>
-                <Select
-                  onValueChange={field.onChange}
-                  defaultValue={field.value}
-                >
+                <Select onValueChange={field.onChange} defaultValue={field.value}>
                   <FormControl>
                     <SelectTrigger>
                       <SelectValue placeholder="Select gender" />
@@ -323,7 +310,7 @@ export function StudentForm() {
         />
 
         <Button type="submit" disabled={isLoading}>
-          {isLoading ? "Saving..." : "Save Student"}
+          {isLoading ? 'Saving...' : 'Save Student'}
         </Button>
       </form>
     </Form>

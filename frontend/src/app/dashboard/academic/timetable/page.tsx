@@ -1,45 +1,35 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { Button } from "@/components/ui/button";
-import { useAuth } from "@/lib/auth";
-import academicService from "@/services/academic";
-import { TimetableGrid } from "./components/timetable-grid";
-import { AddTimetableEntryDialog } from "./components/add-timetable-entry-dialog";
+} from '@/components/ui/select';
+import { Button } from '@/components/ui/button';
+import { useAuth } from '@/lib/auth';
+import academicService from '@/services/academic';
+import { TimetableGrid } from './components/timetable-grid';
+import { AddTimetableEntryDialog } from './components/add-timetable-entry-dialog';
 
-const WEEKDAYS = [
-  "Monday",
-  "Tuesday",
-  "Wednesday",
-  "Thursday",
-  "Friday",
-  "Saturday",
-  "Sunday",
-];
+const WEEKDAYS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
 
 export default function TimetablePage() {
   const { user } = useAuth();
-  const [selectedSection, setSelectedSection] = useState<string>("");
+  const [selectedSection, setSelectedSection] = useState<string>('');
 
   const { data: sections } = useQuery({
-    queryKey: ["sections"],
+    queryKey: ['sections'],
     queryFn: academicService.getSections,
   });
 
   const { data: timetable } = useQuery({
-    queryKey: ["timetable", selectedSection],
+    queryKey: ['timetable', selectedSection],
     queryFn: () =>
-      selectedSection
-        ? academicService.getTimetable(parseInt(selectedSection))
-        : null,
+      selectedSection ? academicService.getTimetable(parseInt(selectedSection)) : null,
     enabled: !!selectedSection,
   });
 
@@ -47,7 +37,7 @@ export default function TimetablePage() {
   const groupedTimetable = WEEKDAYS.map((day, index) => ({
     day,
     entries: timetable
-      ?.filter((entry) => entry.weekday === index)
+      ?.filter(entry => entry.weekday === index)
       .sort((a, b) => {
         const timeA = new Date(`1970-01-01T${a.start_time}`);
         const timeB = new Date(`1970-01-01T${b.start_time}`);
@@ -59,7 +49,7 @@ export default function TimetablePage() {
     <div className="container mx-auto py-6">
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold">Timetable</h1>
-        {user?.role === "school_admin" && selectedSection && (
+        {user?.role === 'school_admin' && selectedSection && (
           <AddTimetableEntryDialog sectionId={parseInt(selectedSection)} />
         )}
       </div>
@@ -72,7 +62,7 @@ export default function TimetablePage() {
               <SelectValue placeholder="Choose a section" />
             </SelectTrigger>
             <SelectContent>
-              {sections?.map((section) => (
+              {sections?.map(section => (
                 <SelectItem key={section.id} value={section.id.toString()}>
                   {section.class_name.name} - {section.name}
                 </SelectItem>
@@ -84,10 +74,7 @@ export default function TimetablePage() {
         {/* Timetable */}
         {selectedSection ? (
           timetable ? (
-            <TimetableGrid
-              timetable={groupedTimetable}
-              sectionId={parseInt(selectedSection)}
-            />
+            <TimetableGrid timetable={groupedTimetable} sectionId={parseInt(selectedSection)} />
           ) : (
             <div className="bg-white rounded-lg shadow p-8 text-center text-gray-500">
               Loading timetable...

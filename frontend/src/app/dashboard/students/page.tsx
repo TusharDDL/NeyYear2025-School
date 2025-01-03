@@ -1,7 +1,7 @@
-"use client";
+'use client';
 
-import { Card } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+import { Card } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
 import {
   Users,
   UserPlus,
@@ -11,65 +11,65 @@ import {
   BookOpen,
   Activity,
   Calendar,
-} from "lucide-react";
-import Link from "next/link";
+} from 'lucide-react';
+import Link from 'next/link';
 
 const studentModules = [
   {
-    title: "Student Directory",
-    description: "View and manage student profiles",
+    title: 'Student Directory',
+    description: 'View and manage student profiles',
     icon: Users,
-    href: "/dashboard/students/directory",
-    color: "bg-blue-500",
+    href: '/dashboard/students/directory',
+    color: 'bg-blue-500',
   },
   {
-    title: "Admissions",
-    description: "Handle student admissions",
+    title: 'Admissions',
+    description: 'Handle student admissions',
     icon: UserPlus,
-    href: "/dashboard/students/admissions",
-    color: "bg-green-500",
+    href: '/dashboard/students/admissions',
+    color: 'bg-green-500',
   },
   {
-    title: "Attendance",
-    description: "Track student attendance",
+    title: 'Attendance',
+    description: 'Track student attendance',
     icon: ClipboardList,
-    href: "/dashboard/students/attendance",
-    color: "bg-purple-500",
+    href: '/dashboard/students/attendance',
+    color: 'bg-purple-500',
   },
   {
-    title: "Academic Records",
-    description: "Manage academic performance",
+    title: 'Academic Records',
+    description: 'Manage academic performance',
     icon: GraduationCap,
-    href: "/dashboard/students/academics",
-    color: "bg-yellow-500",
+    href: '/dashboard/students/academics',
+    color: 'bg-yellow-500',
   },
   {
-    title: "Documents",
-    description: "Student documents and records",
+    title: 'Documents',
+    description: 'Student documents and records',
     icon: FileText,
-    href: "/dashboard/students/documents",
-    color: "bg-pink-500",
+    href: '/dashboard/students/documents',
+    color: 'bg-pink-500',
   },
   {
-    title: "Courses",
-    description: "Course enrollment and tracking",
+    title: 'Courses',
+    description: 'Course enrollment and tracking',
     icon: BookOpen,
-    href: "/dashboard/students/courses",
-    color: "bg-indigo-500",
+    href: '/dashboard/students/courses',
+    color: 'bg-indigo-500',
   },
   {
-    title: "Behavior",
-    description: "Discipline and conduct records",
+    title: 'Behavior',
+    description: 'Discipline and conduct records',
     icon: Activity,
-    href: "/dashboard/students/behavior",
-    color: "bg-red-500",
+    href: '/dashboard/students/behavior',
+    color: 'bg-red-500',
   },
   {
-    title: "Schedule",
-    description: "Class schedules and timetables",
+    title: 'Schedule',
+    description: 'Class schedules and timetables',
     icon: Calendar,
-    href: "/dashboard/students/schedule",
-    color: "bg-orange-500",
+    href: '/dashboard/students/schedule',
+    color: 'bg-orange-500',
   },
 ];
 
@@ -78,13 +78,11 @@ export default function StudentsPage() {
     <div className="container mx-auto py-6">
       <div className="mb-6">
         <h1 className="text-2xl font-bold">Student Management</h1>
-        <p className="text-gray-500">
-          Manage students, admissions, and academic records
-        </p>
+        <p className="text-gray-500">Manage students, admissions, and academic records</p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-        {studentModules.map((module) => (
+        {studentModules.map(module => (
           <Link key={module.title} href={module.href}>
             <Card className="p-6 hover:shadow-lg transition-shadow cursor-pointer">
               <div className="flex items-start space-x-4">
@@ -159,28 +157,28 @@ export default function StudentsPage() {
           <div className="space-y-4">
             {[
               {
-                type: "admission",
-                name: "John Smith",
-                class: "Class 10",
-                date: "2024-01-15",
+                type: 'admission',
+                name: 'John Smith',
+                class: 'Class 10',
+                date: '2024-01-15',
               },
               {
-                type: "attendance",
-                name: "Sarah Johnson",
-                status: "absent",
-                date: "2024-01-14",
+                type: 'attendance',
+                name: 'Sarah Johnson',
+                status: 'absent',
+                date: '2024-01-14',
               },
               {
-                type: "academic",
-                name: "Mike Wilson",
-                event: "Exam Results Published",
-                date: "2024-01-13",
+                type: 'academic',
+                name: 'Mike Wilson',
+                event: 'Exam Results Published',
+                date: '2024-01-13',
               },
               {
-                type: "behavior",
-                name: "Emily Brown",
-                event: "Achievement Award",
-                date: "2024-01-12",
+                type: 'behavior',
+                name: 'Emily Brown',
+                event: 'Achievement Award',
+                date: '2024-01-12',
               },
             ].map((activity, index) => (
               <div
@@ -188,22 +186,22 @@ export default function StudentsPage() {
                 className="flex items-center justify-between py-2 border-b last:border-0"
               >
                 <div className="flex items-center space-x-3">
-                  {activity.type === "admission" && (
+                  {activity.type === 'admission' && (
                     <div className="bg-green-100 p-2 rounded-full">
                       <UserPlus className="h-4 w-4 text-green-600" />
                     </div>
                   )}
-                  {activity.type === "attendance" && (
+                  {activity.type === 'attendance' && (
                     <div className="bg-yellow-100 p-2 rounded-full">
                       <ClipboardList className="h-4 w-4 text-yellow-600" />
                     </div>
                   )}
-                  {activity.type === "academic" && (
+                  {activity.type === 'academic' && (
                     <div className="bg-blue-100 p-2 rounded-full">
                       <GraduationCap className="h-4 w-4 text-blue-600" />
                     </div>
                   )}
-                  {activity.type === "behavior" && (
+                  {activity.type === 'behavior' && (
                     <div className="bg-purple-100 p-2 rounded-full">
                       <Activity className="h-4 w-4 text-purple-600" />
                     </div>
@@ -211,14 +209,10 @@ export default function StudentsPage() {
                   <div>
                     <p className="font-medium">{activity.name}</p>
                     <p className="text-sm text-gray-500">
-                      {activity.type === "admission" && (
-                        <>New admission to {activity.class}</>
-                      )}
-                      {activity.type === "attendance" && (
-                        <>Marked {activity.status}</>
-                      )}
-                      {activity.type === "academic" && <>{activity.event}</>}
-                      {activity.type === "behavior" && <>{activity.event}</>}
+                      {activity.type === 'admission' && <>New admission to {activity.class}</>}
+                      {activity.type === 'attendance' && <>Marked {activity.status}</>}
+                      {activity.type === 'academic' && <>{activity.event}</>}
+                      {activity.type === 'behavior' && <>{activity.event}</>}
                     </p>
                   </div>
                 </div>

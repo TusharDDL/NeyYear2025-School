@@ -1,36 +1,27 @@
-"use client";
+'use client';
 
-import { format } from "date-fns";
-import { useAuth } from "@/lib/auth";
-import { Assignment } from "@/services/academic";
-import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { SubmitAssignmentDialog } from "./submit-assignment-dialog";
-import { ViewSubmissionsDialog } from "./view-submissions-dialog";
+import { format } from 'date-fns';
+import { useAuth } from '@/lib/auth';
+import { Assignment } from '@/services/academic';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { SubmitAssignmentDialog } from './submit-assignment-dialog';
+import { ViewSubmissionsDialog } from './view-submissions-dialog';
 
 interface AssignmentListProps {
   assignments: Assignment[];
   sectionId: number;
 }
 
-export function AssignmentList({
-  assignments,
-  sectionId,
-}: AssignmentListProps) {
+export function AssignmentList({ assignments, sectionId }: AssignmentListProps) {
   const { user } = useAuth();
-  const isTeacher = user?.role === "teacher";
+  const isTeacher = user?.role === 'teacher';
 
   const getStatusBadge = (dueDate: string, submissions?: any[]) => {
     const due = new Date(dueDate);
     const now = new Date();
-    const isSubmitted = submissions?.some((s) => s.student.id === user?.id);
+    const isSubmitted = submissions?.some(s => s.student.id === user?.id);
 
     if (due > now) {
       return <Badge variant="secondary">Upcoming</Badge>;
@@ -54,15 +45,14 @@ export function AssignmentList({
 
   return (
     <div className="grid grid-cols-1 gap-4">
-      {assignments.map((assignment) => (
+      {assignments.map(assignment => (
         <Card key={assignment.id}>
           <CardHeader>
             <div className="flex justify-between items-start">
               <div>
                 <CardTitle>{assignment.title}</CardTitle>
                 <CardDescription>
-                  {assignment.subject.name} | Due:{" "}
-                  {format(new Date(assignment.due_date), "PPp")}
+                  {assignment.subject.name} | Due: {format(new Date(assignment.due_date), 'PPp')}
                 </CardDescription>
               </div>
               {getStatusBadge(assignment.due_date, assignment.submissions)}
@@ -76,11 +66,7 @@ export function AssignmentList({
                 <div className="flex items-center space-x-4">
                   {assignment.file && (
                     <Button variant="outline" size="sm" asChild>
-                      <a
-                        href={assignment.file}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
+                      <a href={assignment.file} target="_blank" rel="noopener noreferrer">
                         View Attachment
                       </a>
                     </Button>
@@ -89,15 +75,9 @@ export function AssignmentList({
 
                 <div className="space-x-2">
                   {isTeacher ? (
-                    <ViewSubmissionsDialog
-                      assignment={assignment}
-                      sectionId={sectionId}
-                    />
+                    <ViewSubmissionsDialog assignment={assignment} sectionId={sectionId} />
                   ) : (
-                    <SubmitAssignmentDialog
-                      assignment={assignment}
-                      sectionId={sectionId}
-                    />
+                    <SubmitAssignmentDialog assignment={assignment} sectionId={sectionId} />
                   )}
                 </div>
               </div>

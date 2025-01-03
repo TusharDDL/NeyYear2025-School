@@ -1,18 +1,18 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import * as z from "zod";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import * as z from 'zod';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
+} from '@/components/ui/dialog';
+import { Button } from '@/components/ui/button';
 import {
   Form,
   FormControl,
@@ -20,23 +20,23 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
+} from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import academicService from "@/services/academic";
-import communicationService from "@/services/communication";
+} from '@/components/ui/select';
+import academicService from '@/services/academic';
+import communicationService from '@/services/communication';
 
 const messageSchema = z.object({
-  recipient_id: z.string().min(1, "Recipient is required"),
-  subject: z.string().min(1, "Subject is required"),
-  content: z.string().min(1, "Message is required"),
+  recipient_id: z.string().min(1, 'Recipient is required'),
+  subject: z.string().min(1, 'Subject is required'),
+  content: z.string().min(1, 'Message is required'),
   file: z.any().optional(),
 });
 
@@ -47,20 +47,20 @@ export function ComposeMessageDialog() {
   const queryClient = useQueryClient();
 
   const { data: sections } = useQuery({
-    queryKey: ["sections"],
+    queryKey: ['sections'],
     queryFn: academicService.getSections,
   });
 
   // Get all users from sections
   const users = sections?.reduce((acc, section) => {
     // Add teacher if not already in the list
-    if (!acc.find((u) => u.id === section.teacher.id)) {
+    if (!acc.find(u => u.id === section.teacher.id)) {
       acc.push(section.teacher);
     }
 
     // Add students if not already in the list
-    section.students?.forEach((student) => {
-      if (!acc.find((u) => u.id === student.id)) {
+    section.students?.forEach(student => {
+      if (!acc.find(u => u.id === student.id)) {
         acc.push(student);
       }
     });
@@ -71,16 +71,16 @@ export function ComposeMessageDialog() {
   const form = useForm<MessageFormData>({
     resolver: zodResolver(messageSchema),
     defaultValues: {
-      recipient_id: "",
-      subject: "",
-      content: "",
+      recipient_id: '',
+      subject: '',
+      content: '',
     },
   });
 
   const { mutate: sendMessage, isLoading } = useMutation({
     mutationFn: (data: FormData) => communicationService.sendMessage(data),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["messages"] });
+      queryClient.invalidateQueries({ queryKey: ['messages'] });
       setOpen(false);
       form.reset();
     },
@@ -88,11 +88,11 @@ export function ComposeMessageDialog() {
 
   const onSubmit = (data: MessageFormData) => {
     const formData = new FormData();
-    formData.append("recipient_id", data.recipient_id);
-    formData.append("subject", data.subject);
-    formData.append("content", data.content);
+    formData.append('recipient_id', data.recipient_id);
+    formData.append('subject', data.subject);
+    formData.append('content', data.content);
     if (data.file?.[0]) {
-      formData.append("attachment", data.file[0]);
+      formData.append('attachment', data.file[0]);
     }
     sendMessage(formData);
   };
@@ -115,17 +115,14 @@ export function ComposeMessageDialog() {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>To</FormLabel>
-                  <Select
-                    onValueChange={field.onChange}
-                    defaultValue={field.value}
-                  >
+                  <Select onValueChange={field.onChange} defaultValue={field.value}>
                     <FormControl>
                       <SelectTrigger>
                         <SelectValue placeholder="Select recipient" />
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      {users?.map((user) => (
+                      {users?.map(user => (
                         <SelectItem key={user.id} value={user.id.toString()}>
                           {user.first_name} {user.last_name} ({user.role})
                         </SelectItem>
@@ -176,11 +173,7 @@ export function ComposeMessageDialog() {
                 <FormItem>
                   <FormLabel>Attachment (Optional)</FormLabel>
                   <FormControl>
-                    <Input
-                      type="file"
-                      onChange={(e) => onChange(e.target.files)}
-                      {...field}
-                    />
+                    <Input type="file" onChange={e => onChange(e.target.files)} {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -188,15 +181,11 @@ export function ComposeMessageDialog() {
             />
 
             <div className="flex justify-end space-x-2">
-              <Button
-                type="button"
-                variant="outline"
-                onClick={() => setOpen(false)}
-              >
+              <Button type="button" variant="outline" onClick={() => setOpen(false)}>
                 Cancel
               </Button>
               <Button type="submit" disabled={isLoading}>
-                {isLoading ? "Sending..." : "Send Message"}
+                {isLoading ? 'Sending...' : 'Send Message'}
               </Button>
             </div>
           </form>

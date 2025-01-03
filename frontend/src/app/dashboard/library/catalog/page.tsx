@@ -1,9 +1,9 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import { useQuery, useMutation } from "@tanstack/react-query";
-import { Card } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+import { useState } from 'react';
+import { useQuery, useMutation } from '@tanstack/react-query';
+import { Card } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
 import {
   Table,
   TableBody,
@@ -11,7 +11,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
+} from '@/components/ui/table';
 import {
   Dialog,
   DialogContent,
@@ -20,7 +20,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog";
+} from '@/components/ui/dialog';
 import {
   Form,
   FormControl,
@@ -29,27 +29,23 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
+} from '@/components/ui/form';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { Calendar } from "@/components/ui/calendar";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import { useToast } from "@/components/ui/use-toast";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import * as z from "zod";
-import { format } from "date-fns";
+} from '@/components/ui/select';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import { Calendar } from '@/components/ui/calendar';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { useToast } from '@/components/ui/use-toast';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import * as z from 'zod';
+import { format } from 'date-fns';
 import {
   Plus,
   FileEdit,
@@ -62,22 +58,22 @@ import {
   BookCopy,
   Eye,
   QrCode,
-} from "lucide-react";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Progress } from "@/components/ui/progress";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+} from 'lucide-react';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Progress } from '@/components/ui/progress';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 const bookSchema = z.object({
-  title: z.string().min(1, "Title is required"),
-  isbn: z.string().min(1, "ISBN is required"),
-  author: z.string().min(1, "Author is required"),
-  publisher: z.string().min(1, "Publisher is required"),
-  category: z.string().min(1, "Category is required"),
+  title: z.string().min(1, 'Title is required'),
+  isbn: z.string().min(1, 'ISBN is required'),
+  author: z.string().min(1, 'Author is required'),
+  publisher: z.string().min(1, 'Publisher is required'),
+  category: z.string().min(1, 'Category is required'),
   edition: z.string().optional(),
-  publication_year: z.string().min(1, "Publication year is required"),
-  copies: z.string().min(1, "Number of copies is required"),
-  price: z.string().min(1, "Price is required"),
-  location: z.string().min(1, "Shelf location is required"),
+  publication_year: z.string().min(1, 'Publication year is required'),
+  copies: z.string().min(1, 'Number of copies is required'),
+  price: z.string().min(1, 'Price is required'),
+  location: z.string().min(1, 'Shelf location is required'),
   description: z.string().optional(),
   cover_image: z.any().optional(),
 });
@@ -88,67 +84,65 @@ export default function BookCatalogPage() {
   const { toast } = useToast();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [selectedBook, setSelectedBook] = useState<any>(null);
-  const [selectedCategory, setSelectedCategory] = useState<string>("");
-  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState<string>('');
+  const [searchTerm, setSearchTerm] = useState('');
 
   const form = useForm<BookFormData>({
     resolver: zodResolver(bookSchema),
     defaultValues: {
-      title: "",
-      isbn: "",
-      author: "",
-      publisher: "",
-      category: "",
-      edition: "",
-      publication_year: "",
-      copies: "",
-      price: "",
-      location: "",
-      description: "",
+      title: '',
+      isbn: '',
+      author: '',
+      publisher: '',
+      category: '',
+      edition: '',
+      publication_year: '',
+      copies: '',
+      price: '',
+      location: '',
+      description: '',
     },
   });
 
   // Get books data
   const { data: booksData, isLoading } = useQuery({
-    queryKey: ["books", selectedCategory, searchTerm],
+    queryKey: ['books', selectedCategory, searchTerm],
     queryFn: () => {
       // This would be replaced with an actual API call
       return Promise.resolve([
         {
           id: 1,
-          title: "Introduction to Physics",
-          isbn: "978-3-16-148410-0",
-          author: "Dr. Robert Smith",
-          publisher: "Academic Press",
-          category: "Science",
-          edition: "3rd Edition",
-          publication_year: "2023",
+          title: 'Introduction to Physics',
+          isbn: '978-3-16-148410-0',
+          author: 'Dr. Robert Smith',
+          publisher: 'Academic Press',
+          category: 'Science',
+          edition: '3rd Edition',
+          publication_year: '2023',
           copies: 5,
           available_copies: 3,
           price: 49.99,
-          location: "Shelf A-12",
-          description:
-            "A comprehensive introduction to physics for high school students.",
+          location: 'Shelf A-12',
+          description: 'A comprehensive introduction to physics for high school students.',
           cover_image: null,
-          status: "available",
+          status: 'available',
         },
         {
           id: 2,
-          title: "World History",
-          isbn: "978-3-16-148410-1",
-          author: "Sarah Williams",
-          publisher: "History Books Inc.",
-          category: "History",
-          edition: "2nd Edition",
-          publication_year: "2022",
+          title: 'World History',
+          isbn: '978-3-16-148410-1',
+          author: 'Sarah Williams',
+          publisher: 'History Books Inc.',
+          category: 'History',
+          edition: '2nd Edition',
+          publication_year: '2022',
           copies: 8,
           available_copies: 6,
           price: 39.99,
-          location: "Shelf B-5",
-          description:
-            "An in-depth look at world history from ancient times to modern era.",
+          location: 'Shelf B-5',
+          description: 'An in-depth look at world history from ancient times to modern era.',
           cover_image: null,
-          status: "available",
+          status: 'available',
         },
       ]);
     },
@@ -156,16 +150,16 @@ export default function BookCatalogPage() {
 
   // Get categories data
   const { data: categoriesData } = useQuery({
-    queryKey: ["book-categories"],
+    queryKey: ['book-categories'],
     queryFn: () => {
       // This would be replaced with an actual API call
       return Promise.resolve([
-        "Science",
-        "Mathematics",
-        "History",
-        "Literature",
-        "Technology",
-        "Arts",
+        'Science',
+        'Mathematics',
+        'History',
+        'Literature',
+        'Technology',
+        'Arts',
       ]);
     },
   });
@@ -173,21 +167,21 @@ export default function BookCatalogPage() {
   const { mutate: saveBook, isLoading: isSaving } = useMutation({
     mutationFn: (data: BookFormData) => {
       // This would be replaced with an actual API call
-      return new Promise((resolve) => setTimeout(resolve, 1000));
+      return new Promise(resolve => setTimeout(resolve, 1000));
     },
     onSuccess: () => {
       toast({
-        title: "Success",
-        description: "Book saved successfully.",
+        title: 'Success',
+        description: 'Book saved successfully.',
       });
       setIsDialogOpen(false);
       form.reset();
     },
     onError: () => {
       toast({
-        title: "Error",
-        description: "Failed to save book.",
-        variant: "destructive",
+        title: 'Error',
+        description: 'Failed to save book.',
+        variant: 'destructive',
       });
     },
   });
@@ -196,7 +190,7 @@ export default function BookCatalogPage() {
     const formData = new FormData();
     Object.entries(data).forEach(([key, value]) => {
       if (value) {
-        if (key === "cover_image" && value[0]) {
+        if (key === 'cover_image' && value[0]) {
           formData.append(key, value[0]);
         } else {
           formData.append(key, value);
@@ -227,15 +221,12 @@ export default function BookCatalogPage() {
             </DialogTrigger>
             <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
               <DialogHeader>
-                <DialogTitle>{selectedBook ? "Edit" : "Add"} Book</DialogTitle>
+                <DialogTitle>{selectedBook ? 'Edit' : 'Add'} Book</DialogTitle>
                 <DialogDescription>Enter book details</DialogDescription>
               </DialogHeader>
 
               <Form {...form}>
-                <form
-                  onSubmit={form.handleSubmit(onSubmit)}
-                  className="space-y-4"
-                >
+                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
                   {/* Basic Information */}
                   <div className="space-y-4">
                     <h3 className="text-lg font-semibold">Basic Information</h3>
@@ -307,17 +298,14 @@ export default function BookCatalogPage() {
                         render={({ field }) => (
                           <FormItem>
                             <FormLabel>Category</FormLabel>
-                            <Select
-                              onValueChange={field.onChange}
-                              defaultValue={field.value}
-                            >
+                            <Select onValueChange={field.onChange} defaultValue={field.value}>
                               <FormControl>
                                 <SelectTrigger>
                                   <SelectValue placeholder="Select category" />
                                 </SelectTrigger>
                               </FormControl>
                               <SelectContent>
-                                {categoriesData?.map((category) => (
+                                {categoriesData?.map(category => (
                                   <SelectItem key={category} value={category}>
                                     {category}
                                   </SelectItem>
@@ -361,9 +349,7 @@ export default function BookCatalogPage() {
 
                   {/* Inventory Information */}
                   <div className="space-y-4">
-                    <h3 className="text-lg font-semibold">
-                      Inventory Information
-                    </h3>
+                    <h3 className="text-lg font-semibold">Inventory Information</h3>
 
                     <div className="grid grid-cols-3 gap-4">
                       <FormField
@@ -387,12 +373,7 @@ export default function BookCatalogPage() {
                           <FormItem>
                             <FormLabel>Price</FormLabel>
                             <FormControl>
-                              <Input
-                                {...field}
-                                type="number"
-                                step="0.01"
-                                min="0"
-                              />
+                              <Input {...field} type="number" step="0.01" min="0" />
                             </FormControl>
                             <FormMessage />
                           </FormItem>
@@ -417,9 +398,7 @@ export default function BookCatalogPage() {
 
                   {/* Additional Information */}
                   <div className="space-y-4">
-                    <h3 className="text-lg font-semibold">
-                      Additional Information
-                    </h3>
+                    <h3 className="text-lg font-semibold">Additional Information</h3>
 
                     <FormField
                       control={form.control}
@@ -445,7 +424,7 @@ export default function BookCatalogPage() {
                             <Input
                               type="file"
                               accept="image/*"
-                              onChange={(e) => onChange(e.target.files)}
+                              onChange={e => onChange(e.target.files)}
                               {...field}
                             />
                           </FormControl>
@@ -456,15 +435,11 @@ export default function BookCatalogPage() {
                   </div>
 
                   <DialogFooter>
-                    <Button
-                      type="button"
-                      variant="outline"
-                      onClick={() => setIsDialogOpen(false)}
-                    >
+                    <Button type="button" variant="outline" onClick={() => setIsDialogOpen(false)}>
                       Cancel
                     </Button>
                     <Button type="submit" disabled={isSaving}>
-                      {isSaving ? "Saving..." : "Save"}
+                      {isSaving ? 'Saving...' : 'Save'}
                     </Button>
                   </DialogFooter>
                 </form>
@@ -529,23 +504,20 @@ export default function BookCatalogPage() {
                   placeholder="Search by title, author, or ISBN..."
                   className="pl-8"
                   value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
+                  onChange={e => setSearchTerm(e.target.value)}
                 />
               </div>
             </div>
 
             <div>
               <label className="text-sm font-medium mb-1 block">Category</label>
-              <Select
-                value={selectedCategory}
-                onValueChange={setSelectedCategory}
-              >
+              <Select value={selectedCategory} onValueChange={setSelectedCategory}>
                 <SelectTrigger>
                   <SelectValue placeholder="All Categories" />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="">All Categories</SelectItem>
-                  {categoriesData?.map((category) => (
+                  {categoriesData?.map(category => (
                     <SelectItem key={category} value={category}>
                       {category}
                     </SelectItem>
@@ -581,12 +553,12 @@ export default function BookCatalogPage() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {booksData?.map((book) => (
+              {booksData?.map(book => (
                 <TableRow key={book.id}>
                   <TableCell>
                     <div className="flex items-center space-x-3">
                       <Avatar>
-                        <AvatarImage src={book.cover_image || ""} />
+                        <AvatarImage src={book.cover_image || ''} />
                         <AvatarFallback>{book.title[0]}</AvatarFallback>
                       </Avatar>
                       <div>
@@ -603,18 +575,16 @@ export default function BookCatalogPage() {
                       <p className="text-sm">
                         {book.available_copies} / {book.copies} available
                       </p>
-                      <Progress
-                        value={(book.available_copies / book.copies) * 100}
-                      />
+                      <Progress value={(book.available_copies / book.copies) * 100} />
                     </div>
                   </TableCell>
                   <TableCell>{book.location}</TableCell>
                   <TableCell>
                     <span
                       className={`px-2 py-1 rounded-full text-xs ${
-                        book.status === "available"
-                          ? "bg-green-100 text-green-700"
-                          : "bg-yellow-100 text-yellow-700"
+                        book.status === 'available'
+                          ? 'bg-green-100 text-green-700'
+                          : 'bg-yellow-100 text-yellow-700'
                       }`}
                     >
                       {book.status}

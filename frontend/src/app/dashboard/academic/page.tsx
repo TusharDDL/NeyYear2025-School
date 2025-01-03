@@ -1,7 +1,7 @@
-"use client";
+'use client';
 
-import { Card } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+import { Card } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
 import {
   BookOpen,
   FileText,
@@ -10,58 +10,58 @@ import {
   Library,
   PenTool,
   ClipboardList,
-} from "lucide-react";
-import Link from "next/link";
+} from 'lucide-react';
+import Link from 'next/link';
 
 const academicModules = [
   {
-    title: "Curriculum",
-    description: "Manage and organize course curriculum",
+    title: 'Curriculum',
+    description: 'Manage and organize course curriculum',
     icon: BookOpen,
-    href: "/academic/curriculum",
-    color: "bg-blue-500",
+    href: '/academic/curriculum',
+    color: 'bg-blue-500',
   },
   {
-    title: "Lesson Plans",
-    description: "Create and track lesson plans",
+    title: 'Lesson Plans',
+    description: 'Create and track lesson plans',
     icon: FileText,
-    href: "/academic/lessons",
-    color: "bg-green-500",
+    href: '/academic/lessons',
+    color: 'bg-green-500',
   },
   {
-    title: "Assignments",
-    description: "Manage homework and assignments",
+    title: 'Assignments',
+    description: 'Manage homework and assignments',
     icon: PenTool,
-    href: "/academic/assignments",
-    color: "bg-purple-500",
+    href: '/academic/assignments',
+    color: 'bg-purple-500',
   },
   {
-    title: "Examinations",
-    description: "Conduct and manage examinations",
+    title: 'Examinations',
+    description: 'Conduct and manage examinations',
     icon: ClipboardList,
-    href: "/academic/exams",
-    color: "bg-red-500",
+    href: '/academic/exams',
+    color: 'bg-red-500',
   },
   {
-    title: "Grade Book",
-    description: "Record and manage student grades",
+    title: 'Grade Book',
+    description: 'Record and manage student grades',
     icon: GraduationCap,
-    href: "/academic/gradebook",
-    color: "bg-yellow-500",
+    href: '/academic/gradebook',
+    color: 'bg-yellow-500',
   },
   {
-    title: "Calendar",
-    description: "Academic calendar and events",
+    title: 'Calendar',
+    description: 'Academic calendar and events',
     icon: Calendar,
-    href: "/academic/calendar",
-    color: "bg-pink-500",
+    href: '/academic/calendar',
+    color: 'bg-pink-500',
   },
   {
-    title: "Resources",
-    description: "Educational resources and materials",
+    title: 'Resources',
+    description: 'Educational resources and materials',
     icon: Library,
-    href: "/academic/resources",
-    color: "bg-indigo-500",
+    href: '/academic/resources',
+    color: 'bg-indigo-500',
   },
 ];
 
@@ -70,13 +70,11 @@ export default function AcademicPage() {
     <div className="container mx-auto py-6">
       <div className="mb-6">
         <h1 className="text-2xl font-bold">Academic Management</h1>
-        <p className="text-gray-500">
-          Manage curriculum, lessons, assignments, and more
-        </p>
+        <p className="text-gray-500">Manage curriculum, lessons, assignments, and more</p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {academicModules.map((module) => (
+        {academicModules.map(module => (
           <Link key={module.title} href={module.href}>
             <Card className="p-6 hover:shadow-lg transition-shadow cursor-pointer">
               <div className="flex items-start space-x-4">

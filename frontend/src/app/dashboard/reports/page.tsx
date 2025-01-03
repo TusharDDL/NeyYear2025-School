@@ -1,9 +1,9 @@
-"use client";
+'use client';
 
-import { useQuery } from "@tanstack/react-query";
-import { useAuth } from "@/lib/auth";
-import { Card } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+import { useQuery } from '@tanstack/react-query';
+import { useAuth } from '@/lib/auth';
+import { Card } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
 import {
   BarChart,
   Bar,
@@ -15,38 +15,37 @@ import {
   ResponsiveContainer,
   LineChart,
   Line,
-} from "recharts";
-import { FileText, Users, Calendar, CreditCard } from "lucide-react";
-import Link from "next/link";
-import reportsService from "@/services/reports";
+} from 'recharts';
+import { FileText, Users, Calendar, CreditCard } from 'lucide-react';
+import Link from 'next/link';
+import reportsService from '@/services/reports';
 
 export default function ReportsPage() {
   const { user } = useAuth();
 
   // Get overview data based on user role
   const { data: performanceData } = useQuery({
-    queryKey: ["student-performance"],
+    queryKey: ['student-performance'],
     queryFn: () => reportsService.getStudentPerformance(),
     enabled: !!user,
   });
 
   const { data: attendanceData } = useQuery({
-    queryKey: ["attendance-report"],
+    queryKey: ['attendance-report'],
     queryFn: () => reportsService.getAttendanceReport(),
     enabled: !!user,
   });
 
   const { data: feeData } = useQuery({
-    queryKey: ["fee-report"],
+    queryKey: ['fee-report'],
     queryFn: () => reportsService.getFeeReport(),
     enabled: !!user,
   });
 
   const { data: classData } = useQuery({
-    queryKey: ["class-report"],
+    queryKey: ['class-report'],
     queryFn: () => reportsService.getClassReport(),
-    enabled:
-      !!user && ["super_admin", "school_admin", "teacher"].includes(user.role),
+    enabled: !!user && ['super_admin', 'school_admin', 'teacher'].includes(user.role),
   });
 
   return (
@@ -65,9 +64,7 @@ export default function ReportsPage() {
               </div>
               <div>
                 <h3 className="font-semibold">Performance Reports</h3>
-                <p className="text-sm text-gray-500">
-                  View academic performance
-                </p>
+                <p className="text-sm text-gray-500">View academic performance</p>
               </div>
             </div>
           </Card>
@@ -81,9 +78,7 @@ export default function ReportsPage() {
               </div>
               <div>
                 <h3 className="font-semibold">Attendance Reports</h3>
-                <p className="text-sm text-gray-500">
-                  Track attendance records
-                </p>
+                <p className="text-sm text-gray-500">Track attendance records</p>
               </div>
             </div>
           </Card>
@@ -103,9 +98,7 @@ export default function ReportsPage() {
           </Card>
         </Link>
 
-        {["super_admin", "school_admin", "teacher"].includes(
-          user?.role || "",
-        ) && (
+        {['super_admin', 'school_admin', 'teacher'].includes(user?.role || '') && (
           <Link href="/reports/class">
             <Card className="p-4 hover:bg-gray-50 transition-colors cursor-pointer">
               <div className="flex items-center space-x-4">
@@ -134,11 +127,7 @@ export default function ReportsPage() {
                 <YAxis />
                 <Tooltip />
                 <Legend />
-                <Bar
-                  dataKey="average_percentage"
-                  name="Average Score"
-                  fill="#3b82f6"
-                />
+                <Bar dataKey="average_percentage" name="Average Score" fill="#3b82f6" />
               </BarChart>
             </ResponsiveContainer>
           </div>
@@ -154,12 +143,7 @@ export default function ReportsPage() {
                 <YAxis />
                 <Tooltip />
                 <Legend />
-                <Line
-                  type="monotone"
-                  dataKey="percentage"
-                  name="Attendance %"
-                  stroke="#22c55e"
-                />
+                <Line type="monotone" dataKey="percentage" name="Attendance %" stroke="#22c55e" />
               </LineChart>
             </ResponsiveContainer>
           </div>
@@ -176,29 +160,19 @@ export default function ReportsPage() {
         </div>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div className="p-4 bg-green-50 rounded-lg">
-            <h3 className="text-sm font-medium text-green-600">
-              Total Collected
-            </h3>
-            <p className="text-2xl font-bold text-green-700">
-              ₹{feeData?.paid_amount || 0}
-            </p>
+            <h3 className="text-sm font-medium text-green-600">Total Collected</h3>
+            <p className="text-2xl font-bold text-green-700">₹{feeData?.paid_amount || 0}</p>
           </div>
           <div className="p-4 bg-yellow-50 rounded-lg">
             <h3 className="text-sm font-medium text-yellow-600">Pending</h3>
-            <p className="text-2xl font-bold text-yellow-700">
-              ₹{feeData?.pending_amount || 0}
-            </p>
+            <p className="text-2xl font-bold text-yellow-700">₹{feeData?.pending_amount || 0}</p>
           </div>
           <div className="p-4 bg-blue-50 rounded-lg">
-            <h3 className="text-sm font-medium text-blue-600">
-              Collection Rate
-            </h3>
+            <h3 className="text-sm font-medium text-blue-600">Collection Rate</h3>
             <p className="text-2xl font-bold text-blue-700">
               {feeData
                 ? Math.round(
-                    (feeData.paid_amount /
-                      (feeData.paid_amount + feeData.pending_amount)) *
-                      100,
+                    (feeData.paid_amount / (feeData.paid_amount + feeData.pending_amount)) * 100
                   )
                 : 0}
               %
@@ -208,9 +182,7 @@ export default function ReportsPage() {
       </Card>
 
       {/* Class Overview */}
-      {["super_admin", "school_admin", "teacher"].includes(
-        user?.role || "",
-      ) && (
+      {['super_admin', 'school_admin', 'teacher'].includes(user?.role || '') && (
         <Card className="p-6">
           <div className="flex justify-between items-center mb-4">
             <h2 className="text-lg font-semibold">Class Overview</h2>
@@ -226,16 +198,8 @@ export default function ReportsPage() {
                 <YAxis />
                 <Tooltip />
                 <Legend />
-                <Bar
-                  dataKey="average_attendance"
-                  name="Attendance %"
-                  fill="#22c55e"
-                />
-                <Bar
-                  dataKey="average_performance"
-                  name="Performance %"
-                  fill="#3b82f6"
-                />
+                <Bar dataKey="average_attendance" name="Attendance %" fill="#22c55e" />
+                <Bar dataKey="average_performance" name="Performance %" fill="#3b82f6" />
               </BarChart>
             </ResponsiveContainer>
           </div>

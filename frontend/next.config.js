@@ -2,7 +2,7 @@
 const nextConfig = {
   reactStrictMode: true,
   images: {
-    domains: ["localhost"],
+    domains: ['localhost'],
   },
   swcMinify: true,
   experimental: {
@@ -11,12 +11,12 @@ const nextConfig = {
   async rewrites() {
     return [
       {
-        source: "/api/:path*/",
-        destination: "http://localhost:8000/api/:path*/",
+        source: '/api/:path*/',
+        destination: 'http://localhost:8000/api/:path*/',
       },
       {
-        source: "/api/:path*",
-        destination: "http://localhost:8000/api/:path*/",
+        source: '/api/:path*',
+        destination: 'http://localhost:8000/api/:path*/',
       },
     ];
   },

@@ -1,9 +1,9 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import { useQuery, useMutation } from "@tanstack/react-query";
-import { Card } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+import { useState } from 'react';
+import { useQuery, useMutation } from '@tanstack/react-query';
+import { Card } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
 import {
   Table,
   TableBody,
@@ -11,7 +11,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
+} from '@/components/ui/table';
 import {
   Dialog,
   DialogContent,
@@ -20,7 +20,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog";
+} from '@/components/ui/dialog';
 import {
   Form,
   FormControl,
@@ -29,27 +29,23 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
+} from '@/components/ui/form';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { Calendar } from "@/components/ui/calendar";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import { useToast } from "@/components/ui/use-toast";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import * as z from "zod";
-import { format } from "date-fns";
+} from '@/components/ui/select';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import { Calendar } from '@/components/ui/calendar';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { useToast } from '@/components/ui/use-toast';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import * as z from 'zod';
+import { format } from 'date-fns';
 import {
   Plus,
   FileEdit,
@@ -58,22 +54,22 @@ import {
   FileUp,
   Download,
   Eye,
-} from "lucide-react";
+} from 'lucide-react';
 
 const examSchema = z.object({
-  title: z.string().min(1, "Title is required"),
-  type: z.string().min(1, "Exam type is required"),
-  class: z.string().min(1, "Class is required"),
-  subject: z.string().min(1, "Subject is required"),
+  title: z.string().min(1, 'Title is required'),
+  type: z.string().min(1, 'Exam type is required'),
+  class: z.string().min(1, 'Class is required'),
+  subject: z.string().min(1, 'Subject is required'),
   date: z.date({
-    required_error: "Date is required",
+    required_error: 'Date is required',
   }),
-  start_time: z.string().min(1, "Start time is required"),
-  duration: z.string().min(1, "Duration is required"),
-  max_marks: z.string().min(1, "Maximum marks is required"),
-  instructions: z.string().min(1, "Instructions are required"),
-  syllabus: z.string().min(1, "Syllabus is required"),
-  venue: z.string().min(1, "Venue is required"),
+  start_time: z.string().min(1, 'Start time is required'),
+  duration: z.string().min(1, 'Duration is required'),
+  max_marks: z.string().min(1, 'Maximum marks is required'),
+  instructions: z.string().min(1, 'Instructions are required'),
+  syllabus: z.string().min(1, 'Syllabus is required'),
+  venue: z.string().min(1, 'Venue is required'),
 });
 
 type ExamFormData = z.infer<typeof examSchema>;
@@ -86,54 +82,54 @@ export default function ExamsPage() {
   const form = useForm<ExamFormData>({
     resolver: zodResolver(examSchema),
     defaultValues: {
-      title: "",
-      type: "",
-      class: "",
-      subject: "",
-      start_time: "",
-      duration: "",
-      max_marks: "",
-      instructions: "",
-      syllabus: "",
-      venue: "",
+      title: '',
+      type: '',
+      class: '',
+      subject: '',
+      start_time: '',
+      duration: '',
+      max_marks: '',
+      instructions: '',
+      syllabus: '',
+      venue: '',
     },
   });
 
   // Get exams data
   const { data: examsData, isLoading } = useQuery({
-    queryKey: ["exams"],
+    queryKey: ['exams'],
     queryFn: () => {
       // This would be replaced with an actual API call
       return Promise.resolve([
         {
           id: 1,
-          title: "Mid-Term Mathematics",
-          type: "Mid Term",
-          class: "Class 10",
-          subject: "Mathematics",
-          date: "2024-02-15",
-          start_time: "09:00",
-          duration: "3 hours",
-          max_marks: "100",
-          instructions: "- Use blue/black pen\n- All questions are compulsory",
-          syllabus: "Chapter 1-5",
-          venue: "Main Hall",
-          status: "scheduled",
+          title: 'Mid-Term Mathematics',
+          type: 'Mid Term',
+          class: 'Class 10',
+          subject: 'Mathematics',
+          date: '2024-02-15',
+          start_time: '09:00',
+          duration: '3 hours',
+          max_marks: '100',
+          instructions: '- Use blue/black pen\n- All questions are compulsory',
+          syllabus: 'Chapter 1-5',
+          venue: 'Main Hall',
+          status: 'scheduled',
         },
         {
           id: 2,
-          title: "Science Unit Test",
-          type: "Unit Test",
-          class: "Class 10",
-          subject: "Science",
-          date: "2024-02-20",
-          start_time: "10:30",
-          duration: "1.5 hours",
-          max_marks: "50",
-          instructions: "- Write neat and clear\n- Show all working",
-          syllabus: "Chapter 3-4",
-          venue: "Room 101",
-          status: "draft",
+          title: 'Science Unit Test',
+          type: 'Unit Test',
+          class: 'Class 10',
+          subject: 'Science',
+          date: '2024-02-20',
+          start_time: '10:30',
+          duration: '1.5 hours',
+          max_marks: '50',
+          instructions: '- Write neat and clear\n- Show all working',
+          syllabus: 'Chapter 3-4',
+          venue: 'Room 101',
+          status: 'draft',
         },
       ]);
     },
@@ -142,21 +138,21 @@ export default function ExamsPage() {
   const { mutate: saveExam, isLoading: isSaving } = useMutation({
     mutationFn: (data: ExamFormData) => {
       // This would be replaced with an actual API call
-      return new Promise((resolve) => setTimeout(resolve, 1000));
+      return new Promise(resolve => setTimeout(resolve, 1000));
     },
     onSuccess: () => {
       toast({
-        title: "Success",
-        description: "Exam saved successfully.",
+        title: 'Success',
+        description: 'Exam saved successfully.',
       });
       setIsDialogOpen(false);
       form.reset();
     },
     onError: () => {
       toast({
-        title: "Error",
-        description: "Failed to save exam.",
-        variant: "destructive",
+        title: 'Error',
+        description: 'Failed to save exam.',
+        variant: 'destructive',
       });
     },
   });
@@ -186,8 +182,8 @@ export default function ExamsPage() {
   const handleDelete = (id: number) => {
     // This would be replaced with an actual API call
     toast({
-      title: "Success",
-      description: "Exam deleted successfully.",
+      title: 'Success',
+      description: 'Exam deleted successfully.',
     });
   };
 
@@ -207,19 +203,12 @@ export default function ExamsPage() {
           </DialogTrigger>
           <DialogContent className="max-w-2xl">
             <DialogHeader>
-              <DialogTitle>
-                {selectedExam ? "Edit" : "Schedule"} Exam
-              </DialogTitle>
-              <DialogDescription>
-                Create or modify exam details
-              </DialogDescription>
+              <DialogTitle>{selectedExam ? 'Edit' : 'Schedule'} Exam</DialogTitle>
+              <DialogDescription>Create or modify exam details</DialogDescription>
             </DialogHeader>
 
             <Form {...form}>
-              <form
-                onSubmit={form.handleSubmit(onSubmit)}
-                className="space-y-4"
-              >
+              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
                 <FormField
                   control={form.control}
                   name="title"
@@ -241,22 +230,14 @@ export default function ExamsPage() {
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>Exam Type</FormLabel>
-                        <Select
-                          onValueChange={field.onChange}
-                          defaultValue={field.value}
-                        >
+                        <Select onValueChange={field.onChange} defaultValue={field.value}>
                           <FormControl>
                             <SelectTrigger>
                               <SelectValue placeholder="Select type" />
                             </SelectTrigger>
                           </FormControl>
                           <SelectContent>
-                            {[
-                              "Unit Test",
-                              "Mid Term",
-                              "Final Term",
-                              "Practice Test",
-                            ].map((type) => (
+                            {['Unit Test', 'Mid Term', 'Final Term', 'Practice Test'].map(type => (
                               <SelectItem key={type} value={type}>
                                 {type}
                               </SelectItem>
@@ -274,10 +255,7 @@ export default function ExamsPage() {
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>Class</FormLabel>
-                        <Select
-                          onValueChange={field.onChange}
-                          defaultValue={field.value}
-                        >
+                        <Select onValueChange={field.onChange} defaultValue={field.value}>
                           <FormControl>
                             <SelectTrigger>
                               <SelectValue placeholder="Select class" />
@@ -303,27 +281,20 @@ export default function ExamsPage() {
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>Subject</FormLabel>
-                      <Select
-                        onValueChange={field.onChange}
-                        defaultValue={field.value}
-                      >
+                      <Select onValueChange={field.onChange} defaultValue={field.value}>
                         <FormControl>
                           <SelectTrigger>
                             <SelectValue placeholder="Select subject" />
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
-                          {[
-                            "Mathematics",
-                            "Science",
-                            "English",
-                            "History",
-                            "Geography",
-                          ].map((subject) => (
-                            <SelectItem key={subject} value={subject}>
-                              {subject}
-                            </SelectItem>
-                          ))}
+                          {['Mathematics', 'Science', 'English', 'History', 'Geography'].map(
+                            subject => (
+                              <SelectItem key={subject} value={subject}>
+                                {subject}
+                              </SelectItem>
+                            )
+                          )}
                         </SelectContent>
                       </Select>
                       <FormMessage />
@@ -344,11 +315,11 @@ export default function ExamsPage() {
                               <Button
                                 variant="outline"
                                 className={`w-full pl-3 text-left font-normal ${
-                                  !field.value && "text-muted-foreground"
+                                  !field.value && 'text-muted-foreground'
                                 }`}
                               >
                                 {field.value ? (
-                                  format(field.value, "PPP")
+                                  format(field.value, 'PPP')
                                 ) : (
                                   <span>Pick a date</span>
                                 )}
@@ -361,7 +332,7 @@ export default function ExamsPage() {
                               mode="single"
                               selected={field.value}
                               onSelect={field.onChange}
-                              disabled={(date) => date < new Date()}
+                              disabled={date => date < new Date()}
                               initialFocus
                             />
                           </PopoverContent>
@@ -391,27 +362,20 @@ export default function ExamsPage() {
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>Duration</FormLabel>
-                        <Select
-                          onValueChange={field.onChange}
-                          defaultValue={field.value}
-                        >
+                        <Select onValueChange={field.onChange} defaultValue={field.value}>
                           <FormControl>
                             <SelectTrigger>
                               <SelectValue placeholder="Select duration" />
                             </SelectTrigger>
                           </FormControl>
                           <SelectContent>
-                            {[
-                              "1 hour",
-                              "1.5 hours",
-                              "2 hours",
-                              "2.5 hours",
-                              "3 hours",
-                            ].map((duration) => (
-                              <SelectItem key={duration} value={duration}>
-                                {duration}
-                              </SelectItem>
-                            ))}
+                            {['1 hour', '1.5 hours', '2 hours', '2.5 hours', '3 hours'].map(
+                              duration => (
+                                <SelectItem key={duration} value={duration}>
+                                  {duration}
+                                </SelectItem>
+                              )
+                            )}
                           </SelectContent>
                         </Select>
                         <FormMessage />
@@ -459,9 +423,7 @@ export default function ExamsPage() {
                       <FormControl>
                         <Textarea {...field} />
                       </FormControl>
-                      <FormDescription>
-                        List the topics and chapters to be covered
-                      </FormDescription>
+                      <FormDescription>List the topics and chapters to be covered</FormDescription>
                       <FormMessage />
                     </FormItem>
                   )}
@@ -476,24 +438,18 @@ export default function ExamsPage() {
                       <FormControl>
                         <Textarea {...field} />
                       </FormControl>
-                      <FormDescription>
-                        Enter each instruction on a new line
-                      </FormDescription>
+                      <FormDescription>Enter each instruction on a new line</FormDescription>
                       <FormMessage />
                     </FormItem>
                   )}
                 />
 
                 <DialogFooter>
-                  <Button
-                    type="button"
-                    variant="outline"
-                    onClick={() => setIsDialogOpen(false)}
-                  >
+                  <Button type="button" variant="outline" onClick={() => setIsDialogOpen(false)}>
                     Cancel
                   </Button>
                   <Button type="submit" disabled={isSaving}>
-                    {isSaving ? "Saving..." : "Save"}
+                    {isSaving ? 'Saving...' : 'Save'}
                   </Button>
                 </DialogFooter>
               </form>
@@ -518,26 +474,24 @@ export default function ExamsPage() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {examsData?.map((exam) => (
+              {examsData?.map(exam => (
                 <TableRow key={exam.id}>
                   <TableCell>{exam.title}</TableCell>
                   <TableCell>{exam.type}</TableCell>
                   <TableCell>{exam.class}</TableCell>
                   <TableCell>{exam.subject}</TableCell>
                   <TableCell>
-                    {format(new Date(exam.date), "PPP")}
+                    {format(new Date(exam.date), 'PPP')}
                     <br />
-                    <span className="text-sm text-gray-500">
-                      {exam.start_time}
-                    </span>
+                    <span className="text-sm text-gray-500">{exam.start_time}</span>
                   </TableCell>
                   <TableCell>{exam.duration}</TableCell>
                   <TableCell>
                     <span
                       className={`px-2 py-1 rounded-full text-xs ${
-                        exam.status === "scheduled"
-                          ? "bg-green-100 text-green-700"
-                          : "bg-yellow-100 text-yellow-700"
+                        exam.status === 'scheduled'
+                          ? 'bg-green-100 text-green-700'
+                          : 'bg-yellow-100 text-yellow-700'
                       }`}
                     >
                       {exam.status}
@@ -545,18 +499,10 @@ export default function ExamsPage() {
                   </TableCell>
                   <TableCell>
                     <div className="flex items-center gap-2">
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => handleEdit(exam)}
-                      >
+                      <Button variant="ghost" size="sm" onClick={() => handleEdit(exam)}>
                         <FileEdit className="h-4 w-4" />
                       </Button>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => handleDelete(exam.id)}
-                      >
+                      <Button variant="ghost" size="sm" onClick={() => handleDelete(exam.id)}>
                         <Trash2 className="h-4 w-4" />
                       </Button>
                     </div>

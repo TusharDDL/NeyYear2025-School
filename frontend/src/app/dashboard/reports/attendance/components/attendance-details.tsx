@@ -1,10 +1,10 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import { format } from "date-fns";
-import { AttendanceReport } from "@/services/reports";
-import { Card } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
+import { useState } from 'react';
+import { format } from 'date-fns';
+import { AttendanceReport } from '@/services/reports';
+import { Card } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
 import {
   Table,
   TableBody,
@@ -12,7 +12,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
+} from '@/components/ui/table';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -20,23 +20,22 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { MoreHorizontal } from "lucide-react";
-import { MonthlyBreakdownDialog } from "./monthly-breakdown-dialog";
+} from '@/components/ui/dropdown-menu';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { MoreHorizontal } from 'lucide-react';
+import { MonthlyBreakdownDialog } from './monthly-breakdown-dialog';
 
 interface AttendanceDetailsProps {
   data: AttendanceReport[];
 }
 
 export function AttendanceDetails({ data }: AttendanceDetailsProps) {
-  const [searchTerm, setSearchTerm] = useState("");
-  const [selectedStudent, setSelectedStudent] =
-    useState<AttendanceReport | null>(null);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [selectedStudent, setSelectedStudent] = useState<AttendanceReport | null>(null);
 
-  const filteredData = data.filter((student) =>
-    student.student_name.toLowerCase().includes(searchTerm.toLowerCase()),
+  const filteredData = data.filter(student =>
+    student.student_name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   const getAttendanceStatus = (percentage: number) => {
@@ -71,7 +70,7 @@ export function AttendanceDetails({ data }: AttendanceDetailsProps) {
           <Input
             placeholder="Search students..."
             value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
+            onChange={e => setSearchTerm(e.target.value)}
             className="max-w-xs"
           />
         </div>
@@ -92,26 +91,16 @@ export function AttendanceDetails({ data }: AttendanceDetailsProps) {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {filteredData.map((student) => (
+              {filteredData.map(student => (
                 <TableRow key={student.student_id}>
-                  <TableCell className="font-medium">
-                    {student.student_name}
-                  </TableCell>
+                  <TableCell className="font-medium">{student.student_name}</TableCell>
                   <TableCell>{student.class_name}</TableCell>
                   <TableCell>{student.section_name}</TableCell>
                   <TableCell>{student.total_days}</TableCell>
-                  <TableCell className="text-green-600">
-                    {student.present_days}
-                  </TableCell>
-                  <TableCell className="text-red-600">
-                    {student.absent_days}
-                  </TableCell>
-                  <TableCell>
-                    {student.attendance_percentage.toFixed(1)}%
-                  </TableCell>
-                  <TableCell>
-                    {getAttendanceStatus(student.attendance_percentage)}
-                  </TableCell>
+                  <TableCell className="text-green-600">{student.present_days}</TableCell>
+                  <TableCell className="text-red-600">{student.absent_days}</TableCell>
+                  <TableCell>{student.attendance_percentage.toFixed(1)}%</TableCell>
+                  <TableCell>{getAttendanceStatus(student.attendance_percentage)}</TableCell>
                   <TableCell>
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
@@ -123,9 +112,7 @@ export function AttendanceDetails({ data }: AttendanceDetailsProps) {
                       <DropdownMenuContent align="end">
                         <DropdownMenuLabel>Actions</DropdownMenuLabel>
                         <DropdownMenuSeparator />
-                        <DropdownMenuItem
-                          onClick={() => setSelectedStudent(student)}
-                        >
+                        <DropdownMenuItem onClick={() => setSelectedStudent(student)}>
                           View Monthly Breakdown
                         </DropdownMenuItem>
                       </DropdownMenuContent>

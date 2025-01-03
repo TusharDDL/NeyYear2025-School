@@ -1,18 +1,18 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import * as z from "zod";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import * as z from 'zod';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
+} from '@/components/ui/dialog';
+import { Button } from '@/components/ui/button';
 import {
   Form,
   FormControl,
@@ -20,14 +20,14 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { Assignment } from "@/services/academic";
-import academicService from "@/services/academic";
-import { useAuth } from "@/lib/auth";
+} from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
+import { Assignment } from '@/services/academic';
+import academicService from '@/services/academic';
+import { useAuth } from '@/lib/auth';
 
 const submissionSchema = z.object({
-  file: z.any().refine((files) => files?.length === 1, "File is required"),
+  file: z.any().refine(files => files?.length === 1, 'File is required'),
 });
 
 type SubmissionFormData = z.infer<typeof submissionSchema>;
@@ -37,21 +37,18 @@ interface SubmitAssignmentDialogProps {
   sectionId: number;
 }
 
-export function SubmitAssignmentDialog({
-  assignment,
-  sectionId,
-}: SubmitAssignmentDialogProps) {
+export function SubmitAssignmentDialog({ assignment, sectionId }: SubmitAssignmentDialogProps) {
   const [open, setOpen] = useState(false);
   const queryClient = useQueryClient();
   const { user } = useAuth();
 
   // Get existing submission
   const { data: submissions } = useQuery({
-    queryKey: ["assignment-submissions", assignment.id],
+    queryKey: ['assignment-submissions', assignment.id],
     queryFn: () => academicService.getAssignmentSubmissions(assignment.id),
   });
 
-  const userSubmission = submissions?.find((s) => s.student.id === user?.id);
+  const userSubmission = submissions?.find(s => s.student.id === user?.id);
 
   const form = useForm<SubmissionFormData>({
     resolver: zodResolver(submissionSchema),
@@ -61,7 +58,7 @@ export function SubmitAssignmentDialog({
     mutationFn: (data: FormData) => academicService.submitAssignment(data),
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: ["assignment-submissions", assignment.id],
+        queryKey: ['assignment-submissions', assignment.id],
       });
       setOpen(false);
       form.reset();
@@ -70,8 +67,8 @@ export function SubmitAssignmentDialog({
 
   const onSubmit = (data: SubmissionFormData) => {
     const formData = new FormData();
-    formData.append("assignment_id", assignment.id.toString());
-    formData.append("file", data.file[0]);
+    formData.append('assignment_id', assignment.id.toString());
+    formData.append('file', data.file[0]);
     submitAssignment(formData);
   };
 
@@ -81,10 +78,10 @@ export function SubmitAssignmentDialog({
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button
-          variant={userSubmission ? "outline" : "default"}
+          variant={userSubmission ? 'outline' : 'default'}
           disabled={isOverdue && !userSubmission}
         >
-          {userSubmission ? "Update Submission" : "Submit"}
+          {userSubmission ? 'Update Submission' : 'Submit'}
         </Button>
       </DialogTrigger>
       <DialogContent>
@@ -109,9 +106,7 @@ export function SubmitAssignmentDialog({
               )}
             </div>
             {userSubmission.remarks && (
-              <p className="mt-2 text-sm text-gray-600">
-                {userSubmission.remarks}
-              </p>
+              <p className="mt-2 text-sm text-gray-600">{userSubmission.remarks}</p>
             )}
           </div>
         )}
@@ -125,11 +120,7 @@ export function SubmitAssignmentDialog({
                 <FormItem>
                   <FormLabel>Upload File</FormLabel>
                   <FormControl>
-                    <Input
-                      type="file"
-                      onChange={(e) => onChange(e.target.files)}
-                      {...field}
-                    />
+                    <Input type="file" onChange={e => onChange(e.target.files)} {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -137,15 +128,11 @@ export function SubmitAssignmentDialog({
             />
 
             <div className="flex justify-end space-x-2">
-              <Button
-                type="button"
-                variant="outline"
-                onClick={() => setOpen(false)}
-              >
+              <Button type="button" variant="outline" onClick={() => setOpen(false)}>
                 Cancel
               </Button>
               <Button type="submit" disabled={isLoading}>
-                {isLoading ? "Submitting..." : "Submit Assignment"}
+                {isLoading ? 'Submitting...' : 'Submit Assignment'}
               </Button>
             </div>
           </form>

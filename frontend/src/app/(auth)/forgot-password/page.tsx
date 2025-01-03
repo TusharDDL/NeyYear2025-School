@@ -1,11 +1,11 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import * as z from "zod";
-import Link from "next/link";
-import { Button } from "@/components/ui/button";
+import { useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import * as z from 'zod';
+import Link from 'next/link';
+import { Button } from '@/components/ui/button';
 import {
   Form,
   FormControl,
@@ -13,13 +13,13 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { Alert, AlertDescription } from "@/components/ui/alert";
-import authService from "@/services/auth";
+} from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import authService from '@/services/auth';
 
 const forgotPasswordSchema = z.object({
-  email: z.string().email("Invalid email address"),
+  email: z.string().email('Invalid email address'),
 });
 
 type ForgotPasswordFormData = z.infer<typeof forgotPasswordSchema>;
@@ -31,7 +31,7 @@ export default function ForgotPasswordPage() {
   const form = useForm<ForgotPasswordFormData>({
     resolver: zodResolver(forgotPasswordSchema),
     defaultValues: {
-      email: "",
+      email: '',
     },
   });
 
@@ -41,7 +41,7 @@ export default function ForgotPasswordPage() {
       setSuccess(true);
       setError(null);
     } catch (error: any) {
-      setError(error.response?.data?.detail || "Failed to send reset email");
+      setError(error.response?.data?.detail || 'Failed to send reset email');
       setSuccess(false);
     }
   };
@@ -57,10 +57,7 @@ export default function ForgotPasswordPage() {
             </p>
           </div>
           <div className="text-center">
-            <Link
-              href="/login"
-              className="font-medium text-blue-600 hover:text-blue-500"
-            >
+            <Link href="/login" className="font-medium text-blue-600 hover:text-blue-500">
               Return to login
             </Link>
           </div>
@@ -75,8 +72,7 @@ export default function ForgotPasswordPage() {
         <div className="text-center">
           <h2 className="text-3xl font-bold">Forgot your password?</h2>
           <p className="mt-2 text-gray-600">
-            Enter your email address and we'll send you a link to reset your
-            password.
+            Enter your email address and we'll send you a link to reset your password.
           </p>
         </div>
 
@@ -95,11 +91,7 @@ export default function ForgotPasswordPage() {
                 <FormItem>
                   <FormLabel>Email</FormLabel>
                   <FormControl>
-                    <Input
-                      type="email"
-                      placeholder="Enter your email address"
-                      {...field}
-                    />
+                    <Input type="email" placeholder="Enter your email address" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -114,11 +106,8 @@ export default function ForgotPasswordPage() {
 
         <div className="text-center">
           <p className="text-sm text-gray-600">
-            Remember your password?{" "}
-            <Link
-              href="/login"
-              className="font-medium text-blue-600 hover:text-blue-500"
-            >
+            Remember your password?{' '}
+            <Link href="/login" className="font-medium text-blue-600 hover:text-blue-500">
               Sign in
             </Link>
           </p>

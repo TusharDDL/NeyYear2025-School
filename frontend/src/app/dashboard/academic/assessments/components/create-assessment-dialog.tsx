@@ -1,19 +1,19 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import * as z from "zod";
-import { format } from "date-fns";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import * as z from 'zod';
+import { format } from 'date-fns';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
+} from '@/components/ui/dialog';
+import { Button } from '@/components/ui/button';
 import {
   Form,
   FormControl,
@@ -21,30 +21,26 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { Calendar } from "@/components/ui/calendar";
+} from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
+import { Calendar } from '@/components/ui/calendar';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import academicService from "@/services/academic";
+} from '@/components/ui/select';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import academicService from '@/services/academic';
 
 const assessmentSchema = z.object({
-  name: z.string().min(1, "Assessment name is required"),
-  subject_id: z.string().min(1, "Subject is required"),
+  name: z.string().min(1, 'Assessment name is required'),
+  subject_id: z.string().min(1, 'Subject is required'),
   date: z.date({
-    required_error: "Assessment date is required",
+    required_error: 'Assessment date is required',
   }),
-  total_marks: z.string().transform((val) => parseInt(val, 10)),
+  total_marks: z.string().transform(val => parseInt(val, 10)),
 });
 
 type AssessmentFormData = z.infer<typeof assessmentSchema>;
@@ -53,23 +49,21 @@ interface CreateAssessmentDialogProps {
   sectionId: number;
 }
 
-export function CreateAssessmentDialog({
-  sectionId,
-}: CreateAssessmentDialogProps) {
+export function CreateAssessmentDialog({ sectionId }: CreateAssessmentDialogProps) {
   const [open, setOpen] = useState(false);
   const queryClient = useQueryClient();
 
   const { data: subjects } = useQuery({
-    queryKey: ["subjects", sectionId],
+    queryKey: ['subjects', sectionId],
     queryFn: academicService.getSubjects,
   });
 
   const form = useForm<AssessmentFormData>({
     resolver: zodResolver(assessmentSchema),
     defaultValues: {
-      name: "",
-      subject_id: "",
-      total_marks: "",
+      name: '',
+      subject_id: '',
+      total_marks: '',
     },
   });
 
@@ -81,7 +75,7 @@ export function CreateAssessmentDialog({
         section_id: sectionId,
       }),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["assessments"] });
+      queryClient.invalidateQueries({ queryKey: ['assessments'] });
       setOpen(false);
       form.reset();
     },
@@ -123,21 +117,15 @@ export function CreateAssessmentDialog({
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Subject</FormLabel>
-                  <Select
-                    onValueChange={field.onChange}
-                    defaultValue={field.value}
-                  >
+                  <Select onValueChange={field.onChange} defaultValue={field.value}>
                     <FormControl>
                       <SelectTrigger>
                         <SelectValue placeholder="Select subject" />
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      {subjects?.map((subject) => (
-                        <SelectItem
-                          key={subject.id}
-                          value={subject.id.toString()}
-                        >
+                      {subjects?.map(subject => (
+                        <SelectItem key={subject.id} value={subject.id.toString()}>
                           {subject.name}
                         </SelectItem>
                       ))}
@@ -160,14 +148,10 @@ export function CreateAssessmentDialog({
                         <Button
                           variant="outline"
                           className={`w-full pl-3 text-left font-normal ${
-                            !field.value && "text-muted-foreground"
+                            !field.value && 'text-muted-foreground'
                           }`}
                         >
-                          {field.value ? (
-                            format(field.value, "PPP")
-                          ) : (
-                            <span>Pick a date</span>
-                          )}
+                          {field.value ? format(field.value, 'PPP') : <span>Pick a date</span>}
                         </Button>
                       </FormControl>
                     </PopoverTrigger>
@@ -200,15 +184,11 @@ export function CreateAssessmentDialog({
             />
 
             <div className="flex justify-end space-x-2">
-              <Button
-                type="button"
-                variant="outline"
-                onClick={() => setOpen(false)}
-              >
+              <Button type="button" variant="outline" onClick={() => setOpen(false)}>
                 Cancel
               </Button>
               <Button type="submit" disabled={isLoading}>
-                {isLoading ? "Creating..." : "Create Assessment"}
+                {isLoading ? 'Creating...' : 'Create Assessment'}
               </Button>
             </div>
           </form>

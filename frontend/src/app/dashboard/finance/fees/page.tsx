@@ -1,9 +1,9 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import { useQuery, useMutation } from "@tanstack/react-query";
-import { Card } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+import { useState } from 'react';
+import { useQuery, useMutation } from '@tanstack/react-query';
+import { Card } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
 import {
   Table,
   TableBody,
@@ -11,7 +11,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
+} from '@/components/ui/table';
 import {
   Dialog,
   DialogContent,
@@ -20,7 +20,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog";
+} from '@/components/ui/dialog';
 import {
   Form,
   FormControl,
@@ -29,27 +29,23 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
+} from '@/components/ui/form';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { Calendar } from "@/components/ui/calendar";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import { useToast } from "@/components/ui/use-toast";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import * as z from "zod";
-import { format } from "date-fns";
+} from '@/components/ui/select';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import { Calendar } from '@/components/ui/calendar';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { useToast } from '@/components/ui/use-toast';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import * as z from 'zod';
+import { format } from 'date-fns';
 import {
   Plus,
   FileEdit,
@@ -63,17 +59,17 @@ import {
   CreditCard,
   Mail,
   MessageSquare,
-} from "lucide-react";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Progress } from "@/components/ui/progress";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+} from 'lucide-react';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Progress } from '@/components/ui/progress';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 const feeSchema = z.object({
-  student_id: z.string().min(1, "Student is required"),
-  fee_type: z.string().min(1, "Fee type is required"),
-  amount: z.string().min(1, "Amount is required"),
+  student_id: z.string().min(1, 'Student is required'),
+  fee_type: z.string().min(1, 'Fee type is required'),
+  amount: z.string().min(1, 'Amount is required'),
   due_date: z.date({
-    required_error: "Due date is required",
+    required_error: 'Due date is required',
   }),
   payment_method: z.string().optional(),
   remarks: z.string().optional(),
@@ -85,55 +81,55 @@ export default function FeesPage() {
   const { toast } = useToast();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [selectedFee, setSelectedFee] = useState<any>(null);
-  const [selectedClass, setSelectedClass] = useState<string>("");
-  const [selectedStatus, setSelectedStatus] = useState<string>("");
-  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedClass, setSelectedClass] = useState<string>('');
+  const [selectedStatus, setSelectedStatus] = useState<string>('');
+  const [searchTerm, setSearchTerm] = useState('');
 
   const form = useForm<FeeFormData>({
     resolver: zodResolver(feeSchema),
     defaultValues: {
-      student_id: "",
-      fee_type: "",
-      amount: "",
-      payment_method: "",
-      remarks: "",
+      student_id: '',
+      fee_type: '',
+      amount: '',
+      payment_method: '',
+      remarks: '',
     },
   });
 
   // Get fees data
   const { data: feesData, isLoading } = useQuery({
-    queryKey: ["fees", selectedClass, selectedStatus],
+    queryKey: ['fees', selectedClass, selectedStatus],
     queryFn: () => {
       // This would be replaced with an actual API call
       return Promise.resolve([
         {
           id: 1,
-          student_id: "1",
-          student_name: "John Smith",
-          class: "Class 10",
-          section: "A",
-          roll_number: "101",
+          student_id: '1',
+          student_name: 'John Smith',
+          class: 'Class 10',
+          section: 'A',
+          roll_number: '101',
           avatar: null,
-          fee_type: "Tuition Fee",
+          fee_type: 'Tuition Fee',
           amount: 1200,
-          due_date: "2024-01-31",
-          status: "paid",
-          payment_date: "2024-01-15",
-          payment_method: "Credit Card",
-          transaction_id: "TXN123456",
+          due_date: '2024-01-31',
+          status: 'paid',
+          payment_date: '2024-01-15',
+          payment_method: 'Credit Card',
+          transaction_id: 'TXN123456',
         },
         {
           id: 2,
-          student_id: "2",
-          student_name: "Sarah Johnson",
-          class: "Class 10",
-          section: "B",
-          roll_number: "102",
+          student_id: '2',
+          student_name: 'Sarah Johnson',
+          class: 'Class 10',
+          section: 'B',
+          roll_number: '102',
           avatar: null,
-          fee_type: "Tuition Fee",
+          fee_type: 'Tuition Fee',
           amount: 1200,
-          due_date: "2024-01-31",
-          status: "pending",
+          due_date: '2024-01-31',
+          status: 'pending',
           payment_date: null,
           payment_method: null,
           transaction_id: null,
@@ -144,7 +140,7 @@ export default function FeesPage() {
 
   // Get fee statistics
   const { data: statsData } = useQuery({
-    queryKey: ["fee-stats"],
+    queryKey: ['fee-stats'],
     queryFn: () => {
       // This would be replaced with an actual API call
       return Promise.resolve({
@@ -154,15 +150,15 @@ export default function FeesPage() {
         overdue: 10000,
         collection_rate: 83,
         payment_methods: {
-          "Credit Card": 45,
-          "Bank Transfer": 35,
+          'Credit Card': 45,
+          'Bank Transfer': 35,
           Cash: 20,
         },
         fee_types: {
-          "Tuition Fee": 80000,
-          "Transport Fee": 25000,
-          "Library Fee": 10000,
-          "Lab Fee": 10000,
+          'Tuition Fee': 80000,
+          'Transport Fee': 25000,
+          'Library Fee': 10000,
+          'Lab Fee': 10000,
         },
       });
     },
@@ -171,21 +167,21 @@ export default function FeesPage() {
   const { mutate: saveFee, isLoading: isSaving } = useMutation({
     mutationFn: (data: FeeFormData) => {
       // This would be replaced with an actual API call
-      return new Promise((resolve) => setTimeout(resolve, 1000));
+      return new Promise(resolve => setTimeout(resolve, 1000));
     },
     onSuccess: () => {
       toast({
-        title: "Success",
-        description: "Fee saved successfully.",
+        title: 'Success',
+        description: 'Fee saved successfully.',
       });
       setIsDialogOpen(false);
       form.reset();
     },
     onError: () => {
       toast({
-        title: "Error",
-        description: "Failed to save fee.",
-        variant: "destructive",
+        title: 'Error',
+        description: 'Failed to save fee.',
+        variant: 'destructive',
       });
     },
   });
@@ -193,19 +189,19 @@ export default function FeesPage() {
   const { mutate: sendReminder, isLoading: isSending } = useMutation({
     mutationFn: (studentIds: string[]) => {
       // This would be replaced with an actual API call
-      return new Promise((resolve) => setTimeout(resolve, 1000));
+      return new Promise(resolve => setTimeout(resolve, 1000));
     },
     onSuccess: () => {
       toast({
-        title: "Success",
-        description: "Reminder sent successfully.",
+        title: 'Success',
+        description: 'Reminder sent successfully.',
       });
     },
     onError: () => {
       toast({
-        title: "Error",
-        description: "Failed to send reminder.",
-        variant: "destructive",
+        title: 'Error',
+        description: 'Failed to send reminder.',
+        variant: 'destructive',
       });
     },
   });
@@ -235,38 +231,27 @@ export default function FeesPage() {
             </DialogTrigger>
             <DialogContent>
               <DialogHeader>
-                <DialogTitle>{selectedFee ? "Edit" : "Add"} Fee</DialogTitle>
-                <DialogDescription>
-                  Enter fee details for the student
-                </DialogDescription>
+                <DialogTitle>{selectedFee ? 'Edit' : 'Add'} Fee</DialogTitle>
+                <DialogDescription>Enter fee details for the student</DialogDescription>
               </DialogHeader>
 
               <Form {...form}>
-                <form
-                  onSubmit={form.handleSubmit(onSubmit)}
-                  className="space-y-4"
-                >
+                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
                   <FormField
                     control={form.control}
                     name="student_id"
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>Student</FormLabel>
-                        <Select
-                          onValueChange={field.onChange}
-                          defaultValue={field.value}
-                        >
+                        <Select onValueChange={field.onChange} defaultValue={field.value}>
                           <FormControl>
                             <SelectTrigger>
                               <SelectValue placeholder="Select student" />
                             </SelectTrigger>
                           </FormControl>
                           <SelectContent>
-                            {feesData?.map((fee) => (
-                              <SelectItem
-                                key={fee.student_id}
-                                value={fee.student_id}
-                              >
+                            {feesData?.map(fee => (
+                              <SelectItem key={fee.student_id} value={fee.student_id}>
                                 {fee.student_name} ({fee.roll_number})
                               </SelectItem>
                             ))}
@@ -283,26 +268,20 @@ export default function FeesPage() {
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>Fee Type</FormLabel>
-                        <Select
-                          onValueChange={field.onChange}
-                          defaultValue={field.value}
-                        >
+                        <Select onValueChange={field.onChange} defaultValue={field.value}>
                           <FormControl>
                             <SelectTrigger>
                               <SelectValue placeholder="Select fee type" />
                             </SelectTrigger>
                           </FormControl>
                           <SelectContent>
-                            {[
-                              "Tuition Fee",
-                              "Transport Fee",
-                              "Library Fee",
-                              "Lab Fee",
-                            ].map((type) => (
-                              <SelectItem key={type} value={type}>
-                                {type}
-                              </SelectItem>
-                            ))}
+                            {['Tuition Fee', 'Transport Fee', 'Library Fee', 'Lab Fee'].map(
+                              type => (
+                                <SelectItem key={type} value={type}>
+                                  {type}
+                                </SelectItem>
+                              )
+                            )}
                           </SelectContent>
                         </Select>
                         <FormMessage />
@@ -336,11 +315,11 @@ export default function FeesPage() {
                               <Button
                                 variant="outline"
                                 className={`w-full pl-3 text-left font-normal ${
-                                  !field.value && "text-muted-foreground"
+                                  !field.value && 'text-muted-foreground'
                                 }`}
                               >
                                 {field.value ? (
-                                  format(field.value, "PPP")
+                                  format(field.value, 'PPP')
                                 ) : (
                                   <span>Pick a date</span>
                                 )}
@@ -353,7 +332,7 @@ export default function FeesPage() {
                               mode="single"
                               selected={field.value}
                               onSelect={field.onChange}
-                              disabled={(date) => date < new Date()}
+                              disabled={date => date < new Date()}
                               initialFocus
                             />
                           </PopoverContent>
@@ -369,23 +348,18 @@ export default function FeesPage() {
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>Payment Method</FormLabel>
-                        <Select
-                          onValueChange={field.onChange}
-                          defaultValue={field.value}
-                        >
+                        <Select onValueChange={field.onChange} defaultValue={field.value}>
                           <FormControl>
                             <SelectTrigger>
                               <SelectValue placeholder="Select payment method" />
                             </SelectTrigger>
                           </FormControl>
                           <SelectContent>
-                            {["Credit Card", "Bank Transfer", "Cash"].map(
-                              (method) => (
-                                <SelectItem key={method} value={method}>
-                                  {method}
-                                </SelectItem>
-                              ),
-                            )}
+                            {['Credit Card', 'Bank Transfer', 'Cash'].map(method => (
+                              <SelectItem key={method} value={method}>
+                                {method}
+                              </SelectItem>
+                            ))}
                           </SelectContent>
                         </Select>
                         <FormMessage />
@@ -408,15 +382,11 @@ export default function FeesPage() {
                   />
 
                   <DialogFooter>
-                    <Button
-                      type="button"
-                      variant="outline"
-                      onClick={() => setIsDialogOpen(false)}
-                    >
+                    <Button type="button" variant="outline" onClick={() => setIsDialogOpen(false)}>
                       Cancel
                     </Button>
                     <Button type="submit" disabled={isSaving}>
-                      {isSaving ? "Saving..." : "Save"}
+                      {isSaving ? 'Saving...' : 'Save'}
                     </Button>
                   </DialogFooter>
                 </form>
@@ -432,9 +402,7 @@ export default function FeesPage() {
           <div className="space-y-2">
             <p className="text-sm text-gray-500">Total Fees</p>
             <div className="flex items-center justify-between">
-              <h4 className="text-2xl font-bold">
-                ${statsData?.total_fees.toLocaleString()}
-              </h4>
+              <h4 className="text-2xl font-bold">${statsData?.total_fees.toLocaleString()}</h4>
               <DollarSign className="h-8 w-8 text-blue-500 opacity-50" />
             </div>
           </div>
@@ -444,9 +412,7 @@ export default function FeesPage() {
           <div className="space-y-2">
             <p className="text-sm text-gray-500">Collection Rate</p>
             <div className="flex items-center justify-between">
-              <h4 className="text-2xl font-bold">
-                {statsData?.collection_rate}%
-              </h4>
+              <h4 className="text-2xl font-bold">{statsData?.collection_rate}%</h4>
               <Progress value={statsData?.collection_rate} className="w-20" />
             </div>
           </div>
@@ -456,9 +422,7 @@ export default function FeesPage() {
           <div className="space-y-2">
             <p className="text-sm text-gray-500">Pending Fees</p>
             <div className="flex items-center justify-between">
-              <h4 className="text-2xl font-bold">
-                ${statsData?.pending.toLocaleString()}
-              </h4>
+              <h4 className="text-2xl font-bold">${statsData?.pending.toLocaleString()}</h4>
               <Receipt className="h-8 w-8 text-yellow-500 opacity-50" />
             </div>
           </div>
@@ -468,9 +432,7 @@ export default function FeesPage() {
           <div className="space-y-2">
             <p className="text-sm text-gray-500">Overdue</p>
             <div className="flex items-center justify-between">
-              <h4 className="text-2xl font-bold">
-                ${statsData?.overdue.toLocaleString()}
-              </h4>
+              <h4 className="text-2xl font-bold">${statsData?.overdue.toLocaleString()}</h4>
               <CreditCard className="h-8 w-8 text-red-500 opacity-50" />
             </div>
           </div>
@@ -489,7 +451,7 @@ export default function FeesPage() {
                   placeholder="Search by name or roll number..."
                   className="pl-8"
                   value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
+                  onChange={e => setSearchTerm(e.target.value)}
                 />
               </div>
             </div>
@@ -537,11 +499,7 @@ export default function FeesPage() {
             <Button
               variant="outline"
               onClick={() =>
-                sendReminder(
-                  feesData
-                    ?.filter((f) => f.status === "pending")
-                    .map((f) => f.student_id),
-                )
+                sendReminder(feesData?.filter(f => f.status === 'pending').map(f => f.student_id))
               }
               disabled={isSending}
             >
@@ -563,17 +521,17 @@ export default function FeesPage() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {feesData?.map((fee) => (
+              {feesData?.map(fee => (
                 <TableRow key={fee.id}>
                   <TableCell>
                     <div className="flex items-center space-x-3">
                       <Avatar>
-                        <AvatarImage src={fee.avatar || ""} />
+                        <AvatarImage src={fee.avatar || ''} />
                         <AvatarFallback>
                           {fee.student_name
-                            .split(" ")
-                            .map((n) => n[0])
-                            .join("")}
+                            .split(' ')
+                            .map(n => n[0])
+                            .join('')}
                         </AvatarFallback>
                       </Avatar>
                       <div>
@@ -586,15 +544,15 @@ export default function FeesPage() {
                   </TableCell>
                   <TableCell>{fee.fee_type}</TableCell>
                   <TableCell>${fee.amount.toLocaleString()}</TableCell>
-                  <TableCell>{format(new Date(fee.due_date), "PPP")}</TableCell>
+                  <TableCell>{format(new Date(fee.due_date), 'PPP')}</TableCell>
                   <TableCell>
                     <span
                       className={`px-2 py-1 rounded-full text-xs ${
-                        fee.status === "paid"
-                          ? "bg-green-100 text-green-700"
-                          : fee.status === "pending"
-                            ? "bg-yellow-100 text-yellow-700"
-                            : "bg-red-100 text-red-700"
+                        fee.status === 'paid'
+                          ? 'bg-green-100 text-green-700'
+                          : fee.status === 'pending'
+                            ? 'bg-yellow-100 text-yellow-700'
+                            : 'bg-red-100 text-red-700'
                       }`}
                     >
                       {fee.status}
@@ -604,14 +562,14 @@ export default function FeesPage() {
                     {fee.payment_date ? (
                       <div className="space-y-1">
                         <p className="text-sm">
-                          Paid on: {format(new Date(fee.payment_date), "PPP")}
+                          Paid on: {format(new Date(fee.payment_date), 'PPP')}
                         </p>
                         <p className="text-sm text-gray-500">
                           {fee.payment_method} | {fee.transaction_id}
                         </p>
                       </div>
                     ) : (
-                      "-"
+                      '-'
                     )}
                   </TableCell>
                   <TableCell>

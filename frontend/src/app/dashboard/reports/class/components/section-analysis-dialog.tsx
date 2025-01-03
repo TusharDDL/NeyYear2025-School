@@ -1,13 +1,8 @@
-"use client";
+'use client';
 
-import { ClassReport } from "@/services/reports";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
-import { Card } from "@/components/ui/card";
+import { ClassReport } from '@/services/reports';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Card } from '@/components/ui/card';
 import {
   Table,
   TableBody,
@@ -15,7 +10,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
+} from '@/components/ui/table';
 import {
   BarChart,
   Bar,
@@ -30,31 +25,28 @@ import {
   PieChart,
   Pie,
   Cell,
-} from "recharts";
+} from 'recharts';
 
 interface SectionAnalysisDialogProps {
-  section: ClassReport["sections"][0];
+  section: ClassReport['sections'][0];
   onClose: () => void;
 }
 
-const COLORS = ["#22c55e", "#f59e0b", "#ef4444"];
+const COLORS = ['#22c55e', '#f59e0b', '#ef4444'];
 
-export function SectionAnalysisDialog({
-  section,
-  onClose,
-}: SectionAnalysisDialogProps) {
+export function SectionAnalysisDialog({ section, onClose }: SectionAnalysisDialogProps) {
   // Prepare data for performance distribution chart
   const performanceDistribution = [
     {
-      name: "Above 90%",
+      name: 'Above 90%',
       value: Math.round(Math.random() * 30),
     },
     {
-      name: "60-90%",
+      name: '60-90%',
       value: Math.round(Math.random() * 50),
     },
     {
-      name: "Below 60%",
+      name: 'Below 60%',
       value: Math.round(Math.random() * 20),
     },
   ];
@@ -62,27 +54,27 @@ export function SectionAnalysisDialog({
   // Prepare data for subject performance chart
   const subjectPerformance = [
     {
-      subject: "Mathematics",
+      subject: 'Mathematics',
       performance: Math.round(Math.random() * 100),
       attendance: Math.round(Math.random() * 100),
     },
     {
-      subject: "Science",
+      subject: 'Science',
       performance: Math.round(Math.random() * 100),
       attendance: Math.round(Math.random() * 100),
     },
     {
-      subject: "English",
+      subject: 'English',
       performance: Math.round(Math.random() * 100),
       attendance: Math.round(Math.random() * 100),
     },
     {
-      subject: "History",
+      subject: 'History',
       performance: Math.round(Math.random() * 100),
       attendance: Math.round(Math.random() * 100),
     },
     {
-      subject: "Geography",
+      subject: 'Geography',
       performance: Math.round(Math.random() * 100),
       attendance: Math.round(Math.random() * 100),
     },
@@ -90,7 +82,7 @@ export function SectionAnalysisDialog({
 
   // Prepare data for monthly trend chart
   const monthlyTrend = Array.from({ length: 12 }, (_, i) => ({
-    month: new Date(2024, i, 1).toLocaleString("default", { month: "short" }),
+    month: new Date(2024, i, 1).toLocaleString('default', { month: 'short' }),
     performance: Math.round(Math.random() * 100),
     attendance: Math.round(Math.random() * 100),
   }));
@@ -106,27 +98,19 @@ export function SectionAnalysisDialog({
           {/* Overview Cards */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <Card className="p-4">
-              <h3 className="text-sm font-medium text-gray-500">
-                Total Students
-              </h3>
-              <p className="text-2xl font-bold mt-1">
-                {section.total_students}
-              </p>
+              <h3 className="text-sm font-medium text-gray-500">Total Students</h3>
+              <p className="text-2xl font-bold mt-1">{section.total_students}</p>
             </Card>
 
             <Card className="p-4">
-              <h3 className="text-sm font-medium text-gray-500">
-                Average Attendance
-              </h3>
+              <h3 className="text-sm font-medium text-gray-500">Average Attendance</h3>
               <p className="text-2xl font-bold text-green-600 mt-1">
                 {section.average_attendance}%
               </p>
             </Card>
 
             <Card className="p-4">
-              <h3 className="text-sm font-medium text-gray-500">
-                Average Performance
-              </h3>
+              <h3 className="text-sm font-medium text-gray-500">Average Performance</h3>
               <p className="text-2xl font-bold text-purple-600 mt-1">
                 {section.average_performance}%
               </p>
@@ -136,9 +120,7 @@ export function SectionAnalysisDialog({
           {/* Charts */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <Card className="p-6">
-              <h2 className="text-lg font-semibold mb-4">
-                Performance Distribution
-              </h2>
+              <h2 className="text-lg font-semibold mb-4">Performance Distribution</h2>
               <div className="h-[300px]">
                 <ResponsiveContainer width="100%" height="100%">
                   <PieChart>
@@ -147,28 +129,17 @@ export function SectionAnalysisDialog({
                       cx="50%"
                       cy="50%"
                       labelLine={false}
-                      label={({
-                        cx,
-                        cy,
-                        midAngle,
-                        innerRadius,
-                        outerRadius,
-                        percent,
-                        name,
-                      }) => {
-                        const radius =
-                          innerRadius + (outerRadius - innerRadius) * 0.5;
-                        const x =
-                          cx + radius * Math.cos((-midAngle * Math.PI) / 180);
-                        const y =
-                          cy + radius * Math.sin((-midAngle * Math.PI) / 180);
+                      label={({ cx, cy, midAngle, innerRadius, outerRadius, percent, name }) => {
+                        const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
+                        const x = cx + radius * Math.cos((-midAngle * Math.PI) / 180);
+                        const y = cy + radius * Math.sin((-midAngle * Math.PI) / 180);
 
                         return (
                           <text
                             x={x}
                             y={y}
                             fill="white"
-                            textAnchor={x > cx ? "start" : "end"}
+                            textAnchor={x > cx ? 'start' : 'end'}
                             dominantBaseline="central"
                           >
                             {`${name} ${(percent * 100).toFixed(0)}%`}
@@ -189,9 +160,7 @@ export function SectionAnalysisDialog({
             </Card>
 
             <Card className="p-6">
-              <h2 className="text-lg font-semibold mb-4">
-                Subject-wise Analysis
-              </h2>
+              <h2 className="text-lg font-semibold mb-4">Subject-wise Analysis</h2>
               <div className="h-[300px]">
                 <ResponsiveContainer width="100%" height="100%">
                   <BarChart data={subjectPerformance}>
@@ -200,16 +169,8 @@ export function SectionAnalysisDialog({
                     <YAxis />
                     <Tooltip />
                     <Legend />
-                    <Bar
-                      dataKey="performance"
-                      name="Performance %"
-                      fill="#a855f7"
-                    />
-                    <Bar
-                      dataKey="attendance"
-                      name="Attendance %"
-                      fill="#22c55e"
-                    />
+                    <Bar dataKey="performance" name="Performance %" fill="#a855f7" />
+                    <Bar dataKey="attendance" name="Attendance %" fill="#22c55e" />
                   </BarChart>
                 </ResponsiveContainer>
               </div>
@@ -233,12 +194,7 @@ export function SectionAnalysisDialog({
                     name="Performance %"
                     stroke="#a855f7"
                   />
-                  <Line
-                    type="monotone"
-                    dataKey="attendance"
-                    name="Attendance %"
-                    stroke="#22c55e"
-                  />
+                  <Line type="monotone" dataKey="attendance" name="Attendance %" stroke="#22c55e" />
                 </LineChart>
               </ResponsiveContainer>
             </div>
@@ -246,9 +202,7 @@ export function SectionAnalysisDialog({
 
           {/* Top Students */}
           <Card className="p-6">
-            <h2 className="text-lg font-semibold mb-4">
-              Top Performing Students
-            </h2>
+            <h2 className="text-lg font-semibold mb-4">Top Performing Students</h2>
             <div className="overflow-x-auto">
               <Table>
                 <TableHeader>

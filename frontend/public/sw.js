@@ -1,10 +1,10 @@
-self.addEventListener("push", function (event) {
+self.addEventListener('push', function (event) {
   if (event.data) {
     const data = event.data.json();
     const options = {
       body: data.message,
-      icon: "/icons/notification-icon.png",
-      badge: "/icons/notification-badge.png",
+      icon: '/icons/notification-icon.png',
+      badge: '/icons/notification-badge.png',
       data: data.data,
       actions: data.actions,
       tag: data.tag,
@@ -16,7 +16,7 @@ self.addEventListener("push", function (event) {
   }
 });
 
-self.addEventListener("notificationclick", function (event) {
+self.addEventListener('notificationclick', function (event) {
   event.notification.close();
 
   const data = event.notification.data;
@@ -25,10 +25,10 @@ self.addEventListener("notificationclick", function (event) {
   }
 });
 
-self.addEventListener("install", function (event) {
+self.addEventListener('install', function (event) {
   event.waitUntil(self.skipWaiting());
 });
 
-self.addEventListener("activate", function (event) {
+self.addEventListener('activate', function (event) {
   event.waitUntil(self.clients.claim());
 });

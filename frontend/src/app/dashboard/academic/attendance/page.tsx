@@ -1,38 +1,38 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
-import { format } from "date-fns";
-import { Calendar } from "@/components/ui/calendar";
-import { Button } from "@/components/ui/button";
+import { useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
+import { format } from 'date-fns';
+import { Calendar } from '@/components/ui/calendar';
+import { Button } from '@/components/ui/button';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { useAuth } from "@/lib/auth";
-import academicService from "@/services/academic";
-import { AttendanceTable } from "./components/attendance-table";
-import { MarkAttendanceDialog } from "./components/mark-attendance-dialog";
+} from '@/components/ui/select';
+import { useAuth } from '@/lib/auth';
+import academicService from '@/services/academic';
+import { AttendanceTable } from './components/attendance-table';
+import { MarkAttendanceDialog } from './components/mark-attendance-dialog';
 
 export default function AttendancePage() {
   const { user } = useAuth();
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
-  const [selectedSection, setSelectedSection] = useState<string>("");
+  const [selectedSection, setSelectedSection] = useState<string>('');
 
   const { data: sections } = useQuery({
-    queryKey: ["sections"],
+    queryKey: ['sections'],
     queryFn: academicService.getSections,
   });
 
   const { data: attendance } = useQuery({
-    queryKey: ["attendance", selectedDate, selectedSection],
+    queryKey: ['attendance', selectedDate, selectedSection],
     queryFn: () =>
       academicService.getAttendance({
         section: selectedSection ? parseInt(selectedSection) : undefined,
-        date: selectedDate ? format(selectedDate, "yyyy-MM-dd") : undefined,
+        date: selectedDate ? format(selectedDate, 'yyyy-MM-dd') : undefined,
       }),
     enabled: !!selectedSection && !!selectedDate,
   });
@@ -41,11 +41,8 @@ export default function AttendancePage() {
     <div className="container mx-auto py-6">
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold">Attendance Management</h1>
-        {user?.role === "teacher" && selectedSection && selectedDate && (
-          <MarkAttendanceDialog
-            sectionId={parseInt(selectedSection)}
-            date={selectedDate}
-          />
+        {user?.role === 'teacher' && selectedSection && selectedDate && (
+          <MarkAttendanceDialog sectionId={parseInt(selectedSection)} date={selectedDate} />
         )}
       </div>
 
@@ -59,7 +56,7 @@ export default function AttendancePage() {
                 <SelectValue placeholder="Choose a section" />
               </SelectTrigger>
               <SelectContent>
-                {sections?.map((section) => (
+                {sections?.map(section => (
                   <SelectItem key={section.id} value={section.id.toString()}>
                     {section.class_name.name} - {section.name}
                   </SelectItem>
@@ -73,7 +70,7 @@ export default function AttendancePage() {
             <Calendar
               mode="single"
               selected={selectedDate}
-              onSelect={(date) => date && setSelectedDate(date)}
+              onSelect={date => date && setSelectedDate(date)}
               className="rounded-md border"
             />
           </div>

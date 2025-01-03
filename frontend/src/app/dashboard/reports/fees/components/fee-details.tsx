@@ -1,10 +1,10 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import { format } from "date-fns";
-import { FeeReport } from "@/services/reports";
-import { Card } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
+import { useState } from 'react';
+import { format } from 'date-fns';
+import { FeeReport } from '@/services/reports';
+import { Card } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
 import {
   Table,
   TableBody,
@@ -12,7 +12,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
+} from '@/components/ui/table';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -20,31 +20,25 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { MoreHorizontal, IndianRupee } from "lucide-react";
-import { PaymentHistoryDialog } from "./payment-history-dialog";
+} from '@/components/ui/dropdown-menu';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { MoreHorizontal, IndianRupee } from 'lucide-react';
+import { PaymentHistoryDialog } from './payment-history-dialog';
 
 interface FeeDetailsProps {
   data: FeeReport[];
 }
 
 export function FeeDetails({ data }: FeeDetailsProps) {
-  const [searchTerm, setSearchTerm] = useState("");
-  const [selectedStudent, setSelectedStudent] = useState<FeeReport | null>(
-    null,
+  const [searchTerm, setSearchTerm] = useState('');
+  const [selectedStudent, setSelectedStudent] = useState<FeeReport | null>(null);
+
+  const filteredData = data.filter(student =>
+    student.student_name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  const filteredData = data.filter((student) =>
-    student.student_name.toLowerCase().includes(searchTerm.toLowerCase()),
-  );
-
-  const getPaymentStatus = (
-    totalFees: number,
-    paidAmount: number,
-    pendingAmount: number,
-  ) => {
+  const getPaymentStatus = (totalFees: number, paidAmount: number, pendingAmount: number) => {
     if (pendingAmount === 0) {
       return (
         <Badge variant="default" className="bg-green-500">
@@ -70,7 +64,7 @@ export function FeeDetails({ data }: FeeDetailsProps) {
           <Input
             placeholder="Search students..."
             value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
+            onChange={e => setSearchTerm(e.target.value)}
             className="max-w-xs"
           />
         </div>
@@ -90,36 +84,34 @@ export function FeeDetails({ data }: FeeDetailsProps) {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {filteredData.map((student) => (
+              {filteredData.map(student => (
                 <TableRow key={student.student_id}>
-                  <TableCell className="font-medium">
-                    {student.student_name}
-                  </TableCell>
+                  <TableCell className="font-medium">{student.student_name}</TableCell>
                   <TableCell>{student.class_name}</TableCell>
                   <TableCell>{student.section_name}</TableCell>
                   <TableCell>
                     <div className="flex items-baseline">
                       <IndianRupee className="h-3 w-3 mr-1" />
-                      {student.total_fees.toLocaleString("en-IN")}
+                      {student.total_fees.toLocaleString('en-IN')}
                     </div>
                   </TableCell>
                   <TableCell>
                     <div className="flex items-baseline text-green-600">
                       <IndianRupee className="h-3 w-3 mr-1" />
-                      {student.paid_amount.toLocaleString("en-IN")}
+                      {student.paid_amount.toLocaleString('en-IN')}
                     </div>
                   </TableCell>
                   <TableCell>
                     <div className="flex items-baseline text-red-600">
                       <IndianRupee className="h-3 w-3 mr-1" />
-                      {student.pending_amount.toLocaleString("en-IN")}
+                      {student.pending_amount.toLocaleString('en-IN')}
                     </div>
                   </TableCell>
                   <TableCell>
                     {getPaymentStatus(
                       student.total_fees,
                       student.paid_amount,
-                      student.pending_amount,
+                      student.pending_amount
                     )}
                   </TableCell>
                   <TableCell>
@@ -133,9 +125,7 @@ export function FeeDetails({ data }: FeeDetailsProps) {
                       <DropdownMenuContent align="end">
                         <DropdownMenuLabel>Actions</DropdownMenuLabel>
                         <DropdownMenuSeparator />
-                        <DropdownMenuItem
-                          onClick={() => setSelectedStudent(student)}
-                        >
+                        <DropdownMenuItem onClick={() => setSelectedStudent(student)}>
                           View Payment History
                         </DropdownMenuItem>
                       </DropdownMenuContent>
@@ -149,10 +139,7 @@ export function FeeDetails({ data }: FeeDetailsProps) {
       </Card>
 
       {selectedStudent && (
-        <PaymentHistoryDialog
-          student={selectedStudent}
-          onClose={() => setSelectedStudent(null)}
-        />
+        <PaymentHistoryDialog student={selectedStudent} onClose={() => setSelectedStudent(null)} />
       )}
     </>
   );

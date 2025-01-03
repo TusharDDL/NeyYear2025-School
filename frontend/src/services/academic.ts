@@ -1,5 +1,5 @@
-import axiosInstance from "@/lib/axios";
-import { User } from "./auth";
+import axiosInstance from '@/lib/axios';
+import { User } from './auth';
 
 export interface AcademicYear {
   id: number;
@@ -101,23 +101,17 @@ export interface Timetable {
 const academicService = {
   // Academic Year
   async getAcademicYears() {
-    const response = await axiosInstance.get("/api/academic/academic-years/");
+    const response = await axiosInstance.get('/api/academic/academic-years/');
     return response.data;
   },
 
   async createAcademicYear(data: Partial<AcademicYear>) {
-    const response = await axiosInstance.post(
-      "/api/academic/academic-years/",
-      data,
-    );
+    const response = await axiosInstance.post('/api/academic/academic-years/', data);
     return response.data;
   },
 
   async updateAcademicYear(id: number, data: Partial<AcademicYear>) {
-    const response = await axiosInstance.patch(
-      `/api/academic/academic-years/${id}/`,
-      data,
-    );
+    const response = await axiosInstance.patch(`/api/academic/academic-years/${id}/`, data);
     return response.data;
   },
 
@@ -127,20 +121,17 @@ const academicService = {
 
   // Classes
   async getClasses() {
-    const response = await axiosInstance.get("/api/academic/classes/");
+    const response = await axiosInstance.get('/api/academic/classes/');
     return response.data;
   },
 
   async createClass(data: Partial<Class>) {
-    const response = await axiosInstance.post("/api/academic/classes/", data);
+    const response = await axiosInstance.post('/api/academic/classes/', data);
     return response.data;
   },
 
   async updateClass(id: number, data: Partial<Class>) {
-    const response = await axiosInstance.patch(
-      `/api/academic/classes/${id}/`,
-      data,
-    );
+    const response = await axiosInstance.patch(`/api/academic/classes/${id}/`, data);
     return response.data;
   },
 
@@ -150,7 +141,7 @@ const academicService = {
 
   // Sections
   async getSections() {
-    const response = await axiosInstance.get("/api/academic/sections/");
+    const response = await axiosInstance.get('/api/academic/sections/');
     return response.data;
   },
 
@@ -160,15 +151,12 @@ const academicService = {
     teacher_id: number;
     academic_year_id: number;
   }) {
-    const response = await axiosInstance.post("/api/academic/sections/", data);
+    const response = await axiosInstance.post('/api/academic/sections/', data);
     return response.data;
   },
 
   async updateSection(id: number, data: Partial<Section>) {
-    const response = await axiosInstance.patch(
-      `/api/academic/sections/${id}/`,
-      data,
-    );
+    const response = await axiosInstance.patch(`/api/academic/sections/${id}/`, data);
     return response.data;
   },
 
@@ -177,24 +165,23 @@ const academicService = {
   },
 
   async addStudentsToSection(sectionId: number, studentIds: number[]) {
-    const response = await axiosInstance.post(
-      `/api/academic/sections/${sectionId}/add_students/`,
-      { student_ids: studentIds },
-    );
+    const response = await axiosInstance.post(`/api/academic/sections/${sectionId}/add_students/`, {
+      student_ids: studentIds,
+    });
     return response.data;
   },
 
   async removeStudentsFromSection(sectionId: number, studentIds: number[]) {
     const response = await axiosInstance.post(
       `/api/academic/sections/${sectionId}/remove_students/`,
-      { student_ids: studentIds },
+      { student_ids: studentIds }
     );
     return response.data;
   },
 
   // Subjects
   async getSubjects() {
-    const response = await axiosInstance.get("/api/academic/subjects/");
+    const response = await axiosInstance.get('/api/academic/subjects/');
     return response.data;
   },
 
@@ -205,15 +192,12 @@ const academicService = {
     class_name_id: number;
     teacher_id: number;
   }) {
-    const response = await axiosInstance.post("/api/academic/subjects/", data);
+    const response = await axiosInstance.post('/api/academic/subjects/', data);
     return response.data;
   },
 
   async updateSubject(id: number, data: Partial<Subject>) {
-    const response = await axiosInstance.patch(
-      `/api/academic/subjects/${id}/`,
-      data,
-    );
+    const response = await axiosInstance.patch(`/api/academic/subjects/${id}/`, data);
     return response.data;
   },
 
@@ -223,7 +207,7 @@ const academicService = {
 
   // Attendance
   async getAttendance(params?: { section?: number; date?: string }) {
-    const response = await axiosInstance.get("/api/academic/attendance/", {
+    const response = await axiosInstance.get('/api/academic/attendance/', {
       params,
     });
     return response.data;
@@ -236,18 +220,15 @@ const academicService = {
       date: string;
       is_present: boolean;
       remarks?: string;
-    }[],
+    }[]
   ) {
-    const response = await axiosInstance.post(
-      "/api/academic/attendance/bulk_create/",
-      data,
-    );
+    const response = await axiosInstance.post('/api/academic/attendance/bulk_create/', data);
     return response.data;
   },
 
   // Assessments
   async getAssessments() {
-    const response = await axiosInstance.get("/api/academic/assessments/");
+    const response = await axiosInstance.get('/api/academic/assessments/');
     return response.data;
   },
 
@@ -258,18 +239,12 @@ const academicService = {
     date: string;
     total_marks: number;
   }) {
-    const response = await axiosInstance.post(
-      "/api/academic/assessments/",
-      data,
-    );
+    const response = await axiosInstance.post('/api/academic/assessments/', data);
     return response.data;
   },
 
   async updateAssessment(id: number, data: Partial<Assessment>) {
-    const response = await axiosInstance.patch(
-      `/api/academic/assessments/${id}/`,
-      data,
-    );
+    const response = await axiosInstance.patch(`/api/academic/assessments/${id}/`, data);
     return response.data;
   },
 
@@ -279,12 +254,9 @@ const academicService = {
 
   // Assessment Results
   async getAssessmentResults(assessmentId: number) {
-    const response = await axiosInstance.get(
-      "/api/academic/assessment-results/",
-      {
-        params: { assessment: assessmentId },
-      },
-    );
+    const response = await axiosInstance.get('/api/academic/assessment-results/', {
+      params: { assessment: assessmentId },
+    });
     return response.data;
   },
 
@@ -294,34 +266,28 @@ const academicService = {
       student_id: number;
       marks_obtained: number;
       remarks?: string;
-    }[],
+    }[]
   ) {
     const response = await axiosInstance.post(
-      "/api/academic/assessment-results/bulk_create/",
-      data,
+      '/api/academic/assessment-results/bulk_create/',
+      data
     );
     return response.data;
   },
 
   // Assignments
   async getAssignments() {
-    const response = await axiosInstance.get("/api/academic/assignments/");
+    const response = await axiosInstance.get('/api/academic/assignments/');
     return response.data;
   },
 
   async createAssignment(data: FormData) {
-    const response = await axiosInstance.post(
-      "/api/academic/assignments/",
-      data,
-    );
+    const response = await axiosInstance.post('/api/academic/assignments/', data);
     return response.data;
   },
 
   async updateAssignment(id: number, data: FormData) {
-    const response = await axiosInstance.patch(
-      `/api/academic/assignments/${id}/`,
-      data,
-    );
+    const response = await axiosInstance.patch(`/api/academic/assignments/${id}/`, data);
     return response.data;
   },
 
@@ -331,34 +297,25 @@ const academicService = {
 
   // Assignment Submissions
   async getAssignmentSubmissions(assignmentId: number) {
-    const response = await axiosInstance.get(
-      "/api/academic/assignment-submissions/",
-      {
-        params: { assignment: assignmentId },
-      },
-    );
+    const response = await axiosInstance.get('/api/academic/assignment-submissions/', {
+      params: { assignment: assignmentId },
+    });
     return response.data;
   },
 
   async submitAssignment(data: FormData) {
-    const response = await axiosInstance.post(
-      "/api/academic/assignment-submissions/",
-      data,
-    );
+    const response = await axiosInstance.post('/api/academic/assignment-submissions/', data);
     return response.data;
   },
 
   async gradeAssignment(id: number, data: { score: number; remarks?: string }) {
-    const response = await axiosInstance.patch(
-      `/api/academic/assignment-submissions/${id}/`,
-      data,
-    );
+    const response = await axiosInstance.patch(`/api/academic/assignment-submissions/${id}/`, data);
     return response.data;
   },
 
   // Timetable
   async getTimetable(sectionId?: number) {
-    const response = await axiosInstance.get("/api/academic/timetable/", {
+    const response = await axiosInstance.get('/api/academic/timetable/', {
       params: { section: sectionId },
     });
     return response.data;
@@ -371,15 +328,12 @@ const academicService = {
     start_time: string;
     end_time: string;
   }) {
-    const response = await axiosInstance.post("/api/academic/timetable/", data);
+    const response = await axiosInstance.post('/api/academic/timetable/', data);
     return response.data;
   },
 
   async updateTimetableEntry(id: number, data: Partial<Timetable>) {
-    const response = await axiosInstance.patch(
-      `/api/academic/timetable/${id}/`,
-      data,
-    );
+    const response = await axiosInstance.patch(`/api/academic/timetable/${id}/`, data);
     return response.data;
   },
 

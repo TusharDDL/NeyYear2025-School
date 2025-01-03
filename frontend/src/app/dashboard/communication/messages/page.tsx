@@ -1,33 +1,30 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { useAuth } from "@/lib/auth";
-import communicationService from "@/services/communication";
-import { MessageList } from "./components/message-list";
-import { MessageThread } from "./components/message-thread";
-import { ComposeMessageDialog } from "./components/compose-message-dialog";
+import { useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { useAuth } from '@/lib/auth';
+import communicationService from '@/services/communication';
+import { MessageList } from './components/message-list';
+import { MessageThread } from './components/message-thread';
+import { ComposeMessageDialog } from './components/compose-message-dialog';
 
 export default function MessagesPage() {
   const { user } = useAuth();
-  const [searchTerm, setSearchTerm] = useState("");
+  const [searchTerm, setSearchTerm] = useState('');
   const [selectedThread, setSelectedThread] = useState<number | null>(null);
 
   const { data: messages } = useQuery({
-    queryKey: ["messages"],
+    queryKey: ['messages'],
     queryFn: communicationService.getMessages,
   });
 
   // Group messages by thread (conversation between two users)
   const threads = messages?.reduce(
     (acc, message) => {
-      const otherUser =
-        message.sender.id === user?.id ? message.recipient : message.sender;
-      const threadId = [message.sender.id, message.recipient.id]
-        .sort()
-        .join("-");
+      const otherUser = message.sender.id === user?.id ? message.recipient : message.sender;
+      const threadId = [message.sender.id, message.recipient.id].sort().join('-');
 
       if (!acc[threadId]) {
         acc[threadId] = {
@@ -42,8 +39,7 @@ export default function MessagesPage() {
       acc[threadId].messages.push(message);
       if (
         !acc[threadId].lastMessage ||
-        new Date(message.created_at) >
-          new Date(acc[threadId].lastMessage.created_at)
+        new Date(message.created_at) > new Date(acc[threadId].lastMessage.created_at)
       ) {
         acc[threadId].lastMessage = message;
       }
@@ -62,27 +58,26 @@ export default function MessagesPage() {
         lastMessage: (typeof messages)[0] | null;
         unreadCount: number;
       }
-    >,
+    >
   );
 
   const filteredThreads = Object.values(threads || {})
-    .filter((thread) => {
+    .filter(thread => {
       const otherUser = thread.otherUser;
       return (
         otherUser.first_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
         otherUser.last_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
         thread.messages.some(
-          (message) =>
+          message =>
             message.subject?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            message.content.toLowerCase().includes(searchTerm.toLowerCase()),
+            message.content.toLowerCase().includes(searchTerm.toLowerCase())
         )
       );
     })
     .sort((a, b) => {
       if (!a.lastMessage || !b.lastMessage) return 0;
       return (
-        new Date(b.lastMessage.created_at).getTime() -
-        new Date(a.lastMessage.created_at).getTime()
+        new Date(b.lastMessage.created_at).getTime() - new Date(a.lastMessage.created_at).getTime()
       );
     });
 
@@ -99,7 +94,7 @@ export default function MessagesPage() {
           <Input
             placeholder="Search messages..."
             value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
+            onChange={e => setSearchTerm(e.target.value)}
           />
 
           <div className="bg-white rounded-lg shadow">

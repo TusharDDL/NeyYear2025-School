@@ -1,35 +1,35 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { useAuth } from "@/lib/auth";
-import academicService from "@/services/academic";
-import communicationService from "@/services/communication";
-import { AnnouncementList } from "./components/announcement-list";
-import { CreateAnnouncementDialog } from "./components/create-announcement-dialog";
+} from '@/components/ui/select';
+import { useAuth } from '@/lib/auth';
+import academicService from '@/services/academic';
+import communicationService from '@/services/communication';
+import { AnnouncementList } from './components/announcement-list';
+import { CreateAnnouncementDialog } from './components/create-announcement-dialog';
 
 export default function AnnouncementsPage() {
   const { user } = useAuth();
-  const [searchTerm, setSearchTerm] = useState("");
-  const [priorityFilter, setPriorityFilter] = useState<string>("all");
-  const [selectedSection, setSelectedSection] = useState<string>("");
+  const [searchTerm, setSearchTerm] = useState('');
+  const [priorityFilter, setPriorityFilter] = useState<string>('all');
+  const [selectedSection, setSelectedSection] = useState<string>('');
 
   const { data: sections } = useQuery({
-    queryKey: ["sections"],
+    queryKey: ['sections'],
     queryFn: academicService.getSections,
   });
 
   const { data: announcements } = useQuery({
-    queryKey: ["announcements", selectedSection],
+    queryKey: ['announcements', selectedSection],
     queryFn: () =>
       selectedSection
         ? communicationService.getAnnouncements({
@@ -38,20 +38,18 @@ export default function AnnouncementsPage() {
         : communicationService.getAnnouncements(),
   });
 
-  const filteredAnnouncements = announcements?.filter((announcement) => {
+  const filteredAnnouncements = announcements?.filter(announcement => {
     const matchesSearch =
       announcement.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
       announcement.content.toLowerCase().includes(searchTerm.toLowerCase());
 
-    if (priorityFilter === "all") return matchesSearch;
+    if (priorityFilter === 'all') return matchesSearch;
     return announcement.priority === priorityFilter && matchesSearch;
   });
 
-  const canCreateAnnouncement = [
-    "super_admin",
-    "school_admin",
-    "teacher",
-  ].includes(user?.role || "");
+  const canCreateAnnouncement = ['super_admin', 'school_admin', 'teacher'].includes(
+    user?.role || ''
+  );
 
   return (
     <div className="container mx-auto py-6">
@@ -68,7 +66,7 @@ export default function AnnouncementsPage() {
             <Input
               placeholder="Search announcements..."
               value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
+              onChange={e => setSearchTerm(e.target.value)}
             />
           </div>
 
@@ -87,19 +85,16 @@ export default function AnnouncementsPage() {
             </Select>
           </div>
 
-          {user?.role !== "student" && (
+          {user?.role !== 'student' && (
             <div>
               <h2 className="text-lg font-semibold mb-2">Section</h2>
-              <Select
-                value={selectedSection}
-                onValueChange={setSelectedSection}
-              >
+              <Select value={selectedSection} onValueChange={setSelectedSection}>
                 <SelectTrigger>
                   <SelectValue placeholder="Filter by section" />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="">All Sections</SelectItem>
-                  {sections?.map((section) => (
+                  {sections?.map(section => (
                     <SelectItem key={section.id} value={section.id.toString()}>
                       {section.class_name.name} - {section.name}
                     </SelectItem>
@@ -121,19 +116,17 @@ export default function AnnouncementsPage() {
                 <div>
                   <p className="text-sm text-gray-500">High Priority</p>
                   <p className="text-2xl font-bold text-red-600">
-                    {announcements.filter((a) => a.priority === "high").length}
+                    {announcements.filter(a => a.priority === 'high').length}
                   </p>
                 </div>
                 <div>
                   <p className="text-sm text-gray-500">This Week</p>
                   <p className="text-2xl font-bold">
                     {
-                      announcements.filter((a) => {
+                      announcements.filter(a => {
                         const date = new Date(a.created_at);
                         const now = new Date();
-                        const weekAgo = new Date(
-                          now.getTime() - 7 * 24 * 60 * 60 * 1000,
-                        );
+                        const weekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
                         return date > weekAgo;
                       }).length
                     }
@@ -142,7 +135,7 @@ export default function AnnouncementsPage() {
                 <div>
                   <p className="text-sm text-gray-500">With Files</p>
                   <p className="text-2xl font-bold">
-                    {announcements.filter((a) => a.attachment).length}
+                    {announcements.filter(a => a.attachment).length}
                   </p>
                 </div>
               </div>
