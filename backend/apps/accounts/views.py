@@ -9,8 +9,11 @@ from rest_framework_simplejwt.views import TokenObtainPairView
 from .models import StudentProfile, TeacherProfile
 from .serializers import CustomTokenObtainPairSerializer
 
+
 class CustomTokenObtainPairView(TokenObtainPairView):
     serializer_class = CustomTokenObtainPairSerializer
+
+
 from .serializers import (
     UserSerializer,
     UserCreateSerializer,
@@ -40,7 +43,7 @@ class UserViewSet(viewsets.ModelViewSet):
         if self.action in ["create", "login"]:
             return [AllowAny()]
         return super().get_permissions()
-        
+
     def perform_create(self, serializer):
         """Create user within tenant schema context."""
         serializer.save()
@@ -51,6 +54,7 @@ class UserViewSet(viewsets.ModelViewSet):
         serializer.is_valid(raise_exception=True)
 
         from django_tenants.utils import schema_context
+
         with schema_context(request.tenant.schema_name):
             user = User.objects.filter(
                 username=serializer.validated_data["username"]
@@ -71,6 +75,7 @@ class UserViewSet(viewsets.ModelViewSet):
     @action(detail=True, methods=["post"], permission_classes=[IsAuthenticated])
     def change_password(self, request, pk=None):
         from django_tenants.utils import schema_context
+
         with schema_context(self.request.tenant.schema_name):
             user = self.get_object()
             serializer = ChangePasswordSerializer(data=request.data)
@@ -78,7 +83,8 @@ class UserViewSet(viewsets.ModelViewSet):
 
             if not user.check_password(serializer.validated_data["old_password"]):
                 return Response(
-                    {"detail": "Invalid old password"}, status=status.HTTP_400_BAD_REQUEST
+                    {"detail": "Invalid old password"},
+                    status=status.HTTP_400_BAD_REQUEST,
                 )
 
             user.set_password(serializer.validated_data["new_password"])
@@ -123,10 +129,12 @@ class UserViewSet(viewsets.ModelViewSet):
 
 from rest_framework.pagination import PageNumberPagination
 
+
 class StudentProfilePagination(PageNumberPagination):
     page_size = 10
-    page_size_query_param = 'page_size'
+    page_size_query_param = "page_size"
     max_page_size = 100
+
 
 class StudentProfileViewSet(viewsets.ModelViewSet):
     serializer_class = StudentProfileSerializer
@@ -137,12 +145,13 @@ class StudentProfileViewSet(viewsets.ModelViewSet):
 
     def get_serializer_context(self):
         context = super().get_serializer_context()
-        context['request'] = self.request
+        context["request"] = self.request
         return context
 
     def get_queryset(self):
         user = self.request.user
         from django_tenants.utils import schema_context
+
         with schema_context(self.request.tenant.schema_name):
             if user.role == User.SUPER_ADMIN:
                 return StudentProfile.objects.all()

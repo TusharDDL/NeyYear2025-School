@@ -5,14 +5,15 @@ from .models import StudentProfile, TeacherProfile
 
 User = get_user_model()
 
+
 class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
     def validate(self, attrs):
         data = super().validate(attrs)
-        data['user_id'] = self.user.id
-        data['username'] = self.user.username
-        data['email'] = self.user.email
-        data['role'] = self.user.role
-        data['school_id'] = self.user.school_id if self.user.school else None
+        data["user_id"] = self.user.id
+        data["username"] = self.user.username
+        data["email"] = self.user.email
+        data["role"] = self.user.role
+        data["school_id"] = self.user.school_id if self.user.school else None
         return data
 
 
@@ -61,19 +62,19 @@ class UserCreateSerializer(serializers.ModelSerializer):
         """Create a new user within the tenant context."""
         from django_tenants.utils import schema_context
         from django.db import transaction
-        
+
         # Get the tenant from the context
-        request = self.context.get('request')
-        if not request or not hasattr(request, 'tenant'):
+        request = self.context.get("request")
+        if not request or not hasattr(request, "tenant"):
             raise serializers.ValidationError("Tenant context is required")
-            
+
         tenant = request.tenant
-        
+
         # Create user within tenant schema context
         with transaction.atomic():
             with schema_context(tenant.schema_name):
                 # Set the school
-                validated_data['school'] = tenant
+                validated_data["school"] = tenant
                 try:
                     return User.objects.create_user(**validated_data)
                 except Exception as e:
@@ -116,23 +117,23 @@ class StudentProfileSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         from django_tenants.utils import schema_context
-        
+
         # Get the tenant from the context
-        request = self.context.get('request')
-        if not request or not hasattr(request, 'tenant'):
+        request = self.context.get("request")
+        if not request or not hasattr(request, "tenant"):
             raise serializers.ValidationError("Tenant context is required")
-            
+
         tenant = request.tenant
-        
+
         # Extract user data
         user_data = {
-            'username': validated_data.pop('username'),
-            'email': validated_data.pop('email'),
-            'password': validated_data.pop('password'),
-            'first_name': validated_data.pop('first_name'),
-            'last_name': validated_data.pop('last_name'),
-            'role': 'student',
-            'school': tenant
+            "username": validated_data.pop("username"),
+            "email": validated_data.pop("email"),
+            "password": validated_data.pop("password"),
+            "first_name": validated_data.pop("first_name"),
+            "last_name": validated_data.pop("last_name"),
+            "role": "student",
+            "school": tenant,
         }
 
         # Create user and profile within tenant schema context
@@ -145,20 +146,24 @@ class StudentProfileSerializer(serializers.ModelSerializer):
 
             # Create student profile
             try:
-                parent_id = validated_data.pop('parent_id', None)
+                parent_id = validated_data.pop("parent_id", None)
                 if parent_id:
                     try:
                         parent = User.objects.get(id=parent_id, school=tenant)
-                        validated_data['parent'] = parent
+                        validated_data["parent"] = parent
                     except User.DoesNotExist:
                         raise serializers.ValidationError("Parent not found")
 
-                student_profile = StudentProfile.objects.create(user=user, **validated_data)
+                student_profile = StudentProfile.objects.create(
+                    user=user, **validated_data
+                )
                 return student_profile
             except Exception as e:
                 # Cleanup user if profile creation fails
                 user.delete()
-                raise serializers.ValidationError(f"Error creating student profile: {str(e)}")
+                raise serializers.ValidationError(
+                    f"Error creating student profile: {str(e)}"
+                )
 
 
 class TeacherProfileSerializer(serializers.ModelSerializer):

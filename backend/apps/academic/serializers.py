@@ -13,6 +13,7 @@ from .models import (
     Timetable,
 )
 from apps.accounts.serializers import UserSerializer
+from apps.accounts.models import StudentProfile
 
 User = get_user_model()
 
@@ -21,15 +22,15 @@ class AcademicYearSerializer(serializers.ModelSerializer):
     class Meta:
         model = AcademicYear
         fields = [
-            "id", 
-            "name", 
-            "start_date", 
-            "end_date", 
+            "id",
+            "name",
+            "start_date",
+            "end_date",
             "start_month",
             "end_month",
-            "is_active", 
-            "created_at", 
-            "school"
+            "is_active",
+            "created_at",
+            "school",
         ]
         read_only_fields = ["created_at", "school"]
 
@@ -42,114 +43,132 @@ class AcademicYearSerializer(serializers.ModelSerializer):
         from rest_framework import serializers
         from apps.academic.models import AcademicYear
         from django.db.models import Q
-        
-        logger = logging.getLogger('apps.academic')
-        
+
+        logger = logging.getLogger("apps.academic")
+
         # Get tenant from context
-        request = self.context.get('request')
-        if not request or not hasattr(request, 'tenant'):
+        request = self.context.get("request")
+        if not request or not hasattr(request, "tenant"):
             logger.error("Tenant context missing in request")
-            raise serializers.ValidationError({"non_field_errors": ["Tenant context is required"]})
-            
+            raise serializers.ValidationError(
+                {"non_field_errors": ["Tenant context is required"]}
+            )
+
         tenant = request.tenant
         logger.info(f"Validating academic year data for tenant: {tenant.name}")
-        
+
         with schema_context(tenant.schema_name):
             connection.set_tenant(tenant)
             logger.info(f"Schema in context: {connection.schema_name}")
-            
+
             # Check for overlapping years
-            start_date = data.get('start_date')
-            end_date = data.get('end_date')
-            
+            start_date = data.get("start_date")
+            end_date = data.get("end_date")
+
             if not start_date or not end_date:
-                raise serializers.ValidationError({
-                    'non_field_errors': ["Start date and end date are required"],
-                    'start_date': ["This field is required"] if not start_date else [],
-                    'end_date': ["This field is required"] if not end_date else []
-                })
-            
+                raise serializers.ValidationError(
+                    {
+                        "non_field_errors": ["Start date and end date are required"],
+                        "start_date": (
+                            ["This field is required"] if not start_date else []
+                        ),
+                        "end_date": ["This field is required"] if not end_date else [],
+                    }
+                )
+
             if start_date >= end_date:
-                raise serializers.ValidationError({
-                    'non_field_errors': ["End date must be after start date"],
-                    'start_date': ["Start date must be before end date"],
-                    'end_date': ["End date must be after start date"]
-                })
-            
+                raise serializers.ValidationError(
+                    {
+                        "non_field_errors": ["End date must be after start date"],
+                        "start_date": ["Start date must be before end date"],
+                        "end_date": ["End date must be after start date"],
+                    }
+                )
+
             # Build overlap query for strict validation
             overlap_query = Q(
-                school=tenant,
-                start_date__lt=end_date,
-                end_date__gt=start_date
+                school=tenant, start_date__lt=end_date, end_date__gt=start_date
             )
-            
+
             # Exclude current instance if this is an update
             if self.instance:
                 overlap_query &= ~Q(pk=self.instance.pk)
-            
+
             # Check for overlapping academic years within tenant schema
             overlapping_years = AcademicYear.objects.filter(overlap_query)
-            
+
             if overlapping_years.exists():
-                logger.error(f"Overlapping academic year detected in schema {tenant.schema_name}")
+                logger.error(
+                    f"Overlapping academic year detected in schema {tenant.schema_name}"
+                )
                 overlapping_year = overlapping_years.first()
                 error_msg = (
                     f"Academic year dates overlap with existing academic year: "
                     f"{overlapping_year.name} ({overlapping_year.start_date} to {overlapping_year.end_date})"
                 )
-                raise serializers.ValidationError({
-                    'non_field_errors': [error_msg],
-                    'start_date': ["Start date must not overlap with existing academic years"],
-                    'end_date': ["End date must not overlap with existing academic years"]
-                })
-            
+                raise serializers.ValidationError(
+                    {
+                        "non_field_errors": [error_msg],
+                        "start_date": [
+                            "Start date must not overlap with existing academic years"
+                        ],
+                        "end_date": [
+                            "End date must not overlap with existing academic years"
+                        ],
+                    }
+                )
+
             # Create a model instance for validation
             instance = AcademicYear(
-                name=data.get('name', ''),
+                name=data.get("name", ""),
                 start_date=start_date,
                 end_date=end_date,
-                start_month=data.get('start_month'),
-                end_month=data.get('end_month'),
-                school=tenant
+                start_month=data.get("start_month"),
+                end_month=data.get("end_month"),
+                school=tenant,
             )
-            
+
             if self.instance:
                 instance.pk = self.instance.pk
-                
+
             try:
                 # Use model's validation
                 instance.full_clean()
             except DjangoValidationError as e:
                 logger.error(f"Validation error: {str(e)}")
                 # Convert Django validation error to DRF validation error
-                if hasattr(e, 'message_dict'):
+                if hasattr(e, "message_dict"):
                     raise serializers.ValidationError(e.message_dict)
-                raise serializers.ValidationError({'non_field_errors': e.messages})
-            
+                raise serializers.ValidationError({"non_field_errors": e.messages})
+
             return data
-        
+
     def create(self, validated_data):
         """Create academic year with proper tenant context."""
         from django.db import transaction, connection
         from django_tenants.utils import schema_context
         import logging
-        
-        logger = logging.getLogger('apps.academic')
-        
+
+        logger = logging.getLogger("apps.academic")
+
         # Get the tenant from the context
-        request = self.context.get('request')
-        if not request or not hasattr(request, 'tenant'):
+        request = self.context.get("request")
+        if not request or not hasattr(request, "tenant"):
             logger.error("Tenant context missing in request")
-            raise serializers.ValidationError({"non_field_errors": ["Tenant context is required"]})
-            
+            raise serializers.ValidationError(
+                {"non_field_errors": ["Tenant context is required"]}
+            )
+
         tenant = request.tenant
-        logger.info(f"Creating academic year for tenant: {tenant.name} (schema: {tenant.schema_name})")
-        
+        logger.info(
+            f"Creating academic year for tenant: {tenant.name} (schema: {tenant.schema_name})"
+        )
+
         # Create academic year within tenant schema context
         with schema_context(tenant.schema_name):
             connection.set_tenant(tenant)
             logger.info(f"Schema in context: {connection.schema_name}")
-            
+
             with transaction.atomic():
                 try:
                     # Create and save instance
@@ -159,19 +178,21 @@ class AcademicYearSerializer(serializers.ModelSerializer):
                     logger.info(f"Successfully created academic year: {instance.pk}")
                     return instance
                 except Exception as e:
-                    logger.error(f"Error creating academic year: {str(e)}", exc_info=True)
+                    logger.error(
+                        f"Error creating academic year: {str(e)}", exc_info=True
+                    )
                     raise serializers.ValidationError({"non_field_errors": [str(e)]})
-                
+
     def update(self, instance, validated_data):
         """Update academic year with proper tenant context."""
         from django.db import transaction
         from django_tenants.utils import schema_context
-        
+
         # Get the tenant from the context
-        request = self.context.get('request')
-        if not request or not hasattr(request, 'tenant'):
+        request = self.context.get("request")
+        if not request or not hasattr(request, "tenant"):
             raise serializers.ValidationError("Tenant context is required")
-            
+
         # Update academic year within tenant schema context
         with schema_context(request.tenant.schema_name):
             with transaction.atomic():
@@ -181,7 +202,9 @@ class AcademicYearSerializer(serializers.ModelSerializer):
                     instance.save()
                     return instance
                 except Exception as e:
-                    raise serializers.ValidationError(f"Error updating academic year: {str(e)}")
+                    raise serializers.ValidationError(
+                        f"Error updating academic year: {str(e)}"
+                    )
 
 
 class ClassSerializer(serializers.ModelSerializer):
@@ -442,3 +465,90 @@ class TimetableSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError("End time must be after start time")
 
         return data
+
+
+class TeacherSerializer(serializers.ModelSerializer):
+    """Serializer for teacher users with role-based access control and free tier limits."""
+
+    password = serializers.CharField(write_only=True, required=True)
+
+    class Meta:
+        model = User
+        fields = [
+            "id",
+            "username",
+            "email",
+            "first_name",
+            "last_name",
+            "date_joined",
+            "role",
+            "is_active",
+            "password",
+        ]
+        read_only_fields = ["id", "date_joined", "role"]
+
+    def validate(self, data):
+        if self.instance and self.instance.role != "teacher":
+            raise serializers.ValidationError("User must be a teacher")
+        return data
+
+    def create(self, validated_data):
+        request = self.context.get("request")
+        if not request or not hasattr(request, "tenant"):
+            raise serializers.ValidationError("Tenant context is required")
+
+        # Check staff limit for free tier
+        current_staff_count = User.objects.filter(role="teacher").count()
+        if current_staff_count >= 50:  # Free tier limit
+            raise serializers.ValidationError(
+                "Free tier schools are limited to 50 staff members. "
+                "Please upgrade your plan to add more staff."
+            )
+
+        password = validated_data.pop("password")
+        user = User.objects.create(role="teacher", **validated_data)
+        user.set_password(password)
+        user.save()
+        return user
+
+    def update(self, instance, validated_data):
+        password = validated_data.pop("password", None)
+        for attr, value in validated_data.items():
+            setattr(instance, attr, value)
+        if password:
+            instance.set_password(password)
+        instance.save()
+        return instance
+
+
+class StudentProfileSerializer(serializers.ModelSerializer):
+    """Serializer for student profiles with role-based access control."""
+
+    username = serializers.CharField(source="user.username", read_only=True)
+    first_name = serializers.CharField(source="user.first_name", read_only=True)
+    last_name = serializers.CharField(source="user.last_name", read_only=True)
+    email = serializers.EmailField(source="user.email", read_only=True)
+    section_name = serializers.CharField(source="user.section.name", read_only=True)
+    class_name = serializers.CharField(
+        source="user.section.class_name.name", read_only=True
+    )
+
+    class Meta:
+        model = StudentProfile
+        fields = [
+            "id",
+            "username",
+            "first_name",
+            "last_name",
+            "email",
+            "admission_number",
+            "date_of_birth",
+            "gender",
+            "blood_group",
+            "parent_name",
+            "parent_phone",
+            "parent_email",
+            "section_name",
+            "class_name",
+        ]
+        read_only_fields = ["id"]

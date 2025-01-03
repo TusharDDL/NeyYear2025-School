@@ -27,14 +27,19 @@ from drf_spectacular.views import (
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path("api/v1/", include([
-        path("accounts/", include("apps.accounts.urls")),
-        path("academic/", include("apps.academic.urls")),
-        path("finance/", include("apps.finance.urls")),
-        path("communication/", include("apps.communication.urls")),
-        path("core/", include("apps.core.urls")),
-        path("library/", include("apps.library.urls")),
-    ])),
+    path(
+        "api/v1/",
+        include(
+            [
+                path("accounts/", include("apps.accounts.urls")),
+                path("academic/", include("apps.academic.urls")),
+                path("finance/", include("apps.finance.urls")),
+                path("communication/", include("apps.communication.urls")),
+                path("core/", include("apps.core.urls")),
+                path("library/", include("apps.library.urls")),
+            ]
+        ),
+    ),
     path("api/schema/", SpectacularAPIView.as_view(), name="schema"),
     path(
         "api/docs/",

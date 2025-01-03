@@ -8,20 +8,25 @@ class AcademicYear(models.Model):
     start_date = models.DateField()
     end_date = models.DateField()
     start_month = models.IntegerField(
-        choices=[(4, 'April'), (6, 'June')],
+        choices=[(4, "April"), (6, "June")],
         default=4,
-        help_text="Month when academic year starts"
+        help_text="Month when academic year starts",
     )
     end_month = models.IntegerField(
-        choices=[(3, 'March'), (5, 'May')],
+        choices=[(3, "March"), (5, "May")],
         default=3,
-        help_text="Month when academic year ends"
+        help_text="Month when academic year ends",
     )
     is_active = models.BooleanField(default=False)
-    school = models.ForeignKey('core.School', on_delete=models.CASCADE, related_name='academic_years', db_constraint=False)
+    school = models.ForeignKey(
+        "core.School",
+        on_delete=models.CASCADE,
+        related_name="academic_years",
+        db_constraint=False,
+    )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    
+
     def clean(self):
         from django.core.exceptions import ValidationError
         from .exceptions import AcademicYearConfigError
@@ -29,38 +34,40 @@ class AcademicYear(models.Model):
         from django.db.models import Q
         from django_tenants.utils import schema_context
         from django.db import connection
-        
-        logger = logging.getLogger('apps.academic')
+
+        logger = logging.getLogger("apps.academic")
         errors = {}
-        
+
         # Validate start and end months form valid pairs
         valid_pairs = [(4, 3), (6, 5)]  # April-March or June-May
         if (self.start_month, self.end_month) not in valid_pairs:
             error_msg = f"Invalid academic year configuration: {self.get_start_month_display()}-{self.get_end_month_display()}"
             logger.error(error_msg)
-            errors['__all__'] = [error_msg]
-            
+            errors["__all__"] = [error_msg]
+
         # Validate dates align with configured months
         if self.start_date and self.start_date.month != self.start_month:
             error_msg = f"Start date month ({self.start_date.month}) does not match configured start month ({self.start_month})"
             logger.error(error_msg)
-            errors['start_date'] = [error_msg]
-            
+            errors["start_date"] = [error_msg]
+
         if self.end_date and self.end_date.month != self.end_month:
             error_msg = f"End date month ({self.end_date.month}) does not match configured end month ({self.end_month})"
             logger.error(error_msg)
-            errors['end_date'] = [error_msg]
-            
+            errors["end_date"] = [error_msg]
+
         if errors:
             raise ValidationError(errors)
-            
+
         # Check for overlapping academic years for the same school
         if self.school and self.start_date and self.end_date:
             # Get current schema context
             current_schema = connection.schema_name
             target_schema = self.school.schema_name
-            logger.info(f"Current schema: {current_schema}, Target schema: {target_schema}")
-            
+            logger.info(
+                f"Current schema: {current_schema}, Target schema: {target_schema}"
+            )
+
             try:
                 # Only switch context if needed
                 if current_schema != target_schema:
@@ -72,29 +79,35 @@ class AcademicYear(models.Model):
                     self._check_overlap()
             except ValidationError as e:
                 raise ValidationError(e.message_dict)
-                
+
     def _check_overlap(self):
         """Helper method to check for overlapping academic years."""
         from django.core.exceptions import ValidationError
         import logging
         from django.db.models import Q
-        
-        logger = logging.getLogger('apps.academic')
-        
-        overlapping = type(self).objects.filter(
-            school=self.school,
-            start_date__lte=self.end_date,
-            end_date__gte=self.start_date
-        ).exclude(pk=self.pk)
-        
+
+        logger = logging.getLogger("apps.academic")
+
+        overlapping = (
+            type(self)
+            .objects.filter(
+                school=self.school,
+                start_date__lte=self.end_date,
+                end_date__gte=self.start_date,
+            )
+            .exclude(pk=self.pk)
+        )
+
         if overlapping.exists():
             error_msg = "Academic year dates overlap with existing academic year"
             logger.error(error_msg)
-            raise ValidationError({
-                '__all__': [error_msg],
-                'start_date': ["Start date overlaps with existing academic year"],
-                'end_date': ["End date overlaps with existing academic year"]
-            })
+            raise ValidationError(
+                {
+                    "__all__": [error_msg],
+                    "start_date": ["Start date overlaps with existing academic year"],
+                    "end_date": ["End date overlaps with existing academic year"],
+                }
+            )
 
     def save(self, *args, **kwargs):
         """Ensure validation is run before saving."""

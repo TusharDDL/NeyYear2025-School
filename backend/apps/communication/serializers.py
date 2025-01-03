@@ -1,7 +1,10 @@
 from rest_framework import serializers
 from .models import Announcement, Notification, Message, EmailLog, SMSLog
 from apps.accounts.serializers import UserSerializer
-from apps.academic.serializers import ClassSerializer, SectionListSerializer as SectionSerializer
+from apps.academic.serializers import (
+    ClassSerializer,
+    SectionListSerializer as SectionSerializer,
+)
 
 
 class AnnouncementSerializer(serializers.ModelSerializer):
@@ -11,8 +14,8 @@ class AnnouncementSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Announcement
-        fields = '__all__'
-        read_only_fields = ('author', 'created_at', 'updated_at')
+        fields = "__all__"
+        read_only_fields = ("author", "created_at", "updated_at")
 
 
 class NotificationSerializer(serializers.ModelSerializer):
@@ -20,8 +23,8 @@ class NotificationSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Notification
-        fields = '__all__'
-        read_only_fields = ('created_at',)
+        fields = "__all__"
+        read_only_fields = ("created_at",)
 
 
 class MessageSerializer(serializers.ModelSerializer):
@@ -30,19 +33,19 @@ class MessageSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Message
-        fields = '__all__'
-        read_only_fields = ('sender', 'created_at', 'updated_at')
+        fields = "__all__"
+        read_only_fields = ("sender", "created_at", "updated_at")
 
 
 class EmailLogSerializer(serializers.ModelSerializer):
     class Meta:
         model = EmailLog
-        fields = '__all__'
-        read_only_fields = ('created_at', 'sent_at')
+        fields = "__all__"
+        read_only_fields = ("created_at", "sent_at")
 
 
 class SMSLogSerializer(serializers.ModelSerializer):
     class Meta:
         model = SMSLog
-        fields = '__all__'
-        read_only_fields = ('created_at', 'sent_at')
+        fields = "__all__"
+        read_only_fields = ("created_at", "sent_at")

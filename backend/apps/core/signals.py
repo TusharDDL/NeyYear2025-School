@@ -4,7 +4,8 @@ from django.utils import timezone
 import logging
 from .models import School
 
-logger = logging.getLogger('apps.core')
+logger = logging.getLogger("apps.core")
+
 
 @receiver(pre_save, sender=School)
 def handle_school_approval(sender, instance, **kwargs):
@@ -12,7 +13,7 @@ def handle_school_approval(sender, instance, **kwargs):
     try:
         if not instance.pk:  # New instance
             return
-            
+
         old_instance = School.objects.get(pk=instance.pk)
         if not old_instance.is_approved and instance.is_approved:
             # School just got approved
@@ -22,7 +23,7 @@ def handle_school_approval(sender, instance, **kwargs):
             # School approval revoked
             instance.approval_date = None
             logger.warning(f"School approval revoked: {instance.name}")
-            
+
     except School.DoesNotExist:
         logger.error(f"Error in school approval signal: School not found")
     except Exception as e:

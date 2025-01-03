@@ -8,12 +8,14 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 
 # Quick-start development settings - unsuitable for production
-SECRET_KEY = config('SECRET_KEY', default='django-insecure-default-key-change-in-production')
+SECRET_KEY = config(
+    "SECRET_KEY", default="django-insecure-default-key-change-in-production"
+)
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = config('DEBUG', default=False, cast=bool)
+DEBUG = config("DEBUG", default=False, cast=bool)
 
-ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='localhost,127.0.0.1', cast=Csv())
+ALLOWED_HOSTS = config("ALLOWED_HOSTS", default="localhost,127.0.0.1", cast=Csv())
 
 
 # Application definition
@@ -36,47 +38,47 @@ SHARED_APPS = (
 
 # Configure logging
 LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': False,
-    'formatters': {
-        'verbose': {
-            'format': '{levelname} {asctime} {module} {process:d} {thread:d} {message}',
-            'style': '{',
+    "version": 1,
+    "disable_existing_loggers": False,
+    "formatters": {
+        "verbose": {
+            "format": "{levelname} {asctime} {module} {process:d} {thread:d} {message}",
+            "style": "{",
         },
-        'simple': {
-            'format': '{levelname} {message}',
-            'style': '{',
-        },
-    },
-    'filters': {
-        'require_debug_true': {
-            '()': 'django.utils.log.RequireDebugTrue',
+        "simple": {
+            "format": "{levelname} {message}",
+            "style": "{",
         },
     },
-    'handlers': {
-        'console': {
-            'level': 'INFO',
-            'filters': ['require_debug_true'],
-            'class': 'logging.StreamHandler',
-            'formatter': 'simple',
-        },
-        'file': {
-            'level': 'DEBUG',
-            'class': 'logging.FileHandler',
-            'filename': os.path.join(BASE_DIR, 'logs', 'debug.log'),
-            'formatter': 'verbose',
+    "filters": {
+        "require_debug_true": {
+            "()": "django.utils.log.RequireDebugTrue",
         },
     },
-    'loggers': {
-        'django': {
-            'handlers': ['console', 'file'],
-            'level': 'INFO',
-            'propagate': True,
+    "handlers": {
+        "console": {
+            "level": "INFO",
+            "filters": ["require_debug_true"],
+            "class": "logging.StreamHandler",
+            "formatter": "simple",
         },
-        'apps': {
-            'handlers': ['console', 'file'],
-            'level': 'DEBUG',
-            'propagate': True,
+        "file": {
+            "level": "DEBUG",
+            "class": "logging.FileHandler",
+            "filename": os.path.join(BASE_DIR, "logs", "debug.log"),
+            "formatter": "verbose",
+        },
+    },
+    "loggers": {
+        "django": {
+            "handlers": ["console", "file"],
+            "level": "INFO",
+            "propagate": True,
+        },
+        "apps": {
+            "handlers": ["console", "file"],
+            "level": "DEBUG",
+            "propagate": True,
         },
     },
 }
@@ -96,8 +98,7 @@ TENANT_APPS = (
     "corsheaders",
     "django_filters",
     "drf_spectacular",
-
-    'django_extensions',
+    "django_extensions",
     # Local apps
     "apps.academic",
     "apps.finance",
@@ -150,29 +151,29 @@ APPEND_SLASH = False
 DATABASES = {
     "default": {
         "ENGINE": "django_tenants.postgresql_backend",
-        "NAME": config('DB_NAME', default='school_management'),
-        "USER": config('DB_USER', default='school_user'),
-        "PASSWORD": config('DB_PASSWORD', default='secure_password'),
-        "HOST": config('DB_HOST', default='localhost'),
-        "PORT": config('DB_PORT', default='5432'),
+        "NAME": config("DB_NAME", default="school_management"),
+        "USER": config("DB_USER", default="school_user"),
+        "PASSWORD": config("DB_PASSWORD", default="secure_password"),
+        "HOST": config("DB_HOST", default="localhost"),
+        "PORT": config("DB_PORT", default="5432"),
     }
 }
 
 DATABASE_ROUTERS = ("django_tenants.routers.TenantSyncRouter",)
 
 # Multi-tenancy settings
-PUBLIC_SCHEMA_URLCONF = 'config.public_urls'
-TENANT_SCHEMAS_URLCONF = 'config.urls'  # Main URLs for tenant schemas
+PUBLIC_SCHEMA_URLCONF = "config.public_urls"
+TENANT_SCHEMAS_URLCONF = "config.urls"  # Main URLs for tenant schemas
 TENANT_MODEL = "core.School"
 TENANT_DOMAIN_MODEL = "core.Domain"
 
 # Ensure tenant apps are properly loaded
 TENANT_APPS_EXCLUDE = []
 TENANT_APPS_INCLUDE = [
-    'apps.academic',
-    'apps.finance',
-    'apps.communication',
-    'apps.library',
+    "apps.academic",
+    "apps.finance",
+    "apps.communication",
+    "apps.library",
 ]
 
 
@@ -234,18 +235,20 @@ REST_FRAMEWORK = {
 # JWT Settings
 SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(
-        hours=config('JWT_ACCESS_TOKEN_LIFETIME', default=5, cast=int)
+        hours=config("JWT_ACCESS_TOKEN_LIFETIME", default=5, cast=int)
     ),
     "REFRESH_TOKEN_LIFETIME": timedelta(
-        days=config('JWT_REFRESH_TOKEN_LIFETIME', default=1, cast=int)
+        days=config("JWT_REFRESH_TOKEN_LIFETIME", default=1, cast=int)
     ),
     "ROTATE_REFRESH_TOKENS": True,
     "BLACKLIST_AFTER_ROTATION": True,
-    "SIGNING_KEY": config('JWT_SECRET_KEY', default=SECRET_KEY),
+    "SIGNING_KEY": config("JWT_SECRET_KEY", default=SECRET_KEY),
 }
 
 # CORS settings
-CORS_ALLOWED_ORIGINS = config('CORS_ALLOWED_ORIGINS', default='http://localhost:3000', cast=Csv())
+CORS_ALLOWED_ORIGINS = config(
+    "CORS_ALLOWED_ORIGINS", default="http://localhost:3000", cast=Csv()
+)
 CORS_ALLOW_CREDENTIALS = True
 # API Documentation
 SPECTACULAR_SETTINGS = {
@@ -256,31 +259,35 @@ SPECTACULAR_SETTINGS = {
 }
 
 CORS_ALLOW_HEADERS = [
-    'accept',
-    'accept-encoding',
-    'authorization',
-    'content-type',
-    'dnt',
-    'origin',
-    'user-agent',
-    'x-csrftoken',
-    'x-requested-with',
-    'x-school-domain',  # Add this custom header
+    "accept",
+    "accept-encoding",
+    "authorization",
+    "content-type",
+    "dnt",
+    "origin",
+    "user-agent",
+    "x-csrftoken",
+    "x-requested-with",
+    "x-school-domain",  # Add this custom header
 ]
 
 # Email settings
-EMAIL_BACKEND = config('EMAIL_BACKEND', default='django.core.mail.backends.console.EmailBackend')
-EMAIL_HOST = config('EMAIL_HOST', default='smtp.gmail.com')
-EMAIL_PORT = config('EMAIL_PORT', default=587, cast=int)
-EMAIL_USE_TLS = config('EMAIL_USE_TLS', default=True, cast=bool)
-EMAIL_HOST_USER = config('EMAIL_HOST_USER', default='')
-EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD', default='')
-DEFAULT_FROM_EMAIL = config('DEFAULT_FROM_EMAIL', default='noreply@schoolmanagement.com')
-FRONTEND_URL = config('FRONTEND_URL', default='http://localhost:3000')
+EMAIL_BACKEND = config(
+    "EMAIL_BACKEND", default="django.core.mail.backends.console.EmailBackend"
+)
+EMAIL_HOST = config("EMAIL_HOST", default="smtp.gmail.com")
+EMAIL_PORT = config("EMAIL_PORT", default=587, cast=int)
+EMAIL_USE_TLS = config("EMAIL_USE_TLS", default=True, cast=bool)
+EMAIL_HOST_USER = config("EMAIL_HOST_USER", default="")
+EMAIL_HOST_PASSWORD = config("EMAIL_HOST_PASSWORD", default="")
+DEFAULT_FROM_EMAIL = config(
+    "DEFAULT_FROM_EMAIL", default="noreply@schoolmanagement.com"
+)
+FRONTEND_URL = config("FRONTEND_URL", default="http://localhost:3000")
 
 # Celery settings
-CELERY_BROKER_URL = config('REDIS_URL', default='redis://localhost:6379/0')
-CELERY_RESULT_BACKEND = config('REDIS_URL', default='redis://localhost:6379/0')
+CELERY_BROKER_URL = config("REDIS_URL", default="redis://localhost:6379/0")
+CELERY_RESULT_BACKEND = config("REDIS_URL", default="redis://localhost:6379/0")
 CELERY_ACCEPT_CONTENT = ["json"]
 CELERY_TASK_SERIALIZER = "json"
 CELERY_RESULT_SERIALIZER = "json"

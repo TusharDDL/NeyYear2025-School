@@ -7,7 +7,7 @@ from .serializers import (
     FeeCategorySerializer,
     FeeStructureSerializer,
     FeeDiscountSerializer,
-    PaymentSerializer
+    PaymentSerializer,
 )
 from apps.core.permissions import IsSchoolAdmin
 
@@ -54,19 +54,21 @@ class PaymentViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.IsAuthenticated]
 
     def get_queryset(self):
-        return Payment.objects.filter(student_fee__student__school=self.request.user.school)
+        return Payment.objects.filter(
+            student_fee__student__school=self.request.user.school
+        )
 
     def perform_create(self, serializer):
-        student_fee = serializer.validated_data['student_fee']
+        student_fee = serializer.validated_data["student_fee"]
         if student_fee.student.school != self.request.user.school:
-            raise permissions.PermissionDenied("Cannot create payment for student from different school")
+            raise permissions.PermissionDenied(
+                "Cannot create payment for student from different school"
+            )
         serializer.save()
 
-    @action(detail=False, methods=['get'])
+    @action(detail=False, methods=["get"])
     def summary(self, request):
-        total_payments = self.get_queryset().aggregate(
-            total=Sum('amount')
-        )['total'] or 0
-        return Response({
-            'total_payments': total_payments
-        })
+        total_payments = (
+            self.get_queryset().aggregate(total=Sum("amount"))["total"] or 0
+        )
+        return Response({"total_payments": total_payments})
