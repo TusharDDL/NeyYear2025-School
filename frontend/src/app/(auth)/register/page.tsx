@@ -1,12 +1,12 @@
-'use client'
+"use client";
 
-import { useState } from 'react'
-import { useForm } from 'react-hook-form'
-import { zodResolver } from '@hookform/resolvers/zod'
-import * as z from 'zod'
-import Link from 'next/link'
-import { useRouter } from 'next/navigation'
-import { Button } from '@/components/ui/button'
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
@@ -14,64 +14,64 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form'
-import { Input } from '@/components/ui/input'
-import { Alert, AlertDescription } from '@/components/ui/alert'
-import authService from '@/services/auth'
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import authService from "@/services/auth";
 
-const registerSchema = z.object({
-  email: z.string().email('Invalid email address'),
-  username: z.string().min(3, 'Username must be at least 3 characters'),
-  password: z.string().min(8, 'Password must be at least 8 characters'),
-  confirm_password: z.string(),
-  first_name: z.string().min(1, 'First name is required'),
-  last_name: z.string().min(1, 'Last name is required'),
-  role: z.enum(['student', 'teacher', 'parent']),
-  phone: z.string().optional(),
-  address: z.string().optional(),
-}).refine((data) => data.password === data.confirm_password, {
-  message: "Passwords don't match",
-  path: ["confirm_password"],
-})
+const registerSchema = z
+  .object({
+    email: z.string().email("Invalid email address"),
+    username: z.string().min(3, "Username must be at least 3 characters"),
+    password: z.string().min(8, "Password must be at least 8 characters"),
+    confirm_password: z.string(),
+    first_name: z.string().min(1, "First name is required"),
+    last_name: z.string().min(1, "Last name is required"),
+    role: z.enum(["student", "teacher", "parent"]),
+    phone: z.string().optional(),
+    address: z.string().optional(),
+  })
+  .refine((data) => data.password === data.confirm_password, {
+    message: "Passwords don't match",
+    path: ["confirm_password"],
+  });
 
-type RegisterFormData = z.infer<typeof registerSchema>
+type RegisterFormData = z.infer<typeof registerSchema>;
 
 export default function RegisterPage() {
-  const router = useRouter()
-  const [error, setError] = useState<string | null>(null)
+  const router = useRouter();
+  const [error, setError] = useState<string | null>(null);
 
   const form = useForm<RegisterFormData>({
     resolver: zodResolver(registerSchema),
     defaultValues: {
-      email: '',
-      username: '',
-      password: '',
-      confirm_password: '',
-      first_name: '',
-      last_name: '',
-      role: 'student',
-      phone: '',
-      address: '',
+      email: "",
+      username: "",
+      password: "",
+      confirm_password: "",
+      first_name: "",
+      last_name: "",
+      role: "student",
+      phone: "",
+      address: "",
     },
-  })
+  });
 
   const onSubmit = async (data: RegisterFormData) => {
     try {
-      await authService.register(data)
-      router.push('/login?registered=true')
+      await authService.register(data);
+      router.push("/login?registered=true");
     } catch (error: any) {
-      setError(error.response?.data?.detail || 'Registration failed')
+      setError(error.response?.data?.detail || "Registration failed");
     }
-  }
+  };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50">
       <div className="max-w-md w-full space-y-8 p-8 bg-white rounded-lg shadow">
         <div className="text-center">
           <h2 className="text-3xl font-bold">Create an account</h2>
-          <p className="mt-2 text-gray-600">
-            Please fill in your information
-          </p>
+          <p className="mt-2 text-gray-600">Please fill in your information</p>
         </div>
 
         {error && (
@@ -231,7 +231,7 @@ export default function RegisterPage() {
 
         <div className="text-center">
           <p className="text-sm text-gray-600">
-            Already have an account?{' '}
+            Already have an account?{" "}
             <Link
               href="/login"
               className="font-medium text-blue-600 hover:text-blue-500"
@@ -242,5 +242,5 @@ export default function RegisterPage() {
         </div>
       </div>
     </div>
-  )
+  );
 }

@@ -1,12 +1,12 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { useBooks } from '@/lib/hooks';
-import { Book } from '@/types/book';
-import { Input } from '@/components/ui/input';
-import type { ReactElement } from 'react';
-import { Button } from '@/components/ui/button';
-import { LoadingSpinner } from '@/components/ui/loading-spinner';
+import { useState } from "react";
+import { useBooks } from "@/lib/hooks";
+import { Book } from "@/types/book";
+import { Input } from "@/components/ui/input";
+import type { ReactElement } from "react";
+import { Button } from "@/components/ui/button";
+import { LoadingSpinner } from "@/components/ui/loading-spinner";
 import {
   Card,
   CardContent,
@@ -14,18 +14,18 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from '@/components/ui/card';
+} from "@/components/ui/card";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
+} from "@/components/ui/select";
 
 export function BookCatalog() {
-  const [search, setSearch] = useState('');
-  const [category, setCategory] = useState('');
+  const [search, setSearch] = useState("");
+  const [category, setCategory] = useState("");
   const { data: books, isLoading } = useBooks({ search, category });
 
   if (isLoading) {
@@ -58,31 +58,43 @@ export function BookCatalog() {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        {books?.map((book: Book): ReactElement => (
-          <Card key={book.id} role="article" data-testid="book-card">
-            <CardHeader>
-              <CardTitle>{book.title}</CardTitle>
-              <CardDescription>{book.author}</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-2">
-                <p><strong>ISBN:</strong> {book.isbn}</p>
-                <p><strong>Publisher:</strong> {book.publisher}</p>
-                <p><strong>Category:</strong> {book.category}</p>
-                <p><strong>Available Copies:</strong> {book.available_copies}</p>
-                <p><strong>Location:</strong> {book.location}</p>
-              </div>
-            </CardContent>
-            <CardFooter>
-              <Button
-                variant="outline"
-                disabled={book.available_copies === 0}
-              >
-                {book.available_copies > 0 ? 'Issue Book' : 'Not Available'}
-              </Button>
-            </CardFooter>
-          </Card>
-        ))}
+        {books?.map(
+          (book: Book): ReactElement => (
+            <Card key={book.id} role="article" data-testid="book-card">
+              <CardHeader>
+                <CardTitle>{book.title}</CardTitle>
+                <CardDescription>{book.author}</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-2">
+                  <p>
+                    <strong>ISBN:</strong> {book.isbn}
+                  </p>
+                  <p>
+                    <strong>Publisher:</strong> {book.publisher}
+                  </p>
+                  <p>
+                    <strong>Category:</strong> {book.category}
+                  </p>
+                  <p>
+                    <strong>Available Copies:</strong> {book.available_copies}
+                  </p>
+                  <p>
+                    <strong>Location:</strong> {book.location}
+                  </p>
+                </div>
+              </CardContent>
+              <CardFooter>
+                <Button
+                  variant="outline"
+                  disabled={book.available_copies === 0}
+                >
+                  {book.available_copies > 0 ? "Issue Book" : "Not Available"}
+                </Button>
+              </CardFooter>
+            </Card>
+          ),
+        )}
       </div>
     </div>
   );

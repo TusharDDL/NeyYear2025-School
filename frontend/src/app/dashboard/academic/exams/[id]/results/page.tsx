@@ -1,9 +1,9 @@
-'use client'
+"use client";
 
-import { useState } from 'react'
-import { useQuery, useMutation } from '@tanstack/react-query'
-import { Card } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
+import { useState } from "react";
+import { useQuery, useMutation } from "@tanstack/react-query";
+import { Card } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import {
   Table,
   TableBody,
@@ -11,7 +11,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from '@/components/ui/table'
+} from "@/components/ui/table";
 import {
   Dialog,
   DialogContent,
@@ -20,7 +20,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from '@/components/ui/dialog'
+} from "@/components/ui/dialog";
 import {
   Form,
   FormControl,
@@ -29,14 +29,14 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form'
-import { Input } from '@/components/ui/input'
-import { Textarea } from '@/components/ui/textarea'
-import { useToast } from '@/components/ui/use-toast'
-import { useForm } from 'react-hook-form'
-import { zodResolver } from '@hookform/resolvers/zod'
-import * as z from 'zod'
-import { format } from 'date-fns'
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { useToast } from "@/components/ui/use-toast";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
+import { format } from "date-fns";
 import {
   Download,
   FileText,
@@ -44,160 +44,160 @@ import {
   XCircle,
   Clock,
   BarChart2,
-} from 'lucide-react'
+} from "lucide-react";
 
 const resultSchema = z.object({
-  marks: z.string().min(1, 'Marks are required'),
+  marks: z.string().min(1, "Marks are required"),
   remarks: z.string().optional(),
-})
+});
 
-type ResultFormData = z.infer<typeof resultSchema>
+type ResultFormData = z.infer<typeof resultSchema>;
 
 export default function ExamResultsPage({
   params,
 }: {
-  params: { id: string }
+  params: { id: string };
 }) {
-  const { toast } = useToast()
-  const [isDialogOpen, setIsDialogOpen] = useState(false)
-  const [selectedStudent, setSelectedStudent] = useState<any>(null)
+  const { toast } = useToast();
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [selectedStudent, setSelectedStudent] = useState<any>(null);
 
   const form = useForm<ResultFormData>({
     resolver: zodResolver(resultSchema),
     defaultValues: {
-      marks: '',
-      remarks: '',
+      marks: "",
+      remarks: "",
     },
-  })
+  });
 
   // Get exam details
   const { data: exam } = useQuery({
-    queryKey: ['exam', params.id],
+    queryKey: ["exam", params.id],
     queryFn: () => {
       // This would be replaced with an actual API call
       return Promise.resolve({
         id: params.id,
-        title: 'Mid-Term Mathematics',
-        class: 'Class 10',
-        subject: 'Mathematics',
-        date: '2024-02-15',
+        title: "Mid-Term Mathematics",
+        class: "Class 10",
+        subject: "Mathematics",
+        date: "2024-02-15",
         max_marks: 100,
         total_students: 30,
-      })
+      });
     },
-  })
+  });
 
   // Get results data
   const { data: resultsData } = useQuery({
-    queryKey: ['results', params.id],
+    queryKey: ["results", params.id],
     queryFn: () => {
       // This would be replaced with an actual API call
       return Promise.resolve([
         {
           id: 1,
-          student_name: 'John Doe',
-          roll_number: '1001',
+          student_name: "John Doe",
+          roll_number: "1001",
           marks: 85,
           percentage: 85,
-          grade: 'A',
-          remarks: 'Excellent performance',
-          status: 'published',
+          grade: "A",
+          remarks: "Excellent performance",
+          status: "published",
         },
         {
           id: 2,
-          student_name: 'Jane Smith',
-          roll_number: '1002',
+          student_name: "Jane Smith",
+          roll_number: "1002",
           marks: 92,
           percentage: 92,
-          grade: 'A+',
-          remarks: 'Outstanding work',
-          status: 'published',
+          grade: "A+",
+          remarks: "Outstanding work",
+          status: "published",
         },
         {
           id: 3,
-          student_name: 'Mike Johnson',
-          roll_number: '1003',
+          student_name: "Mike Johnson",
+          roll_number: "1003",
           marks: null,
           percentage: null,
           grade: null,
           remarks: null,
-          status: 'pending',
+          status: "pending",
         },
-      ])
+      ]);
     },
-  })
+  });
 
   const { mutate: saveResult, isLoading: isSaving } = useMutation({
     mutationFn: (data: ResultFormData & { studentId: number }) => {
       // This would be replaced with an actual API call
-      return new Promise((resolve) => setTimeout(resolve, 1000))
+      return new Promise((resolve) => setTimeout(resolve, 1000));
     },
     onSuccess: () => {
       toast({
-        title: 'Success',
-        description: 'Result saved successfully.',
-      })
-      setIsDialogOpen(false)
-      form.reset()
+        title: "Success",
+        description: "Result saved successfully.",
+      });
+      setIsDialogOpen(false);
+      form.reset();
     },
     onError: () => {
       toast({
-        title: 'Error',
-        description: 'Failed to save result.',
-        variant: 'destructive',
-      })
+        title: "Error",
+        description: "Failed to save result.",
+        variant: "destructive",
+      });
     },
-  })
+  });
 
   const onSubmit = (data: ResultFormData) => {
     if (selectedStudent) {
-      saveResult({ ...data, studentId: selectedStudent.id })
+      saveResult({ ...data, studentId: selectedStudent.id });
     }
-  }
+  };
 
   const handleEnterResult = (student: any) => {
-    setSelectedStudent(student)
+    setSelectedStudent(student);
     form.reset({
-      marks: student.marks?.toString() || '',
-      remarks: student.remarks || '',
-    })
-    setIsDialogOpen(true)
-  }
+      marks: student.marks?.toString() || "",
+      remarks: student.remarks || "",
+    });
+    setIsDialogOpen(true);
+  };
 
   const getGradeColor = (grade: string | null) => {
-    if (!grade) return ''
+    if (!grade) return "";
     switch (grade) {
-      case 'A+':
-        return 'text-green-600'
-      case 'A':
-        return 'text-green-500'
-      case 'B':
-        return 'text-blue-500'
-      case 'C':
-        return 'text-yellow-500'
-      case 'D':
-        return 'text-orange-500'
-      case 'F':
-        return 'text-red-500'
+      case "A+":
+        return "text-green-600";
+      case "A":
+        return "text-green-500";
+      case "B":
+        return "text-blue-500";
+      case "C":
+        return "text-yellow-500";
+      case "D":
+        return "text-orange-500";
+      case "F":
+        return "text-red-500";
       default:
-        return ''
+        return "";
     }
-  }
+  };
 
   // Calculate statistics
   const stats = resultsData?.reduce(
     (acc, result) => {
       if (result.marks !== null) {
-        acc.totalMarks += result.marks
-        acc.totalStudents += 1
-        if (result.percentage >= 90) acc.gradeAPlus += 1
-        else if (result.percentage >= 80) acc.gradeA += 1
-        else if (result.percentage >= 70) acc.gradeB += 1
-        else if (result.percentage >= 60) acc.gradeC += 1
-        else if (result.percentage >= 50) acc.gradeD += 1
-        else acc.gradeF += 1
+        acc.totalMarks += result.marks;
+        acc.totalStudents += 1;
+        if (result.percentage >= 90) acc.gradeAPlus += 1;
+        else if (result.percentage >= 80) acc.gradeA += 1;
+        else if (result.percentage >= 70) acc.gradeB += 1;
+        else if (result.percentage >= 60) acc.gradeC += 1;
+        else if (result.percentage >= 50) acc.gradeD += 1;
+        else acc.gradeF += 1;
       }
-      return acc
+      return acc;
     },
     {
       totalMarks: 0,
@@ -208,12 +208,12 @@ export default function ExamResultsPage({
       gradeC: 0,
       gradeD: 0,
       gradeF: 0,
-    }
-  )
+    },
+  );
 
   const averageMarks = stats
     ? Math.round(stats.totalMarks / stats.totalStudents)
-    : 0
+    : 0;
 
   return (
     <div className="container mx-auto py-6">
@@ -229,7 +229,7 @@ export default function ExamResultsPage({
             </div>
             <div className="text-right">
               <p className="font-medium">
-                Date: {format(new Date(exam?.date || ''), 'PPP')}
+                Date: {format(new Date(exam?.date || ""), "PPP")}
               </p>
               <p className="text-sm text-gray-500">
                 Maximum Marks: {exam?.max_marks}
@@ -245,9 +245,7 @@ export default function ExamResultsPage({
               <p className="text-2xl font-bold">{averageMarks}</p>
             </div>
             <div className="bg-green-50 p-4 rounded-lg">
-              <h3 className="text-sm font-medium text-green-600">
-                Pass Rate
-              </h3>
+              <h3 className="text-sm font-medium text-green-600">Pass Rate</h3>
               <p className="text-2xl font-bold">
                 {stats
                   ? Math.round(
@@ -257,7 +255,7 @@ export default function ExamResultsPage({
                         stats.gradeC +
                         stats.gradeD) /
                         stats.totalStudents) *
-                        100
+                        100,
                     )
                   : 0}
                 %
@@ -267,17 +265,11 @@ export default function ExamResultsPage({
               <h3 className="text-sm font-medium text-purple-600">
                 Highest Grade
               </h3>
-              <p className="text-2xl font-bold">
-                {stats?.gradeAPlus} Students
-              </p>
+              <p className="text-2xl font-bold">{stats?.gradeAPlus} Students</p>
             </div>
             <div className="bg-red-50 p-4 rounded-lg">
-              <h3 className="text-sm font-medium text-red-600">
-                Failed
-              </h3>
-              <p className="text-2xl font-bold">
-                {stats?.gradeF} Students
-              </p>
+              <h3 className="text-sm font-medium text-red-600">Failed</h3>
+              <p className="text-2xl font-bold">{stats?.gradeF} Students</p>
             </div>
           </div>
         </div>
@@ -324,32 +316,26 @@ export default function ExamResultsPage({
                         {result.marks}/{exam?.max_marks}
                       </span>
                     ) : (
-                      '-'
+                      "-"
                     )}
                   </TableCell>
                   <TableCell>
-                    {result.percentage !== null
-                      ? `${result.percentage}%`
-                      : '-'}
+                    {result.percentage !== null ? `${result.percentage}%` : "-"}
                   </TableCell>
                   <TableCell>
                     <span
-                      className={`font-medium ${getGradeColor(
-                        result.grade
-                      )}`}
+                      className={`font-medium ${getGradeColor(result.grade)}`}
                     >
-                      {result.grade || '-'}
+                      {result.grade || "-"}
                     </span>
                   </TableCell>
-                  <TableCell>
-                    {result.remarks || '-'}
-                  </TableCell>
+                  <TableCell>{result.remarks || "-"}</TableCell>
                   <TableCell>
                     <span
                       className={`px-2 py-1 rounded-full text-xs ${
-                        result.status === 'published'
-                          ? 'bg-green-100 text-green-700'
-                          : 'bg-yellow-100 text-yellow-700'
+                        result.status === "published"
+                          ? "bg-green-100 text-green-700"
+                          : "bg-yellow-100 text-yellow-700"
                       }`}
                     >
                       {result.status}
@@ -377,16 +363,12 @@ export default function ExamResultsPage({
           <DialogHeader>
             <DialogTitle>Enter Result</DialogTitle>
             <DialogDescription>
-              Enter marks and remarks for{' '}
-              {selectedStudent?.student_name}
+              Enter marks and remarks for {selectedStudent?.student_name}
             </DialogDescription>
           </DialogHeader>
 
           <Form {...form}>
-            <form
-              onSubmit={form.handleSubmit(onSubmit)}
-              className="space-y-4"
-            >
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
               <FormField
                 control={form.control}
                 name="marks"
@@ -432,7 +414,7 @@ export default function ExamResultsPage({
                   Cancel
                 </Button>
                 <Button type="submit" disabled={isSaving}>
-                  {isSaving ? 'Saving...' : 'Save'}
+                  {isSaving ? "Saving..." : "Save"}
                 </Button>
               </DialogFooter>
             </form>
@@ -440,5 +422,5 @@ export default function ExamResultsPage({
         </DialogContent>
       </Dialog>
     </div>
-  )
+  );
 }

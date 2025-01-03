@@ -1,15 +1,15 @@
-'use client'
+"use client";
 
-import { useState } from 'react'
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { useState } from "react";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from '@/components/ui/dialog'
-import { Button } from '@/components/ui/button'
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
 import {
   Table,
   TableBody,
@@ -17,58 +17,58 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from '@/components/ui/table'
-import { Input } from '@/components/ui/input'
-import { Assessment } from '@/services/academic'
-import academicService from '@/services/academic'
+} from "@/components/ui/table";
+import { Input } from "@/components/ui/input";
+import { Assessment } from "@/services/academic";
+import academicService from "@/services/academic";
 
 interface EnterResultsDialogProps {
-  assessment: Assessment
-  sectionId: number
+  assessment: Assessment;
+  sectionId: number;
 }
 
 interface ResultRecord {
-  student_id: number
-  marks_obtained: number
-  remarks?: string
+  student_id: number;
+  marks_obtained: number;
+  remarks?: string;
 }
 
 export function EnterResultsDialog({
   assessment,
   sectionId,
 }: EnterResultsDialogProps) {
-  const [open, setOpen] = useState(false)
-  const [results, setResults] = useState<Record<number, ResultRecord>>({})
-  const queryClient = useQueryClient()
+  const [open, setOpen] = useState(false);
+  const [results, setResults] = useState<Record<number, ResultRecord>>({});
+  const queryClient = useQueryClient();
 
   // Get section details to get the list of students
   const { data: section } = useQuery({
-    queryKey: ['sections', sectionId],
+    queryKey: ["sections", sectionId],
     queryFn: () => academicService.getSections(),
     select: (data) => data.find((s) => s.id === sectionId),
-  })
+  });
 
   // Get existing results
   const { data: existingResults } = useQuery({
-    queryKey: ['assessment-results', assessment.id],
+    queryKey: ["assessment-results", assessment.id],
     queryFn: () => academicService.getAssessmentResults(assessment.id),
-  })
+  });
 
   // Initialize results when dialog opens
   const initializeResults = () => {
-    const records: Record<number, ResultRecord> = {}
+    const records: Record<number, ResultRecord> = {};
     section?.students?.forEach((student) => {
       const existing = existingResults?.find(
-        (r) => r.student.id === student.id
-      )
+        (r) => r.student.id === student.id,
+      );
       records[student.id] = {
         student_id: student.id,
         marks_obtained: existing?.marks_obtained ?? 0,
-        remarks: existing?.remarks ?? '',
-      }
-    })
-    setResults(records)
-  }
+        remarks: existing?.remarks ?? "",
+      };
+    });
+    setResults(records);
+  };
 
   const { mutate: submitResults, isLoading } = useMutation({
     mutationFn: (data: ResultRecord[]) =>
@@ -76,27 +76,27 @@ export function EnterResultsDialog({
         data.map((result) => ({
           ...result,
           assessment_id: assessment.id,
-        }))
+        })),
       ),
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: ['assessment-results', assessment.id],
-      })
-      setOpen(false)
+        queryKey: ["assessment-results", assessment.id],
+      });
+      setOpen(false);
     },
-  })
+  });
 
   const handleSubmit = () => {
-    submitResults(Object.values(results))
-  }
+    submitResults(Object.values(results));
+  };
 
   return (
     <Dialog
       open={open}
       onOpenChange={(isOpen) => {
-        setOpen(isOpen)
+        setOpen(isOpen);
         if (isOpen) {
-          initializeResults()
+          initializeResults();
         }
       }}
     >
@@ -128,9 +128,9 @@ export function EnterResultsDialog({
                       type="number"
                       min={0}
                       max={assessment.total_marks}
-                      value={results[student.id]?.marks_obtained || ''}
+                      value={results[student.id]?.marks_obtained || ""}
                       onChange={(e) => {
-                        const value = parseInt(e.target.value)
+                        const value = parseInt(e.target.value);
                         if (
                           !isNaN(value) &&
                           value >= 0 &&
@@ -142,14 +142,14 @@ export function EnterResultsDialog({
                               ...prev[student.id],
                               marks_obtained: value,
                             },
-                          }))
+                          }));
                         }
                       }}
                     />
                   </TableCell>
                   <TableCell>
                     <Input
-                      value={results[student.id]?.remarks || ''}
+                      value={results[student.id]?.remarks || ""}
                       onChange={(e) => {
                         setResults((prev) => ({
                           ...prev,
@@ -157,7 +157,7 @@ export function EnterResultsDialog({
                             ...prev[student.id],
                             remarks: e.target.value,
                           },
-                        }))
+                        }));
                       }}
                       placeholder="Optional remarks"
                     />
@@ -169,17 +169,14 @@ export function EnterResultsDialog({
         </div>
 
         <div className="mt-4 flex justify-end space-x-2">
-          <Button
-            variant="outline"
-            onClick={() => setOpen(false)}
-          >
+          <Button variant="outline" onClick={() => setOpen(false)}>
             Cancel
           </Button>
           <Button onClick={handleSubmit} disabled={isLoading}>
-            {isLoading ? 'Saving...' : 'Save Results'}
+            {isLoading ? "Saving..." : "Save Results"}
           </Button>
         </div>
       </DialogContent>
     </Dialog>
-  )
+  );
 }

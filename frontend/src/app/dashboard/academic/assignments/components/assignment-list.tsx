@@ -1,57 +1,55 @@
-'use client'
+"use client";
 
-import { format } from 'date-fns'
-import { useAuth } from '@/lib/auth'
-import { Assignment } from '@/services/academic'
-import { Button } from '@/components/ui/button'
+import { format } from "date-fns";
+import { useAuth } from "@/lib/auth";
+import { Assignment } from "@/services/academic";
+import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from '@/components/ui/card'
-import { Badge } from '@/components/ui/badge'
-import { SubmitAssignmentDialog } from './submit-assignment-dialog'
-import { ViewSubmissionsDialog } from './view-submissions-dialog'
+} from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { SubmitAssignmentDialog } from "./submit-assignment-dialog";
+import { ViewSubmissionsDialog } from "./view-submissions-dialog";
 
 interface AssignmentListProps {
-  assignments: Assignment[]
-  sectionId: number
+  assignments: Assignment[];
+  sectionId: number;
 }
 
 export function AssignmentList({
   assignments,
   sectionId,
 }: AssignmentListProps) {
-  const { user } = useAuth()
-  const isTeacher = user?.role === 'teacher'
+  const { user } = useAuth();
+  const isTeacher = user?.role === "teacher";
 
   const getStatusBadge = (dueDate: string, submissions?: any[]) => {
-    const due = new Date(dueDate)
-    const now = new Date()
-    const isSubmitted = submissions?.some(
-      (s) => s.student.id === user?.id
-    )
+    const due = new Date(dueDate);
+    const now = new Date();
+    const isSubmitted = submissions?.some((s) => s.student.id === user?.id);
 
     if (due > now) {
-      return <Badge variant="secondary">Upcoming</Badge>
+      return <Badge variant="secondary">Upcoming</Badge>;
     } else if (due.toDateString() === now.toDateString()) {
-      return <Badge>Due Today</Badge>
+      return <Badge>Due Today</Badge>;
     } else {
       if (isSubmitted) {
-        return <Badge variant="outline">Submitted</Badge>
+        return <Badge variant="outline">Submitted</Badge>;
       }
-      return <Badge variant="destructive">Past Due</Badge>
+      return <Badge variant="destructive">Past Due</Badge>;
     }
-  }
+  };
 
   if (assignments.length === 0) {
     return (
       <div className="bg-white rounded-lg shadow p-8 text-center text-gray-500">
         No assignments found
       </div>
-    )
+    );
   }
 
   return (
@@ -63,8 +61,8 @@ export function AssignmentList({
               <div>
                 <CardTitle>{assignment.title}</CardTitle>
                 <CardDescription>
-                  {assignment.subject.name} | Due:{' '}
-                  {format(new Date(assignment.due_date), 'PPp')}
+                  {assignment.subject.name} | Due:{" "}
+                  {format(new Date(assignment.due_date), "PPp")}
                 </CardDescription>
               </div>
               {getStatusBadge(assignment.due_date, assignment.submissions)}
@@ -72,18 +70,12 @@ export function AssignmentList({
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
-              <p className="text-sm text-gray-600">
-                {assignment.description}
-              </p>
+              <p className="text-sm text-gray-600">{assignment.description}</p>
 
               <div className="flex justify-between items-center">
                 <div className="flex items-center space-x-4">
                   {assignment.file && (
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      asChild
-                    >
+                    <Button variant="outline" size="sm" asChild>
                       <a
                         href={assignment.file}
                         target="_blank"
@@ -114,5 +106,5 @@ export function AssignmentList({
         </Card>
       ))}
     </div>
-  )
+  );
 }

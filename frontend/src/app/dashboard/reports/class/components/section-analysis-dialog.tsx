@@ -1,13 +1,13 @@
-'use client'
+"use client";
 
-import { ClassReport } from '@/services/reports'
+import { ClassReport } from "@/services/reports";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
-} from '@/components/ui/dialog'
-import { Card } from '@/components/ui/card'
+} from "@/components/ui/dialog";
+import { Card } from "@/components/ui/card";
 import {
   Table,
   TableBody,
@@ -15,7 +15,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from '@/components/ui/table'
+} from "@/components/ui/table";
 import {
   BarChart,
   Bar,
@@ -30,14 +30,14 @@ import {
   PieChart,
   Pie,
   Cell,
-} from 'recharts'
+} from "recharts";
 
 interface SectionAnalysisDialogProps {
-  section: ClassReport['sections'][0]
-  onClose: () => void
+  section: ClassReport["sections"][0];
+  onClose: () => void;
 }
 
-const COLORS = ['#22c55e', '#f59e0b', '#ef4444']
+const COLORS = ["#22c55e", "#f59e0b", "#ef4444"];
 
 export function SectionAnalysisDialog({
   section,
@@ -46,62 +46,60 @@ export function SectionAnalysisDialog({
   // Prepare data for performance distribution chart
   const performanceDistribution = [
     {
-      name: 'Above 90%',
+      name: "Above 90%",
       value: Math.round(Math.random() * 30),
     },
     {
-      name: '60-90%',
+      name: "60-90%",
       value: Math.round(Math.random() * 50),
     },
     {
-      name: 'Below 60%',
+      name: "Below 60%",
       value: Math.round(Math.random() * 20),
     },
-  ]
+  ];
 
   // Prepare data for subject performance chart
   const subjectPerformance = [
     {
-      subject: 'Mathematics',
+      subject: "Mathematics",
       performance: Math.round(Math.random() * 100),
       attendance: Math.round(Math.random() * 100),
     },
     {
-      subject: 'Science',
+      subject: "Science",
       performance: Math.round(Math.random() * 100),
       attendance: Math.round(Math.random() * 100),
     },
     {
-      subject: 'English',
+      subject: "English",
       performance: Math.round(Math.random() * 100),
       attendance: Math.round(Math.random() * 100),
     },
     {
-      subject: 'History',
+      subject: "History",
       performance: Math.round(Math.random() * 100),
       attendance: Math.round(Math.random() * 100),
     },
     {
-      subject: 'Geography',
+      subject: "Geography",
       performance: Math.round(Math.random() * 100),
       attendance: Math.round(Math.random() * 100),
     },
-  ]
+  ];
 
   // Prepare data for monthly trend chart
   const monthlyTrend = Array.from({ length: 12 }, (_, i) => ({
-    month: new Date(2024, i, 1).toLocaleString('default', { month: 'short' }),
+    month: new Date(2024, i, 1).toLocaleString("default", { month: "short" }),
     performance: Math.round(Math.random() * 100),
     attendance: Math.round(Math.random() * 100),
-  }))
+  }));
 
   return (
     <Dialog open onOpenChange={onClose}>
       <DialogContent className="max-w-4xl">
         <DialogHeader>
-          <DialogTitle>
-            Section Analysis - {section.section_name}
-          </DialogTitle>
+          <DialogTitle>Section Analysis - {section.section_name}</DialogTitle>
         </DialogHeader>
 
         <div className="space-y-6">
@@ -159,30 +157,29 @@ export function SectionAnalysisDialog({
                         name,
                       }) => {
                         const radius =
-                          innerRadius + (outerRadius - innerRadius) * 0.5
-                        const x = cx + radius * Math.cos(-midAngle * Math.PI / 180)
-                        const y = cy + radius * Math.sin(-midAngle * Math.PI / 180)
+                          innerRadius + (outerRadius - innerRadius) * 0.5;
+                        const x =
+                          cx + radius * Math.cos((-midAngle * Math.PI) / 180);
+                        const y =
+                          cy + radius * Math.sin((-midAngle * Math.PI) / 180);
 
                         return (
                           <text
                             x={x}
                             y={y}
                             fill="white"
-                            textAnchor={x > cx ? 'start' : 'end'}
+                            textAnchor={x > cx ? "start" : "end"}
                             dominantBaseline="central"
                           >
                             {`${name} ${(percent * 100).toFixed(0)}%`}
                           </text>
-                        )
+                        );
                       }}
                       outerRadius={100}
                       dataKey="value"
                     >
                       {performanceDistribution.map((entry, index) => (
-                        <Cell
-                          key={`cell-${index}`}
-                          fill={COLORS[index]}
-                        />
+                        <Cell key={`cell-${index}`} fill={COLORS[index]} />
                       ))}
                     </Pie>
                     <Tooltip />
@@ -221,9 +218,7 @@ export function SectionAnalysisDialog({
 
           {/* Monthly Trend */}
           <Card className="p-6">
-            <h2 className="text-lg font-semibold mb-4">
-              Monthly Trend
-            </h2>
+            <h2 className="text-lg font-semibold mb-4">Monthly Trend</h2>
             <div className="h-[300px]">
               <ResponsiveContainer width="100%" height="100%">
                 <LineChart data={monthlyTrend}>
@@ -268,21 +263,11 @@ export function SectionAnalysisDialog({
                 <TableBody>
                   {Array.from({ length: 5 }, (_, i) => (
                     <TableRow key={i}>
-                      <TableCell className="font-medium">
-                        #{i + 1}
-                      </TableCell>
-                      <TableCell>
-                        Student {i + 1}
-                      </TableCell>
-                      <TableCell>
-                        {Math.round(95 - i * 2)}%
-                      </TableCell>
-                      <TableCell>
-                        {Math.round(98 - i * 3)}%
-                      </TableCell>
-                      <TableCell>
-                        {Math.round(100 - i * 4)}%
-                      </TableCell>
+                      <TableCell className="font-medium">#{i + 1}</TableCell>
+                      <TableCell>Student {i + 1}</TableCell>
+                      <TableCell>{Math.round(95 - i * 2)}%</TableCell>
+                      <TableCell>{Math.round(98 - i * 3)}%</TableCell>
+                      <TableCell>{Math.round(100 - i * 4)}%</TableCell>
                     </TableRow>
                   ))}
                 </TableBody>
@@ -292,5 +277,5 @@ export function SectionAnalysisDialog({
         </div>
       </DialogContent>
     </Dialog>
-  )
+  );
 }

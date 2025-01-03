@@ -1,16 +1,16 @@
-'use client'
+"use client";
 
-import { useState } from 'react'
-import { format } from 'date-fns'
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { useState } from "react";
+import { format } from "date-fns";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from '@/components/ui/dialog'
-import { Button } from '@/components/ui/button'
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
 import {
   Table,
   TableBody,
@@ -18,56 +18,60 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from '@/components/ui/table'
-import { Input } from '@/components/ui/input'
-import { Badge } from '@/components/ui/badge'
-import { Assignment } from '@/services/academic'
-import academicService from '@/services/academic'
+} from "@/components/ui/table";
+import { Input } from "@/components/ui/input";
+import { Badge } from "@/components/ui/badge";
+import { Assignment } from "@/services/academic";
+import academicService from "@/services/academic";
 
 interface ViewSubmissionsDialogProps {
-  assignment: Assignment
-  sectionId: number
+  assignment: Assignment;
+  sectionId: number;
 }
 
 interface GradeSubmissionData {
-  submissionId: number
-  score: number
-  remarks?: string
+  submissionId: number;
+  score: number;
+  remarks?: string;
 }
 
 export function ViewSubmissionsDialog({
   assignment,
   sectionId,
 }: ViewSubmissionsDialogProps) {
-  const [open, setOpen] = useState(false)
-  const queryClient = useQueryClient()
+  const [open, setOpen] = useState(false);
+  const queryClient = useQueryClient();
 
   // Get section details to get the list of students
   const { data: section } = useQuery({
-    queryKey: ['sections', sectionId],
+    queryKey: ["sections", sectionId],
     queryFn: () => academicService.getSections(),
     select: (data) => data.find((s) => s.id === sectionId),
-  })
+  });
 
   // Get submissions
   const { data: submissions } = useQuery({
-    queryKey: ['assignment-submissions', assignment.id],
+    queryKey: ["assignment-submissions", assignment.id],
     queryFn: () => academicService.getAssignmentSubmissions(assignment.id),
-  })
+  });
 
   const { mutate: gradeSubmission, isLoading } = useMutation({
     mutationFn: ({ submissionId, ...data }: GradeSubmissionData) =>
       academicService.gradeAssignment(submissionId, data),
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: ['assignment-submissions', assignment.id],
-      })
+        queryKey: ["assignment-submissions", assignment.id],
+      });
     },
-  })
+  });
 
-  const handleGrade = (submissionId: number, score: number, remarks?: string) => {
-    gradeSubmission({ submissionId, score, remarks })
-  }
+  const handleGrade = (
+    submissionId: number,
+    score: number,
+    remarks?: string,
+  ) => {
+    gradeSubmission({ submissionId, score, remarks });
+  };
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -93,8 +97,8 @@ export function ViewSubmissionsDialog({
             <TableBody>
               {section?.students?.map((student) => {
                 const submission = submissions?.find(
-                  (s) => s.student.id === student.id
-                )
+                  (s) => s.student.id === student.id,
+                );
 
                 return (
                   <TableRow key={student.id}>
@@ -112,7 +116,7 @@ export function ViewSubmissionsDialog({
                       {submission?.submitted_at &&
                         format(
                           new Date(submission.submitted_at),
-                          'MMM d, yyyy h:mm a'
+                          "MMM d, yyyy h:mm a",
                         )}
                     </TableCell>
                     <TableCell>
@@ -121,19 +125,15 @@ export function ViewSubmissionsDialog({
                           type="number"
                           min={0}
                           max={100}
-                          value={submission.score || ''}
+                          value={submission.score || ""}
                           onChange={(e) => {
-                            const score = parseInt(e.target.value)
-                            if (
-                              !isNaN(score) &&
-                              score >= 0 &&
-                              score <= 100
-                            ) {
+                            const score = parseInt(e.target.value);
+                            if (!isNaN(score) && score >= 0 && score <= 100) {
                               handleGrade(
                                 submission.id,
                                 score,
-                                submission.remarks
-                              )
+                                submission.remarks,
+                              );
                             }
                           }}
                           className="w-20"
@@ -143,11 +143,7 @@ export function ViewSubmissionsDialog({
                     <TableCell>
                       {submission && (
                         <div className="space-x-2">
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            asChild
-                          >
+                          <Button variant="outline" size="sm" asChild>
                             <a
                               href={submission.file}
                               target="_blank"
@@ -158,12 +154,12 @@ export function ViewSubmissionsDialog({
                           </Button>
                           <Input
                             placeholder="Add remarks"
-                            value={submission.remarks || ''}
+                            value={submission.remarks || ""}
                             onChange={(e) =>
                               handleGrade(
                                 submission.id,
                                 submission.score || 0,
-                                e.target.value
+                                e.target.value,
                               )
                             }
                             className="w-40 inline-block"
@@ -172,12 +168,12 @@ export function ViewSubmissionsDialog({
                       )}
                     </TableCell>
                   </TableRow>
-                )
+                );
               })}
             </TableBody>
           </Table>
         </div>
       </DialogContent>
     </Dialog>
-  )
+  );
 }

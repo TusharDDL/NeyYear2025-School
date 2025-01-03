@@ -1,9 +1,9 @@
-'use client'
+"use client";
 
-import { useState } from 'react'
-import { useQuery, useMutation } from '@tanstack/react-query'
-import { Card } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
+import { useState } from "react";
+import { useQuery, useMutation } from "@tanstack/react-query";
+import { Card } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import {
   Table,
   TableBody,
@@ -11,7 +11,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from '@/components/ui/table'
+} from "@/components/ui/table";
 import {
   Dialog,
   DialogContent,
@@ -20,7 +20,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from '@/components/ui/dialog'
+} from "@/components/ui/dialog";
 import {
   Form,
   FormControl,
@@ -29,112 +29,114 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form'
+} from "@/components/ui/form";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select'
-import { Input } from '@/components/ui/input'
-import { Textarea } from '@/components/ui/textarea'
-import { useToast } from '@/components/ui/use-toast'
-import { useForm } from 'react-hook-form'
-import { zodResolver } from '@hookform/resolvers/zod'
-import * as z from 'zod'
-import { Plus, FileEdit, Trash2, Download, Upload } from 'lucide-react'
+} from "@/components/ui/select";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { useToast } from "@/components/ui/use-toast";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
+import { Plus, FileEdit, Trash2, Download, Upload } from "lucide-react";
 
 const curriculumSchema = z.object({
-  class: z.string().min(1, 'Class is required'),
-  subject: z.string().min(1, 'Subject is required'),
-  title: z.string().min(1, 'Title is required'),
-  description: z.string().min(1, 'Description is required'),
-  objectives: z.string().min(1, 'Learning objectives are required'),
+  class: z.string().min(1, "Class is required"),
+  subject: z.string().min(1, "Subject is required"),
+  title: z.string().min(1, "Title is required"),
+  description: z.string().min(1, "Description is required"),
+  objectives: z.string().min(1, "Learning objectives are required"),
   resources: z.string().optional(),
-  assessment: z.string().min(1, 'Assessment criteria is required'),
-})
+  assessment: z.string().min(1, "Assessment criteria is required"),
+});
 
-type CurriculumFormData = z.infer<typeof curriculumSchema>
+type CurriculumFormData = z.infer<typeof curriculumSchema>;
 
 export default function CurriculumPage() {
-  const { toast } = useToast()
-  const [isDialogOpen, setIsDialogOpen] = useState(false)
-  const [selectedCurriculum, setSelectedCurriculum] = useState<any>(null)
+  const { toast } = useToast();
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [selectedCurriculum, setSelectedCurriculum] = useState<any>(null);
 
   const form = useForm<CurriculumFormData>({
     resolver: zodResolver(curriculumSchema),
     defaultValues: {
-      class: '',
-      subject: '',
-      title: '',
-      description: '',
-      objectives: '',
-      resources: '',
-      assessment: '',
+      class: "",
+      subject: "",
+      title: "",
+      description: "",
+      objectives: "",
+      resources: "",
+      assessment: "",
     },
-  })
+  });
 
   // Get curriculum data
   const { data: curriculumData, isLoading } = useQuery({
-    queryKey: ['curriculum'],
+    queryKey: ["curriculum"],
     queryFn: () => {
       // This would be replaced with an actual API call
       return Promise.resolve([
         {
           id: 1,
-          class: 'Class 10',
-          subject: 'Mathematics',
-          title: 'Algebra Fundamentals',
-          description: 'Basic algebraic concepts and operations',
-          objectives: '- Understand variables\n- Solve linear equations\n- Graph functions',
-          resources: 'Textbook Chapter 1-3, Online exercises',
-          assessment: 'Weekly quizzes, Monthly tests',
-          status: 'active',
+          class: "Class 10",
+          subject: "Mathematics",
+          title: "Algebra Fundamentals",
+          description: "Basic algebraic concepts and operations",
+          objectives:
+            "- Understand variables\n- Solve linear equations\n- Graph functions",
+          resources: "Textbook Chapter 1-3, Online exercises",
+          assessment: "Weekly quizzes, Monthly tests",
+          status: "active",
         },
         {
           id: 2,
-          class: 'Class 10',
-          subject: 'Science',
-          title: 'Forces and Motion',
-          description: 'Newton\'s laws of motion and their applications',
-          objectives: '- Understand Newton\'s laws\n- Calculate force and acceleration\n- Analyze motion graphs',
-          resources: 'Physics lab, Simulation software',
-          assessment: 'Lab reports, Project work',
-          status: 'draft',
+          class: "Class 10",
+          subject: "Science",
+          title: "Forces and Motion",
+          description: "Newton's laws of motion and their applications",
+          objectives:
+            "- Understand Newton's laws\n- Calculate force and acceleration\n- Analyze motion graphs",
+          resources: "Physics lab, Simulation software",
+          assessment: "Lab reports, Project work",
+          status: "draft",
         },
-      ])
+      ]);
     },
-  })
+  });
 
   const { mutate: saveCurriculum, isLoading: isSaving } = useMutation({
     mutationFn: (data: CurriculumFormData) => {
       // This would be replaced with an actual API call
-      return new Promise((resolve) => setTimeout(resolve, 1000))
+      return new Promise((resolve) => setTimeout(resolve, 1000));
     },
     onSuccess: () => {
       toast({
-        title: 'Success',
-        description: 'Curriculum saved successfully.',
-      })
-      setIsDialogOpen(false)
-      form.reset()
+        title: "Success",
+        description: "Curriculum saved successfully.",
+      });
+      setIsDialogOpen(false);
+      form.reset();
     },
     onError: () => {
       toast({
-        title: 'Error',
-        description: 'Failed to save curriculum.',
-        variant: 'destructive',
-      })
+        title: "Error",
+        description: "Failed to save curriculum.",
+        variant: "destructive",
+      });
     },
-  })
+  });
 
   const onSubmit = (data: CurriculumFormData) => {
-    saveCurriculum(data)
-  }
+    saveCurriculum(data);
+  };
 
   const handleEdit = (curriculum: any) => {
-    setSelectedCurriculum(curriculum)
+    setSelectedCurriculum(curriculum);
     form.reset({
       class: curriculum.class,
       subject: curriculum.subject,
@@ -143,26 +145,24 @@ export default function CurriculumPage() {
       objectives: curriculum.objectives,
       resources: curriculum.resources,
       assessment: curriculum.assessment,
-    })
-    setIsDialogOpen(true)
-  }
+    });
+    setIsDialogOpen(true);
+  };
 
   const handleDelete = (id: number) => {
     // This would be replaced with an actual API call
     toast({
-      title: 'Success',
-      description: 'Curriculum deleted successfully.',
-    })
-  }
+      title: "Success",
+      description: "Curriculum deleted successfully.",
+    });
+  };
 
   return (
     <div className="container mx-auto py-6">
       <div className="flex justify-between items-center mb-6">
         <div>
           <h1 className="text-2xl font-bold">Curriculum Management</h1>
-          <p className="text-gray-500">
-            Create and manage course curriculum
-          </p>
+          <p className="text-gray-500">Create and manage course curriculum</p>
         </div>
         <div className="flex gap-2">
           <Button variant="outline">
@@ -183,7 +183,7 @@ export default function CurriculumPage() {
             <DialogContent className="max-w-2xl">
               <DialogHeader>
                 <DialogTitle>
-                  {selectedCurriculum ? 'Edit' : 'Add'} Curriculum
+                  {selectedCurriculum ? "Edit" : "Add"} Curriculum
                 </DialogTitle>
                 <DialogDescription>
                   Create or modify curriculum details
@@ -244,16 +244,13 @@ export default function CurriculumPage() {
                             </FormControl>
                             <SelectContent>
                               {[
-                                'Mathematics',
-                                'Science',
-                                'English',
-                                'History',
-                                'Geography',
+                                "Mathematics",
+                                "Science",
+                                "English",
+                                "History",
+                                "Geography",
                               ].map((subject) => (
-                                <SelectItem
-                                  key={subject}
-                                  value={subject}
-                                >
+                                <SelectItem key={subject} value={subject}>
                                   {subject}
                                 </SelectItem>
                               ))}
@@ -351,7 +348,7 @@ export default function CurriculumPage() {
                       Cancel
                     </Button>
                     <Button type="submit" disabled={isSaving}>
-                      {isSaving ? 'Saving...' : 'Save'}
+                      {isSaving ? "Saving..." : "Save"}
                     </Button>
                   </DialogFooter>
                 </form>
@@ -384,9 +381,9 @@ export default function CurriculumPage() {
                   <TableCell>
                     <span
                       className={`px-2 py-1 rounded-full text-xs ${
-                        curriculum.status === 'active'
-                          ? 'bg-green-100 text-green-700'
-                          : 'bg-yellow-100 text-yellow-700'
+                        curriculum.status === "active"
+                          ? "bg-green-100 text-green-700"
+                          : "bg-yellow-100 text-yellow-700"
                       }`}
                     >
                       {curriculum.status}
@@ -417,5 +414,5 @@ export default function CurriculumPage() {
         </div>
       </Card>
     </div>
-  )
+  );
 }

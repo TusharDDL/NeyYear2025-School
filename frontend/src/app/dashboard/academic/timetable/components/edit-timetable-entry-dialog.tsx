@@ -1,19 +1,19 @@
-'use client'
+"use client";
 
-import { useState } from 'react'
-import { useForm } from 'react-hook-form'
-import { zodResolver } from '@hookform/resolvers/zod'
-import * as z from 'zod'
-import { format } from 'date-fns'
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
+import { format } from "date-fns";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from '@/components/ui/dialog'
-import { Button } from '@/components/ui/button'
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
@@ -21,15 +21,15 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form'
+} from "@/components/ui/form";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select'
-import { Input } from '@/components/ui/input'
+} from "@/components/ui/select";
+import { Input } from "@/components/ui/input";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -40,45 +40,45 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
-} from '@/components/ui/alert-dialog'
-import { Timetable } from '@/services/academic'
-import academicService from '@/services/academic'
+} from "@/components/ui/alert-dialog";
+import { Timetable } from "@/services/academic";
+import academicService from "@/services/academic";
 
 const WEEKDAYS = [
-  'Monday',
-  'Tuesday',
-  'Wednesday',
-  'Thursday',
-  'Friday',
-  'Saturday',
-  'Sunday',
-]
+  "Monday",
+  "Tuesday",
+  "Wednesday",
+  "Thursday",
+  "Friday",
+  "Saturday",
+  "Sunday",
+];
 
 const timetableEntrySchema = z.object({
-  subject_id: z.string().min(1, 'Subject is required'),
-  weekday: z.string().min(1, 'Day is required'),
-  start_time: z.string().min(1, 'Start time is required'),
-  end_time: z.string().min(1, 'End time is required'),
-})
+  subject_id: z.string().min(1, "Subject is required"),
+  weekday: z.string().min(1, "Day is required"),
+  start_time: z.string().min(1, "Start time is required"),
+  end_time: z.string().min(1, "End time is required"),
+});
 
-type TimetableEntryFormData = z.infer<typeof timetableEntrySchema>
+type TimetableEntryFormData = z.infer<typeof timetableEntrySchema>;
 
 interface EditTimetableEntryDialogProps {
-  entry: Timetable
-  sectionId: number
+  entry: Timetable;
+  sectionId: number;
 }
 
 export function EditTimetableEntryDialog({
   entry,
   sectionId,
 }: EditTimetableEntryDialogProps) {
-  const [open, setOpen] = useState(false)
-  const queryClient = useQueryClient()
+  const [open, setOpen] = useState(false);
+  const queryClient = useQueryClient();
 
   const { data: subjects } = useQuery({
-    queryKey: ['subjects', sectionId],
+    queryKey: ["subjects", sectionId],
     queryFn: academicService.getSubjects,
-  })
+  });
 
   const form = useForm<TimetableEntryFormData>({
     resolver: zodResolver(timetableEntrySchema),
@@ -88,7 +88,7 @@ export function EditTimetableEntryDialog({
       start_time: entry.start_time,
       end_time: entry.end_time,
     },
-  })
+  });
 
   const { mutate: updateEntry, isLoading: isUpdating } = useMutation({
     mutationFn: (data: TimetableEntryFormData) =>
@@ -99,32 +99,32 @@ export function EditTimetableEntryDialog({
         weekday: parseInt(data.weekday),
       }),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['timetable'] })
-      setOpen(false)
+      queryClient.invalidateQueries({ queryKey: ["timetable"] });
+      setOpen(false);
     },
-  })
+  });
 
   const { mutate: deleteEntry, isLoading: isDeleting } = useMutation({
     mutationFn: () => academicService.deleteTimetableEntry(entry.id),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['timetable'] })
-      setOpen(false)
+      queryClient.invalidateQueries({ queryKey: ["timetable"] });
+      setOpen(false);
     },
-  })
+  });
 
   const onSubmit = (data: TimetableEntryFormData) => {
     // Check if end time is after start time
-    const start = new Date(`1970-01-01T${data.start_time}`)
-    const end = new Date(`1970-01-01T${data.end_time}`)
+    const start = new Date(`1970-01-01T${data.start_time}`);
+    const end = new Date(`1970-01-01T${data.end_time}`);
     if (end <= start) {
-      form.setError('end_time', {
-        message: 'End time must be after start time',
-      })
-      return
+      form.setError("end_time", {
+        message: "End time must be after start time",
+      });
+      return;
     }
 
-    updateEntry(data)
-  }
+    updateEntry(data);
+  };
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -188,10 +188,7 @@ export function EditTimetableEntryDialog({
                     </FormControl>
                     <SelectContent>
                       {WEEKDAYS.map((day, index) => (
-                        <SelectItem
-                          key={index}
-                          value={index.toString()}
-                        >
+                        <SelectItem key={index} value={index.toString()}>
                           {day}
                         </SelectItem>
                       ))}
@@ -253,7 +250,7 @@ export function EditTimetableEntryDialog({
                       onClick={() => deleteEntry()}
                       disabled={isDeleting}
                     >
-                      {isDeleting ? 'Deleting...' : 'Delete'}
+                      {isDeleting ? "Deleting..." : "Delete"}
                     </AlertDialogAction>
                   </AlertDialogFooter>
                 </AlertDialogContent>
@@ -268,7 +265,7 @@ export function EditTimetableEntryDialog({
                   Cancel
                 </Button>
                 <Button type="submit" disabled={isUpdating}>
-                  {isUpdating ? 'Saving...' : 'Save Changes'}
+                  {isUpdating ? "Saving..." : "Save Changes"}
                 </Button>
               </div>
             </div>
@@ -276,5 +273,5 @@ export function EditTimetableEntryDialog({
         </Form>
       </DialogContent>
     </Dialog>
-  )
+  );
 }

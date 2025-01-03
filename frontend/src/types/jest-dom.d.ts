@@ -1,12 +1,15 @@
 /// <reference types="@testing-library/jest-dom" />
 
-import '@testing-library/jest-dom';
+import "@testing-library/jest-dom";
 
 declare global {
   namespace jest {
     interface Matchers<R, T = any> {
       toBeInTheDocument(): R;
-      toHaveTextContent(text: string | RegExp, options?: { normalizeWhitespace: boolean }): R;
+      toHaveTextContent(
+        text: string | RegExp,
+        options?: { normalizeWhitespace: boolean },
+      ): R;
       toBeVisible(): R;
       toHaveAttribute(attr: string, value?: string | RegExp): R;
       toHaveClass(...classNames: string[]): R;

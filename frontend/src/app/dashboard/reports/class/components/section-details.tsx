@@ -1,9 +1,9 @@
-'use client'
+"use client";
 
-import { useState } from 'react'
-import { ClassReport } from '@/services/reports'
-import { Card } from '@/components/ui/card'
-import { Input } from '@/components/ui/input'
+import { useState } from "react";
+import { ClassReport } from "@/services/reports";
+import { Card } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
 import {
   Table,
   TableBody,
@@ -11,7 +11,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from '@/components/ui/table'
+} from "@/components/ui/table";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -19,25 +19,25 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu'
-import { Button } from '@/components/ui/button'
-import { Badge } from '@/components/ui/badge'
-import { MoreHorizontal } from 'lucide-react'
-import { SectionAnalysisDialog } from './section-analysis-dialog'
+} from "@/components/ui/dropdown-menu";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { MoreHorizontal } from "lucide-react";
+import { SectionAnalysisDialog } from "./section-analysis-dialog";
 
 interface SectionDetailsProps {
-  data: ClassReport['sections']
+  data: ClassReport["sections"];
 }
 
 export function SectionDetails({ data }: SectionDetailsProps) {
-  const [searchTerm, setSearchTerm] = useState('')
-  const [selectedSection, setSelectedSection] = useState<ClassReport['sections'][0] | null>(
-    null
-  )
+  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedSection, setSelectedSection] = useState<
+    ClassReport["sections"][0] | null
+  >(null);
 
   const filteredData = data.filter((section) =>
-    section.section_name.toLowerCase().includes(searchTerm.toLowerCase())
-  )
+    section.section_name.toLowerCase().includes(searchTerm.toLowerCase()),
+  );
 
   const getPerformanceStatus = (percentage: number) => {
     if (percentage >= 90) {
@@ -45,27 +45,23 @@ export function SectionDetails({ data }: SectionDetailsProps) {
         <Badge variant="default" className="bg-green-500">
           Excellent
         </Badge>
-      )
+      );
     } else if (percentage >= 75) {
       return (
         <Badge variant="default" className="bg-blue-500">
           Good
         </Badge>
-      )
+      );
     } else if (percentage >= 60) {
       return (
         <Badge variant="default" className="bg-yellow-500">
           Average
         </Badge>
-      )
+      );
     } else {
-      return (
-        <Badge variant="destructive">
-          Poor
-        </Badge>
-      )
+      return <Badge variant="destructive">Poor</Badge>;
     }
-  }
+  };
 
   return (
     <>
@@ -131,10 +127,7 @@ export function SectionDetails({ data }: SectionDetailsProps) {
                   <TableCell>
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
-                        <Button
-                          variant="ghost"
-                          className="h-8 w-8 p-0"
-                        >
+                        <Button variant="ghost" className="h-8 w-8 p-0">
                           <span className="sr-only">Open menu</span>
                           <MoreHorizontal className="h-4 w-4" />
                         </Button>
@@ -164,5 +157,5 @@ export function SectionDetails({ data }: SectionDetailsProps) {
         />
       )}
     </>
-  )
+  );
 }

@@ -1,11 +1,11 @@
-'use client'
+"use client";
 
-import { useState } from 'react'
-import { useForm } from 'react-hook-form'
-import { zodResolver } from '@hookform/resolvers/zod'
-import * as z from 'zod'
-import Link from 'next/link'
-import { Button } from '@/components/ui/button'
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
@@ -13,38 +13,38 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form'
-import { Input } from '@/components/ui/input'
-import { Alert, AlertDescription } from '@/components/ui/alert'
-import authService from '@/services/auth'
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import authService from "@/services/auth";
 
 const forgotPasswordSchema = z.object({
-  email: z.string().email('Invalid email address'),
-})
+  email: z.string().email("Invalid email address"),
+});
 
-type ForgotPasswordFormData = z.infer<typeof forgotPasswordSchema>
+type ForgotPasswordFormData = z.infer<typeof forgotPasswordSchema>;
 
 export default function ForgotPasswordPage() {
-  const [success, setSuccess] = useState(false)
-  const [error, setError] = useState<string | null>(null)
+  const [success, setSuccess] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const form = useForm<ForgotPasswordFormData>({
     resolver: zodResolver(forgotPasswordSchema),
     defaultValues: {
-      email: '',
+      email: "",
     },
-  })
+  });
 
   const onSubmit = async (data: ForgotPasswordFormData) => {
     try {
-      await authService.resetPasswordRequest(data)
-      setSuccess(true)
-      setError(null)
+      await authService.resetPasswordRequest(data);
+      setSuccess(true);
+      setError(null);
     } catch (error: any) {
-      setError(error.response?.data?.detail || 'Failed to send reset email')
-      setSuccess(false)
+      setError(error.response?.data?.detail || "Failed to send reset email");
+      setSuccess(false);
     }
-  }
+  };
 
   if (success) {
     return (
@@ -66,7 +66,7 @@ export default function ForgotPasswordPage() {
           </div>
         </div>
       </div>
-    )
+    );
   }
 
   return (
@@ -114,7 +114,7 @@ export default function ForgotPasswordPage() {
 
         <div className="text-center">
           <p className="text-sm text-gray-600">
-            Remember your password?{' '}
+            Remember your password?{" "}
             <Link
               href="/login"
               className="font-medium text-blue-600 hover:text-blue-500"
@@ -125,5 +125,5 @@ export default function ForgotPasswordPage() {
         </div>
       </div>
     </div>
-  )
+  );
 }

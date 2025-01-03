@@ -1,19 +1,19 @@
-'use client'
+"use client";
 
-import { useState } from 'react'
-import { useForm } from 'react-hook-form'
-import { zodResolver } from '@hookform/resolvers/zod'
-import * as z from 'zod'
-import { format } from 'date-fns'
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
+import { format } from "date-fns";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from '@/components/ui/dialog'
-import { Button } from '@/components/ui/button'
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
@@ -21,57 +21,57 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form'
-import { Input } from '@/components/ui/input'
-import { Calendar } from '@/components/ui/calendar'
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { Calendar } from "@/components/ui/calendar";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select'
+} from "@/components/ui/select";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from '@/components/ui/popover'
-import academicService from '@/services/academic'
+} from "@/components/ui/popover";
+import academicService from "@/services/academic";
 
 const assessmentSchema = z.object({
-  name: z.string().min(1, 'Assessment name is required'),
-  subject_id: z.string().min(1, 'Subject is required'),
+  name: z.string().min(1, "Assessment name is required"),
+  subject_id: z.string().min(1, "Subject is required"),
   date: z.date({
-    required_error: 'Assessment date is required',
+    required_error: "Assessment date is required",
   }),
   total_marks: z.string().transform((val) => parseInt(val, 10)),
-})
+});
 
-type AssessmentFormData = z.infer<typeof assessmentSchema>
+type AssessmentFormData = z.infer<typeof assessmentSchema>;
 
 interface CreateAssessmentDialogProps {
-  sectionId: number
+  sectionId: number;
 }
 
 export function CreateAssessmentDialog({
   sectionId,
 }: CreateAssessmentDialogProps) {
-  const [open, setOpen] = useState(false)
-  const queryClient = useQueryClient()
+  const [open, setOpen] = useState(false);
+  const queryClient = useQueryClient();
 
   const { data: subjects } = useQuery({
-    queryKey: ['subjects', sectionId],
+    queryKey: ["subjects", sectionId],
     queryFn: academicService.getSubjects,
-  })
+  });
 
   const form = useForm<AssessmentFormData>({
     resolver: zodResolver(assessmentSchema),
     defaultValues: {
-      name: '',
-      subject_id: '',
-      total_marks: '',
+      name: "",
+      subject_id: "",
+      total_marks: "",
     },
-  })
+  });
 
   const { mutate: createAssessment, isLoading } = useMutation({
     mutationFn: (data: AssessmentFormData) =>
@@ -81,15 +81,15 @@ export function CreateAssessmentDialog({
         section_id: sectionId,
       }),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['assessments'] })
-      setOpen(false)
-      form.reset()
+      queryClient.invalidateQueries({ queryKey: ["assessments"] });
+      setOpen(false);
+      form.reset();
     },
-  })
+  });
 
   const onSubmit = (data: AssessmentFormData) => {
-    createAssessment(data)
-  }
+    createAssessment(data);
+  };
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -160,11 +160,11 @@ export function CreateAssessmentDialog({
                         <Button
                           variant="outline"
                           className={`w-full pl-3 text-left font-normal ${
-                            !field.value && 'text-muted-foreground'
+                            !field.value && "text-muted-foreground"
                           }`}
                         >
                           {field.value ? (
-                            format(field.value, 'PPP')
+                            format(field.value, "PPP")
                           ) : (
                             <span>Pick a date</span>
                           )}
@@ -192,11 +192,7 @@ export function CreateAssessmentDialog({
                 <FormItem>
                   <FormLabel>Total Marks</FormLabel>
                   <FormControl>
-                    <Input
-                      type="number"
-                      placeholder="e.g., 100"
-                      {...field}
-                    />
+                    <Input type="number" placeholder="e.g., 100" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -212,12 +208,12 @@ export function CreateAssessmentDialog({
                 Cancel
               </Button>
               <Button type="submit" disabled={isLoading}>
-                {isLoading ? 'Creating...' : 'Create Assessment'}
+                {isLoading ? "Creating..." : "Create Assessment"}
               </Button>
             </div>
           </form>
         </Form>
       </DialogContent>
     </Dialog>
-  )
+  );
 }

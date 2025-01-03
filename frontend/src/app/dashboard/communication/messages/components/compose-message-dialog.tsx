@@ -1,18 +1,18 @@
-'use client'
+"use client";
 
-import { useState } from 'react'
-import { useForm } from 'react-hook-form'
-import { zodResolver } from '@hookform/resolvers/zod'
-import * as z from 'zod'
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from '@/components/ui/dialog'
-import { Button } from '@/components/ui/button'
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
@@ -20,82 +20,82 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form'
-import { Input } from '@/components/ui/input'
-import { Textarea } from '@/components/ui/textarea'
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select'
-import academicService from '@/services/academic'
-import communicationService from '@/services/communication'
+} from "@/components/ui/select";
+import academicService from "@/services/academic";
+import communicationService from "@/services/communication";
 
 const messageSchema = z.object({
-  recipient_id: z.string().min(1, 'Recipient is required'),
-  subject: z.string().min(1, 'Subject is required'),
-  content: z.string().min(1, 'Message is required'),
+  recipient_id: z.string().min(1, "Recipient is required"),
+  subject: z.string().min(1, "Subject is required"),
+  content: z.string().min(1, "Message is required"),
   file: z.any().optional(),
-})
+});
 
-type MessageFormData = z.infer<typeof messageSchema>
+type MessageFormData = z.infer<typeof messageSchema>;
 
 export function ComposeMessageDialog() {
-  const [open, setOpen] = useState(false)
-  const queryClient = useQueryClient()
+  const [open, setOpen] = useState(false);
+  const queryClient = useQueryClient();
 
   const { data: sections } = useQuery({
-    queryKey: ['sections'],
+    queryKey: ["sections"],
     queryFn: academicService.getSections,
-  })
+  });
 
   // Get all users from sections
   const users = sections?.reduce((acc, section) => {
     // Add teacher if not already in the list
     if (!acc.find((u) => u.id === section.teacher.id)) {
-      acc.push(section.teacher)
+      acc.push(section.teacher);
     }
 
     // Add students if not already in the list
     section.students?.forEach((student) => {
       if (!acc.find((u) => u.id === student.id)) {
-        acc.push(student)
+        acc.push(student);
       }
-    })
+    });
 
-    return acc
-  }, [] as any[])
+    return acc;
+  }, [] as any[]);
 
   const form = useForm<MessageFormData>({
     resolver: zodResolver(messageSchema),
     defaultValues: {
-      recipient_id: '',
-      subject: '',
-      content: '',
+      recipient_id: "",
+      subject: "",
+      content: "",
     },
-  })
+  });
 
   const { mutate: sendMessage, isLoading } = useMutation({
     mutationFn: (data: FormData) => communicationService.sendMessage(data),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['messages'] })
-      setOpen(false)
-      form.reset()
+      queryClient.invalidateQueries({ queryKey: ["messages"] });
+      setOpen(false);
+      form.reset();
     },
-  })
+  });
 
   const onSubmit = (data: MessageFormData) => {
-    const formData = new FormData()
-    formData.append('recipient_id', data.recipient_id)
-    formData.append('subject', data.subject)
-    formData.append('content', data.content)
+    const formData = new FormData();
+    formData.append("recipient_id", data.recipient_id);
+    formData.append("subject", data.subject);
+    formData.append("content", data.content);
     if (data.file?.[0]) {
-      formData.append('attachment', data.file[0])
+      formData.append("attachment", data.file[0]);
     }
-    sendMessage(formData)
-  }
+    sendMessage(formData);
+  };
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -126,10 +126,7 @@ export function ComposeMessageDialog() {
                     </FormControl>
                     <SelectContent>
                       {users?.map((user) => (
-                        <SelectItem
-                          key={user.id}
-                          value={user.id.toString()}
-                        >
+                        <SelectItem key={user.id} value={user.id.toString()}>
                           {user.first_name} {user.last_name} ({user.role})
                         </SelectItem>
                       ))}
@@ -199,12 +196,12 @@ export function ComposeMessageDialog() {
                 Cancel
               </Button>
               <Button type="submit" disabled={isLoading}>
-                {isLoading ? 'Sending...' : 'Send Message'}
+                {isLoading ? "Sending..." : "Send Message"}
               </Button>
             </div>
           </form>
         </Form>
       </DialogContent>
     </Dialog>
-  )
+  );
 }

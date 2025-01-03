@@ -1,76 +1,90 @@
-'use client'
+"use client";
 
-import { useState } from 'react'
-import { useQuery } from '@tanstack/react-query'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { useAuth } from '@/lib/auth'
-import communicationService from '@/services/communication'
-import { MessageList } from './components/message-list'
-import { MessageThread } from './components/message-thread'
-import { ComposeMessageDialog } from './components/compose-message-dialog'
+import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { useAuth } from "@/lib/auth";
+import communicationService from "@/services/communication";
+import { MessageList } from "./components/message-list";
+import { MessageThread } from "./components/message-thread";
+import { ComposeMessageDialog } from "./components/compose-message-dialog";
 
 export default function MessagesPage() {
-  const { user } = useAuth()
-  const [searchTerm, setSearchTerm] = useState('')
-  const [selectedThread, setSelectedThread] = useState<number | null>(null)
+  const { user } = useAuth();
+  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedThread, setSelectedThread] = useState<number | null>(null);
 
   const { data: messages } = useQuery({
-    queryKey: ['messages'],
+    queryKey: ["messages"],
     queryFn: communicationService.getMessages,
-  })
+  });
 
   // Group messages by thread (conversation between two users)
-  const threads = messages?.reduce((acc, message) => {
-    const otherUser =
-      message.sender.id === user?.id ? message.recipient : message.sender
-    const threadId = [message.sender.id, message.recipient.id]
-      .sort()
-      .join('-')
+  const threads = messages?.reduce(
+    (acc, message) => {
+      const otherUser =
+        message.sender.id === user?.id ? message.recipient : message.sender;
+      const threadId = [message.sender.id, message.recipient.id]
+        .sort()
+        .join("-");
 
-    if (!acc[threadId]) {
-      acc[threadId] = {
-        id: threadId,
-        otherUser,
-        messages: [],
-        lastMessage: null,
-        unreadCount: 0,
+      if (!acc[threadId]) {
+        acc[threadId] = {
+          id: threadId,
+          otherUser,
+          messages: [],
+          lastMessage: null,
+          unreadCount: 0,
+        };
       }
-    }
 
-    acc[threadId].messages.push(message)
-    if (!acc[threadId].lastMessage || 
-        new Date(message.created_at) > new Date(acc[threadId].lastMessage.created_at)) {
-      acc[threadId].lastMessage = message
-    }
-    if (!message.is_read && message.recipient.id === user?.id) {
-      acc[threadId].unreadCount++
-    }
+      acc[threadId].messages.push(message);
+      if (
+        !acc[threadId].lastMessage ||
+        new Date(message.created_at) >
+          new Date(acc[threadId].lastMessage.created_at)
+      ) {
+        acc[threadId].lastMessage = message;
+      }
+      if (!message.is_read && message.recipient.id === user?.id) {
+        acc[threadId].unreadCount++;
+      }
 
-    return acc
-  }, {} as Record<string, {
-    id: string
-    otherUser: any
-    messages: typeof messages
-    lastMessage: typeof messages[0] | null
-    unreadCount: number
-  }>)
+      return acc;
+    },
+    {} as Record<
+      string,
+      {
+        id: string;
+        otherUser: any;
+        messages: typeof messages;
+        lastMessage: (typeof messages)[0] | null;
+        unreadCount: number;
+      }
+    >,
+  );
 
-  const filteredThreads = Object.values(threads || {}).filter((thread) => {
-    const otherUser = thread.otherUser
-    return (
-      otherUser.first_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      otherUser.last_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      thread.messages.some((message) =>
-        message.subject?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        message.content.toLowerCase().includes(searchTerm.toLowerCase())
-      )
-    )
-  }).sort((a, b) => {
-    if (!a.lastMessage || !b.lastMessage) return 0
-    return new Date(b.lastMessage.created_at).getTime() - 
-           new Date(a.lastMessage.created_at).getTime()
-  })
+  const filteredThreads = Object.values(threads || {})
+    .filter((thread) => {
+      const otherUser = thread.otherUser;
+      return (
+        otherUser.first_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        otherUser.last_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        thread.messages.some(
+          (message) =>
+            message.subject?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            message.content.toLowerCase().includes(searchTerm.toLowerCase()),
+        )
+      );
+    })
+    .sort((a, b) => {
+      if (!a.lastMessage || !b.lastMessage) return 0;
+      return (
+        new Date(b.lastMessage.created_at).getTime() -
+        new Date(a.lastMessage.created_at).getTime()
+      );
+    });
 
   return (
     <div className="container mx-auto py-6">
@@ -112,5 +126,5 @@ export default function MessagesPage() {
         </div>
       </div>
     </div>
-  )
+  );
 }

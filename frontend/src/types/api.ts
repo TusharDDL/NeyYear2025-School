@@ -33,7 +33,7 @@ export interface RegisterData {
   password: string;
   first_name: string;
   last_name: string;
-  role: 'student' | 'teacher' | 'parent' | 'librarian';
+  role: "student" | "teacher" | "parent" | "librarian";
 }
 
 export interface ApiError {
@@ -50,7 +50,7 @@ export interface StudentFormData {
   class_name: string;
   section: string;
   date_of_birth: string;
-  gender: 'male' | 'female' | 'other';
+  gender: "male" | "female" | "other";
   blood_group?: string;
   address?: string;
   phone?: string;

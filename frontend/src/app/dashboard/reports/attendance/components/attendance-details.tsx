@@ -1,10 +1,10 @@
-'use client'
+"use client";
 
-import { useState } from 'react'
-import { format } from 'date-fns'
-import { AttendanceReport } from '@/services/reports'
-import { Card } from '@/components/ui/card'
-import { Input } from '@/components/ui/input'
+import { useState } from "react";
+import { format } from "date-fns";
+import { AttendanceReport } from "@/services/reports";
+import { Card } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
 import {
   Table,
   TableBody,
@@ -12,7 +12,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from '@/components/ui/table'
+} from "@/components/ui/table";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -20,25 +20,24 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu'
-import { Button } from '@/components/ui/button'
-import { Badge } from '@/components/ui/badge'
-import { MoreHorizontal } from 'lucide-react'
-import { MonthlyBreakdownDialog } from './monthly-breakdown-dialog'
+} from "@/components/ui/dropdown-menu";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { MoreHorizontal } from "lucide-react";
+import { MonthlyBreakdownDialog } from "./monthly-breakdown-dialog";
 
 interface AttendanceDetailsProps {
-  data: AttendanceReport[]
+  data: AttendanceReport[];
 }
 
 export function AttendanceDetails({ data }: AttendanceDetailsProps) {
-  const [searchTerm, setSearchTerm] = useState('')
-  const [selectedStudent, setSelectedStudent] = useState<AttendanceReport | null>(
-    null
-  )
+  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedStudent, setSelectedStudent] =
+    useState<AttendanceReport | null>(null);
 
   const filteredData = data.filter((student) =>
-    student.student_name.toLowerCase().includes(searchTerm.toLowerCase())
-  )
+    student.student_name.toLowerCase().includes(searchTerm.toLowerCase()),
+  );
 
   const getAttendanceStatus = (percentage: number) => {
     if (percentage >= 90) {
@@ -46,27 +45,23 @@ export function AttendanceDetails({ data }: AttendanceDetailsProps) {
         <Badge variant="default" className="bg-green-500">
           Excellent
         </Badge>
-      )
+      );
     } else if (percentage >= 75) {
       return (
         <Badge variant="default" className="bg-blue-500">
           Good
         </Badge>
-      )
+      );
     } else if (percentage >= 60) {
       return (
         <Badge variant="default" className="bg-yellow-500">
           Average
         </Badge>
-      )
+      );
     } else {
-      return (
-        <Badge variant="destructive">
-          Poor
-        </Badge>
-      )
+      return <Badge variant="destructive">Poor</Badge>;
     }
-  }
+  };
 
   return (
     <>
@@ -120,10 +115,7 @@ export function AttendanceDetails({ data }: AttendanceDetailsProps) {
                   <TableCell>
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
-                        <Button
-                          variant="ghost"
-                          className="h-8 w-8 p-0"
-                        >
+                        <Button variant="ghost" className="h-8 w-8 p-0">
                           <span className="sr-only">Open menu</span>
                           <MoreHorizontal className="h-4 w-4" />
                         </Button>
@@ -153,5 +145,5 @@ export function AttendanceDetails({ data }: AttendanceDetailsProps) {
         />
       )}
     </>
-  )
+  );
 }

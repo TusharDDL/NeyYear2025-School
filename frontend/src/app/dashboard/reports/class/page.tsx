@@ -1,24 +1,24 @@
-'use client'
+"use client";
 
-import { useState } from 'react'
-import { useQuery } from '@tanstack/react-query'
-import { format } from 'date-fns'
-import { useAuth } from '@/lib/auth'
-import { Card } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
+import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { format } from "date-fns";
+import { useAuth } from "@/lib/auth";
+import { Card } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select'
-import { Calendar } from '@/components/ui/calendar'
+} from "@/components/ui/select";
+import { Calendar } from "@/components/ui/calendar";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from '@/components/ui/popover'
+} from "@/components/ui/popover";
 import {
   BarChart,
   Bar,
@@ -35,85 +35,86 @@ import {
   PolarAngleAxis,
   PolarRadiusAxis,
   Radar,
-} from 'recharts'
-import { Download, Users, GraduationCap, Clock } from 'lucide-react'
-import academicService from '@/services/academic'
-import reportsService from '@/services/reports'
-import { SectionDetails } from './components/section-details'
+} from "recharts";
+import { Download, Users, GraduationCap, Clock } from "lucide-react";
+import academicService from "@/services/academic";
+import reportsService from "@/services/reports";
+import { SectionDetails } from "./components/section-details";
 
 export default function ClassReportsPage() {
-  const { user } = useAuth()
-  const [selectedClass, setSelectedClass] = useState<string>('')
-  const [selectedSection, setSelectedSection] = useState<string>('')
+  const { user } = useAuth();
+  const [selectedClass, setSelectedClass] = useState<string>("");
+  const [selectedSection, setSelectedSection] = useState<string>("");
   const [dateRange, setDateRange] = useState<{
-    from: Date | undefined
-    to: Date | undefined
+    from: Date | undefined;
+    to: Date | undefined;
   }>({
     from: undefined,
     to: undefined,
-  })
+  });
 
   // Get filter options
   const { data: classes } = useQuery({
-    queryKey: ['classes'],
+    queryKey: ["classes"],
     queryFn: academicService.getClasses,
-  })
+  });
 
   const { data: sections } = useQuery({
-    queryKey: ['sections', selectedClass],
+    queryKey: ["sections", selectedClass],
     queryFn: academicService.getSections,
     enabled: !!selectedClass,
-  })
+  });
 
   // Get class report data
   const { data: classData } = useQuery({
-    queryKey: [
-      'class-report',
-      selectedClass,
-      selectedSection,
-      dateRange,
-    ],
+    queryKey: ["class-report", selectedClass, selectedSection, dateRange],
     queryFn: () =>
       reportsService.getClassReport({
         class_id: selectedClass ? parseInt(selectedClass) : undefined,
         section_id: selectedSection ? parseInt(selectedSection) : undefined,
-        from_date: dateRange.from ? format(dateRange.from, 'yyyy-MM-dd') : undefined,
-        to_date: dateRange.to ? format(dateRange.to, 'yyyy-MM-dd') : undefined,
+        from_date: dateRange.from
+          ? format(dateRange.from, "yyyy-MM-dd")
+          : undefined,
+        to_date: dateRange.to ? format(dateRange.to, "yyyy-MM-dd") : undefined,
       }),
     enabled: !!user,
-  })
+  });
 
-  const handleExport = async (format: 'pdf' | 'excel') => {
+  const handleExport = async (format: "pdf" | "excel") => {
     const blob = await reportsService.exportClassReport({
       class_id: selectedClass ? parseInt(selectedClass) : undefined,
       section_id: selectedSection ? parseInt(selectedSection) : undefined,
-      from_date: dateRange.from ? format(dateRange.from, 'yyyy-MM-dd') : undefined,
-      to_date: dateRange.to ? format(dateRange.to, 'yyyy-MM-dd') : undefined,
+      from_date: dateRange.from
+        ? format(dateRange.from, "yyyy-MM-dd")
+        : undefined,
+      to_date: dateRange.to ? format(dateRange.to, "yyyy-MM-dd") : undefined,
       format,
-    })
+    });
 
-    const filename = `class-report-${format === 'pdf' ? 'pdf' : 'xlsx'}`
-    reportsService.downloadFile(blob, filename)
-  }
+    const filename = `class-report-${format === "pdf" ? "pdf" : "xlsx"}`;
+    reportsService.downloadFile(blob, filename);
+  };
 
   // Calculate overall statistics
   const overallStats = classData?.sections.reduce(
     (acc, section) => {
-      acc.totalStudents += section.total_students
-      acc.averageAttendance += section.average_attendance * section.total_students
-      acc.averagePerformance += section.average_performance * section.total_students
-      return acc
+      acc.totalStudents += section.total_students;
+      acc.averageAttendance +=
+        section.average_attendance * section.total_students;
+      acc.averagePerformance +=
+        section.average_performance * section.total_students;
+      return acc;
     },
-    { totalStudents: 0, averageAttendance: 0, averagePerformance: 0 }
-  )
+    { totalStudents: 0, averageAttendance: 0, averagePerformance: 0 },
+  );
 
   if (overallStats) {
     overallStats.averageAttendance = Math.round(
-      overallStats.averageAttendance / overallStats.totalStudents
-    )
+      overallStats.averageAttendance / overallStats.totalStudents,
+    );
     overallStats.averagePerformance = Math.round(
-      overallStats.averagePerformance / overallStats.totalStudents
-    )
+      overallStats.averagePerformance / overallStats.totalStudents,
+    );
   }
 
   return (
@@ -121,17 +122,11 @@ export default function ClassReportsPage() {
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold">Class Reports</h1>
         <div className="space-x-2">
-          <Button
-            variant="outline"
-            onClick={() => handleExport('excel')}
-          >
+          <Button variant="outline" onClick={() => handleExport("excel")}>
             <Download className="h-4 w-4 mr-2" />
             Export Excel
           </Button>
-          <Button
-            variant="outline"
-            onClick={() => handleExport('pdf')}
-          >
+          <Button variant="outline" onClick={() => handleExport("pdf")}>
             <Download className="h-4 w-4 mr-2" />
             Export PDF
           </Button>
@@ -142,22 +137,14 @@ export default function ClassReportsPage() {
       <Card className="p-6 mb-6">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div>
-            <label className="text-sm font-medium mb-2 block">
-              Class
-            </label>
-            <Select
-              value={selectedClass}
-              onValueChange={setSelectedClass}
-            >
+            <label className="text-sm font-medium mb-2 block">Class</label>
+            <Select value={selectedClass} onValueChange={setSelectedClass}>
               <SelectTrigger>
                 <SelectValue placeholder="Select class" />
               </SelectTrigger>
               <SelectContent>
                 {classes?.map((cls) => (
-                  <SelectItem
-                    key={cls.id}
-                    value={cls.id.toString()}
-                  >
+                  <SelectItem key={cls.id} value={cls.id.toString()}>
                     {cls.name}
                   </SelectItem>
                 ))}
@@ -166,9 +153,7 @@ export default function ClassReportsPage() {
           </div>
 
           <div>
-            <label className="text-sm font-medium mb-2 block">
-              Section
-            </label>
+            <label className="text-sm font-medium mb-2 block">Section</label>
             <Select
               value={selectedSection}
               onValueChange={setSelectedSection}
@@ -180,10 +165,7 @@ export default function ClassReportsPage() {
               <SelectContent>
                 <SelectItem value="">All Sections</SelectItem>
                 {sections?.map((section) => (
-                  <SelectItem
-                    key={section.id}
-                    value={section.id.toString()}
-                  >
+                  <SelectItem key={section.id} value={section.id.toString()}>
                     {section.name}
                   </SelectItem>
                 ))}
@@ -192,25 +174,23 @@ export default function ClassReportsPage() {
           </div>
 
           <div>
-            <label className="text-sm font-medium mb-2 block">
-              Date Range
-            </label>
+            <label className="text-sm font-medium mb-2 block">Date Range</label>
             <Popover>
               <PopoverTrigger asChild>
                 <Button
                   variant="outline"
                   className={`w-full justify-start text-left font-normal ${
-                    !dateRange.from && 'text-muted-foreground'
+                    !dateRange.from && "text-muted-foreground"
                   }`}
                 >
                   {dateRange.from ? (
                     dateRange.to ? (
                       <>
-                        {format(dateRange.from, 'LLL dd, y')} -{' '}
-                        {format(dateRange.to, 'LLL dd, y')}
+                        {format(dateRange.from, "LLL dd, y")} -{" "}
+                        {format(dateRange.to, "LLL dd, y")}
                       </>
                     ) : (
-                      format(dateRange.from, 'LLL dd, y')
+                      format(dateRange.from, "LLL dd, y")
                     )
                   ) : (
                     <span>Pick a date range</span>
@@ -320,31 +300,29 @@ export default function ClassReportsPage() {
         </Card>
 
         <Card className="p-6">
-          <h2 className="text-lg font-semibold mb-4">
-            Overall Analysis
-          </h2>
+          <h2 className="text-lg font-semibold mb-4">Overall Analysis</h2>
           <div className="h-[300px]">
             <ResponsiveContainer width="100%" height="100%">
               <RadarChart
                 data={[
                   {
-                    subject: 'Attendance',
+                    subject: "Attendance",
                     value: overallStats?.averageAttendance || 0,
                   },
                   {
-                    subject: 'Performance',
+                    subject: "Performance",
                     value: overallStats?.averagePerformance || 0,
                   },
                   {
-                    subject: 'Assignment Completion',
+                    subject: "Assignment Completion",
                     value: Math.round(Math.random() * 100),
                   },
                   {
-                    subject: 'Class Participation',
+                    subject: "Class Participation",
                     value: Math.round(Math.random() * 100),
                   },
                   {
-                    subject: 'Discipline',
+                    subject: "Discipline",
                     value: Math.round(Math.random() * 100),
                   },
                 ]}
@@ -367,9 +345,7 @@ export default function ClassReportsPage() {
       </div>
 
       {/* Section Details */}
-      {classData && (
-        <SectionDetails data={classData.sections} />
-      )}
+      {classData && <SectionDetails data={classData.sections} />}
     </div>
-  )
+  );
 }

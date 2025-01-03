@@ -1,9 +1,9 @@
-'use client'
+"use client";
 
-import { useState } from 'react'
-import { useQuery } from '@tanstack/react-query'
-import academicService from '@/services/academic'
-import { Button } from '@/components/ui/button'
+import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import academicService from "@/services/academic";
+import { Button } from "@/components/ui/button";
 import {
   Table,
   TableBody,
@@ -11,35 +11,35 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from '@/components/ui/table'
-import { Input } from '@/components/ui/input'
-import { useAuth } from '@/lib/auth'
-import { AddClassDialog } from './components/add-class-dialog'
-import { AddSectionDialog } from './components/add-section-dialog'
+} from "@/components/ui/table";
+import { Input } from "@/components/ui/input";
+import { useAuth } from "@/lib/auth";
+import { AddClassDialog } from "./components/add-class-dialog";
+import { AddSectionDialog } from "./components/add-section-dialog";
 
 export default function ClassesPage() {
-  const { user } = useAuth()
-  const [searchTerm, setSearchTerm] = useState('')
+  const { user } = useAuth();
+  const [searchTerm, setSearchTerm] = useState("");
 
   const { data: classes } = useQuery({
-    queryKey: ['classes'],
+    queryKey: ["classes"],
     queryFn: academicService.getClasses,
-  })
+  });
 
   const { data: sections } = useQuery({
-    queryKey: ['sections'],
+    queryKey: ["sections"],
     queryFn: academicService.getSections,
-  })
+  });
 
   const filteredClasses = classes?.filter((cls) =>
-    cls.name.toLowerCase().includes(searchTerm.toLowerCase())
-  )
+    cls.name.toLowerCase().includes(searchTerm.toLowerCase()),
+  );
 
   return (
     <div className="container mx-auto py-6">
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold">Classes & Sections</h1>
-        {user?.role === 'school_admin' && (
+        {user?.role === "school_admin" && (
           <div className="space-x-2">
             <AddClassDialog />
             <AddSectionDialog />
@@ -70,19 +70,19 @@ export default function ClassesPage() {
           <TableBody>
             {filteredClasses?.map((cls) => {
               const classSections = sections?.filter(
-                (section) => section.class_name.id === cls.id
-              )
+                (section) => section.class_name.id === cls.id,
+              );
               const totalStudents = classSections?.reduce(
                 (sum, section) => sum + section.student_count,
-                0
-              )
+                0,
+              );
 
               return (
                 <TableRow key={cls.id}>
                   <TableCell className="font-medium">{cls.name}</TableCell>
                   <TableCell>{cls.description}</TableCell>
                   <TableCell>
-                    {classSections?.map((section) => section.name).join(', ')}
+                    {classSections?.map((section) => section.name).join(", ")}
                   </TableCell>
                   <TableCell>{totalStudents}</TableCell>
                   <TableCell>
@@ -91,11 +91,11 @@ export default function ClassesPage() {
                     </Button>
                   </TableCell>
                 </TableRow>
-              )
+              );
             })}
           </TableBody>
         </Table>
       </div>
     </div>
-  )
+  );
 }

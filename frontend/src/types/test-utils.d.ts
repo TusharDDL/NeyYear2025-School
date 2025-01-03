@@ -1,10 +1,10 @@
-import '@testing-library/jest-dom'
+import "@testing-library/jest-dom";
 
 declare global {
   namespace jest {
     interface Matchers<R> {
-      toBeInTheDocument(): R
-      toHaveTextContent(text: string): R
+      toBeInTheDocument(): R;
+      toHaveTextContent(text: string): R;
     }
   }
 }
@@ -41,10 +41,13 @@ export interface MockResponse<T = any> extends Response {
 }
 
 declare global {
-  let fetch: jest.Mock<Promise<MockResponse<ApiResponse<any>>>, [input: RequestInfo | URL, init?: RequestInit]>;
+  let fetch: jest.Mock<
+    Promise<MockResponse<ApiResponse<any>>>,
+    [input: RequestInfo | URL, init?: RequestInit]
+  >;
   interface Window {
     matchMedia: jest.Mock;
   }
 }
 
-export {}
+export {};

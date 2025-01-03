@@ -1,20 +1,20 @@
-'use client'
+"use client";
 
-import { format } from 'date-fns'
-import { Message } from '@/services/communication'
-import { cn } from '@/lib/utils'
-import { Badge } from '@/components/ui/badge'
+import { format } from "date-fns";
+import { Message } from "@/services/communication";
+import { cn } from "@/lib/utils";
+import { Badge } from "@/components/ui/badge";
 
 interface MessageListProps {
   threads: {
-    id: string
-    otherUser: any
-    messages: Message[]
-    lastMessage: Message | null
-    unreadCount: number
-  }[]
-  selectedThread: string | null
-  onSelectThread: (threadId: string) => void
+    id: string;
+    otherUser: any;
+    messages: Message[];
+    lastMessage: Message | null;
+    unreadCount: number;
+  }[];
+  selectedThread: string | null;
+  onSelectThread: (threadId: string) => void;
 }
 
 export function MessageList({
@@ -24,10 +24,8 @@ export function MessageList({
 }: MessageListProps) {
   if (threads.length === 0) {
     return (
-      <div className="p-4 text-center text-gray-500">
-        No messages found
-      </div>
-    )
+      <div className="p-4 text-center text-gray-500">No messages found</div>
+    );
   }
 
   return (
@@ -37,8 +35,8 @@ export function MessageList({
           key={thread.id}
           onClick={() => onSelectThread(thread.id)}
           className={cn(
-            'w-full text-left p-4 hover:bg-gray-50 transition-colors',
-            selectedThread === thread.id && 'bg-gray-50'
+            "w-full text-left p-4 hover:bg-gray-50 transition-colors",
+            selectedThread === thread.id && "bg-gray-50",
           )}
         >
           <div className="flex justify-between items-start">
@@ -47,12 +45,10 @@ export function MessageList({
                 {thread.otherUser.first_name} {thread.otherUser.last_name}
               </h3>
               <p className="text-sm text-gray-500">
-                {thread.otherUser.role.replace('_', ' ')}
+                {thread.otherUser.role.replace("_", " ")}
               </p>
             </div>
-            {thread.unreadCount > 0 && (
-              <Badge>{thread.unreadCount}</Badge>
-            )}
+            {thread.unreadCount > 0 && <Badge>{thread.unreadCount}</Badge>}
           </div>
           {thread.lastMessage && (
             <div className="mt-2">
@@ -65,7 +61,7 @@ export function MessageList({
               <p className="text-xs text-gray-400 mt-1">
                 {format(
                   new Date(thread.lastMessage.created_at),
-                  'MMM d, h:mm a'
+                  "MMM d, h:mm a",
                 )}
               </p>
             </div>
@@ -73,5 +69,5 @@ export function MessageList({
         </button>
       ))}
     </div>
-  )
+  );
 }

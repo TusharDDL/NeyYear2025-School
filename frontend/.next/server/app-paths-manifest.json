@@ -1,4 +1,8 @@
 {
-  "/not-found": "app/not-found.js",
-  "/(auth)/login/page": "app/(auth)/login/page.js"
+  "/dashboard/students/directory/page": "app/dashboard/students/directory/page.js",
+  "/dashboard/page": "app/dashboard/page.js",
+  "/dashboard/students/page": "app/dashboard/students/page.js",
+  "/dashboard/library/page": "app/dashboard/library/page.js",
+  "/dashboard/finance/page": "app/dashboard/finance/page.js",
+  "/dashboard/academic/page": "app/dashboard/academic/page.js"
 }

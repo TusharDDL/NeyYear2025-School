@@ -1,18 +1,18 @@
-'use client'
+"use client";
 
-import { useState } from 'react'
-import { useForm } from 'react-hook-form'
-import { zodResolver } from '@hookform/resolvers/zod'
-import * as z from 'zod'
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from '@/components/ui/dialog'
-import { Button } from '@/components/ui/button'
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
@@ -20,57 +20,57 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form'
-import { Input } from '@/components/ui/input'
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select'
-import academicService from '@/services/academic'
+} from "@/components/ui/select";
+import academicService from "@/services/academic";
 
 const sectionSchema = z.object({
-  name: z.string().min(1, 'Section name is required'),
-  class_name_id: z.string().min(1, 'Class is required'),
-  teacher_id: z.string().min(1, 'Teacher is required'),
-  academic_year_id: z.string().min(1, 'Academic year is required'),
-})
+  name: z.string().min(1, "Section name is required"),
+  class_name_id: z.string().min(1, "Class is required"),
+  teacher_id: z.string().min(1, "Teacher is required"),
+  academic_year_id: z.string().min(1, "Academic year is required"),
+});
 
-type SectionFormData = z.infer<typeof sectionSchema>
+type SectionFormData = z.infer<typeof sectionSchema>;
 
 export function AddSectionDialog() {
-  const [open, setOpen] = useState(false)
-  const queryClient = useQueryClient()
+  const [open, setOpen] = useState(false);
+  const queryClient = useQueryClient();
 
   const { data: classes } = useQuery({
-    queryKey: ['classes'],
+    queryKey: ["classes"],
     queryFn: academicService.getClasses,
-  })
+  });
 
   const { data: teachers } = useQuery({
-    queryKey: ['teachers'],
+    queryKey: ["teachers"],
     queryFn: () => {
       // TODO: Implement teacher fetching
-      return []
+      return [];
     },
-  })
+  });
 
   const { data: academicYears } = useQuery({
-    queryKey: ['academicYears'],
+    queryKey: ["academicYears"],
     queryFn: academicService.getAcademicYears,
-  })
+  });
 
   const form = useForm<SectionFormData>({
     resolver: zodResolver(sectionSchema),
     defaultValues: {
-      name: '',
-      class_name_id: '',
-      teacher_id: '',
-      academic_year_id: '',
+      name: "",
+      class_name_id: "",
+      teacher_id: "",
+      academic_year_id: "",
     },
-  })
+  });
 
   const { mutate: createSection, isLoading } = useMutation({
     mutationFn: (data: SectionFormData) =>
@@ -81,15 +81,15 @@ export function AddSectionDialog() {
         academic_year_id: parseInt(data.academic_year_id),
       }),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['sections'] })
-      setOpen(false)
-      form.reset()
+      queryClient.invalidateQueries({ queryKey: ["sections"] });
+      setOpen(false);
+      form.reset();
     },
-  })
+  });
 
   const onSubmit = (data: SectionFormData) => {
-    createSection(data)
-  }
+    createSection(data);
+  };
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -213,12 +213,12 @@ export function AddSectionDialog() {
                 Cancel
               </Button>
               <Button type="submit" disabled={isLoading}>
-                {isLoading ? 'Creating...' : 'Create Section'}
+                {isLoading ? "Creating..." : "Create Section"}
               </Button>
             </div>
           </form>
         </Form>
       </DialogContent>
     </Dialog>
-  )
+  );
 }

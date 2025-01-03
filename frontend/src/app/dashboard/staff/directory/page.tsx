@@ -1,9 +1,9 @@
-'use client'
+"use client";
 
-import { useState } from 'react'
-import { useQuery, useMutation } from '@tanstack/react-query'
-import { Card } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
+import { useState } from "react";
+import { useQuery, useMutation } from "@tanstack/react-query";
+import { Card } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import {
   Table,
   TableBody,
@@ -11,7 +11,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from '@/components/ui/table'
+} from "@/components/ui/table";
 import {
   Dialog,
   DialogContent,
@@ -20,7 +20,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from '@/components/ui/dialog'
+} from "@/components/ui/dialog";
 import {
   Form,
   FormControl,
@@ -29,27 +29,27 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form'
+} from "@/components/ui/form";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select'
-import { Input } from '@/components/ui/input'
-import { Textarea } from '@/components/ui/textarea'
-import { Calendar } from '@/components/ui/calendar'
+} from "@/components/ui/select";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Calendar } from "@/components/ui/calendar";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from '@/components/ui/popover'
-import { useToast } from '@/components/ui/use-toast'
-import { useForm } from 'react-hook-form'
-import { zodResolver } from '@hookform/resolvers/zod'
-import * as z from 'zod'
-import { format } from 'date-fns'
+} from "@/components/ui/popover";
+import { useToast } from "@/components/ui/use-toast";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
+import { format } from "date-fns";
 import {
   Plus,
   FileEdit,
@@ -61,129 +61,129 @@ import {
   MapPin,
   Download,
   Filter,
-} from 'lucide-react'
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+} from "lucide-react";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 const staffSchema = z.object({
-  first_name: z.string().min(1, 'First name is required'),
-  last_name: z.string().min(1, 'Last name is required'),
-  email: z.string().email('Invalid email address'),
-  phone: z.string().min(1, 'Phone number is required'),
-  department: z.string().min(1, 'Department is required'),
-  designation: z.string().min(1, 'Designation is required'),
+  first_name: z.string().min(1, "First name is required"),
+  last_name: z.string().min(1, "Last name is required"),
+  email: z.string().email("Invalid email address"),
+  phone: z.string().min(1, "Phone number is required"),
+  department: z.string().min(1, "Department is required"),
+  designation: z.string().min(1, "Designation is required"),
   join_date: z.date({
-    required_error: 'Join date is required',
+    required_error: "Join date is required",
   }),
-  address: z.string().min(1, 'Address is required'),
-  qualification: z.string().min(1, 'Qualification is required'),
-  experience: z.string().min(1, 'Experience is required'),
+  address: z.string().min(1, "Address is required"),
+  qualification: z.string().min(1, "Qualification is required"),
+  experience: z.string().min(1, "Experience is required"),
   avatar: z.any().optional(),
-})
+});
 
-type StaffFormData = z.infer<typeof staffSchema>
+type StaffFormData = z.infer<typeof staffSchema>;
 
 export default function StaffDirectoryPage() {
-  const { toast } = useToast()
-  const [isDialogOpen, setIsDialogOpen] = useState(false)
-  const [selectedStaff, setSelectedStaff] = useState<any>(null)
-  const [searchTerm, setSearchTerm] = useState('')
-  const [selectedDepartment, setSelectedDepartment] = useState<string>('')
+  const { toast } = useToast();
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [selectedStaff, setSelectedStaff] = useState<any>(null);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedDepartment, setSelectedDepartment] = useState<string>("");
 
   const form = useForm<StaffFormData>({
     resolver: zodResolver(staffSchema),
     defaultValues: {
-      first_name: '',
-      last_name: '',
-      email: '',
-      phone: '',
-      department: '',
-      designation: '',
-      address: '',
-      qualification: '',
-      experience: '',
+      first_name: "",
+      last_name: "",
+      email: "",
+      phone: "",
+      department: "",
+      designation: "",
+      address: "",
+      qualification: "",
+      experience: "",
     },
-  })
+  });
 
   // Get staff data
   const { data: staffData, isLoading } = useQuery({
-    queryKey: ['staff'],
+    queryKey: ["staff"],
     queryFn: () => {
       // This would be replaced with an actual API call
       return Promise.resolve([
         {
           id: 1,
-          first_name: 'John',
-          last_name: 'Smith',
-          email: 'john.smith@school.com',
-          phone: '+1234567890',
-          department: 'Mathematics',
-          designation: 'Senior Teacher',
-          join_date: '2023-01-15',
-          address: '123 Teacher Street, City',
-          qualification: 'M.Sc. Mathematics',
-          experience: '8 years',
+          first_name: "John",
+          last_name: "Smith",
+          email: "john.smith@school.com",
+          phone: "+1234567890",
+          department: "Mathematics",
+          designation: "Senior Teacher",
+          join_date: "2023-01-15",
+          address: "123 Teacher Street, City",
+          qualification: "M.Sc. Mathematics",
+          experience: "8 years",
           avatar: null,
-          status: 'active',
+          status: "active",
         },
         {
           id: 2,
-          first_name: 'Sarah',
-          last_name: 'Johnson',
-          email: 'sarah.j@school.com',
-          phone: '+1234567891',
-          department: 'Science',
-          designation: 'Lab Coordinator',
-          join_date: '2023-03-20',
-          address: '456 Science Ave, City',
-          qualification: 'M.Sc. Physics',
-          experience: '5 years',
+          first_name: "Sarah",
+          last_name: "Johnson",
+          email: "sarah.j@school.com",
+          phone: "+1234567891",
+          department: "Science",
+          designation: "Lab Coordinator",
+          join_date: "2023-03-20",
+          address: "456 Science Ave, City",
+          qualification: "M.Sc. Physics",
+          experience: "5 years",
           avatar: null,
-          status: 'active',
+          status: "active",
         },
-      ])
+      ]);
     },
-  })
+  });
 
   const { mutate: saveStaff, isLoading: isSaving } = useMutation({
     mutationFn: (data: StaffFormData) => {
       // This would be replaced with an actual API call
-      return new Promise((resolve) => setTimeout(resolve, 1000))
+      return new Promise((resolve) => setTimeout(resolve, 1000));
     },
     onSuccess: () => {
       toast({
-        title: 'Success',
-        description: 'Staff member saved successfully.',
-      })
-      setIsDialogOpen(false)
-      form.reset()
+        title: "Success",
+        description: "Staff member saved successfully.",
+      });
+      setIsDialogOpen(false);
+      form.reset();
     },
     onError: () => {
       toast({
-        title: 'Error',
-        description: 'Failed to save staff member.',
-        variant: 'destructive',
-      })
+        title: "Error",
+        description: "Failed to save staff member.",
+        variant: "destructive",
+      });
     },
-  })
+  });
 
   const onSubmit = (data: StaffFormData) => {
-    const formData = new FormData()
+    const formData = new FormData();
     Object.entries(data).forEach(([key, value]) => {
       if (value) {
-        if (key === 'avatar' && value[0]) {
-          formData.append(key, value[0])
-        } else if (key === 'join_date') {
-          formData.append(key, format(value, 'yyyy-MM-dd'))
+        if (key === "avatar" && value[0]) {
+          formData.append(key, value[0]);
+        } else if (key === "join_date") {
+          formData.append(key, format(value, "yyyy-MM-dd"));
         } else {
-          formData.append(key, value)
+          formData.append(key, value);
         }
       }
-    })
-    saveStaff(data)
-  }
+    });
+    saveStaff(data);
+  };
 
   const handleEdit = (staff: any) => {
-    setSelectedStaff(staff)
+    setSelectedStaff(staff);
     form.reset({
       first_name: staff.first_name,
       last_name: staff.last_name,
@@ -195,42 +195,40 @@ export default function StaffDirectoryPage() {
       address: staff.address,
       qualification: staff.qualification,
       experience: staff.experience,
-    })
-    setIsDialogOpen(true)
-  }
+    });
+    setIsDialogOpen(true);
+  };
 
   const handleDelete = (id: number) => {
     // This would be replaced with an actual API call
     toast({
-      title: 'Success',
-      description: 'Staff member deleted successfully.',
-    })
-  }
+      title: "Success",
+      description: "Staff member deleted successfully.",
+    });
+  };
 
   // Filter staff data
   const filteredStaff = staffData?.filter((staff) => {
     const matchesSearch =
-      searchTerm === '' ||
+      searchTerm === "" ||
       `${staff.first_name} ${staff.last_name}`
         .toLowerCase()
         .includes(searchTerm.toLowerCase()) ||
       staff.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      staff.department.toLowerCase().includes(searchTerm.toLowerCase())
+      staff.department.toLowerCase().includes(searchTerm.toLowerCase());
 
     const matchesDepartment =
-      selectedDepartment === '' || staff.department === selectedDepartment
+      selectedDepartment === "" || staff.department === selectedDepartment;
 
-    return matchesSearch && matchesDepartment
-  })
+    return matchesSearch && matchesDepartment;
+  });
 
   return (
     <div className="container mx-auto py-6">
       <div className="flex justify-between items-center mb-6">
         <div>
           <h1 className="text-2xl font-bold">Staff Directory</h1>
-          <p className="text-gray-500">
-            Manage staff profiles and information
-          </p>
+          <p className="text-gray-500">Manage staff profiles and information</p>
         </div>
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
           <DialogTrigger asChild>
@@ -242,11 +240,9 @@ export default function StaffDirectoryPage() {
           <DialogContent className="max-w-2xl">
             <DialogHeader>
               <DialogTitle>
-                {selectedStaff ? 'Edit' : 'Add'} Staff Member
+                {selectedStaff ? "Edit" : "Add"} Staff Member
               </DialogTitle>
-              <DialogDescription>
-                Enter staff member details
-              </DialogDescription>
+              <DialogDescription>Enter staff member details</DialogDescription>
             </DialogHeader>
 
             <Form {...form}>
@@ -355,12 +351,12 @@ export default function StaffDirectoryPage() {
                           </FormControl>
                           <SelectContent>
                             {[
-                              'Mathematics',
-                              'Science',
-                              'English',
-                              'History',
-                              'Geography',
-                              'Administration',
+                              "Mathematics",
+                              "Science",
+                              "English",
+                              "History",
+                              "Geography",
+                              "Administration",
                             ].map((dept) => (
                               <SelectItem key={dept} value={dept}>
                                 {dept}
@@ -390,12 +386,12 @@ export default function StaffDirectoryPage() {
                           </FormControl>
                           <SelectContent>
                             {[
-                              'Principal',
-                              'Vice Principal',
-                              'Senior Teacher',
-                              'Teacher',
-                              'Lab Coordinator',
-                              'Administrator',
+                              "Principal",
+                              "Vice Principal",
+                              "Senior Teacher",
+                              "Teacher",
+                              "Lab Coordinator",
+                              "Administrator",
                             ].map((desig) => (
                               <SelectItem key={desig} value={desig}>
                                 {desig}
@@ -422,11 +418,11 @@ export default function StaffDirectoryPage() {
                             <Button
                               variant="outline"
                               className={`w-full pl-3 text-left font-normal ${
-                                !field.value && 'text-muted-foreground'
+                                !field.value && "text-muted-foreground"
                               }`}
                             >
                               {field.value ? (
-                                format(field.value, 'PPP')
+                                format(field.value, "PPP")
                               ) : (
                                 <span>Pick a date</span>
                               )}
@@ -503,7 +499,7 @@ export default function StaffDirectoryPage() {
                     Cancel
                   </Button>
                   <Button type="submit" disabled={isSaving}>
-                    {isSaving ? 'Saving...' : 'Save'}
+                    {isSaving ? "Saving..." : "Save"}
                   </Button>
                 </DialogFooter>
               </form>
@@ -517,9 +513,7 @@ export default function StaffDirectoryPage() {
         <div className="p-4">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div>
-              <label className="text-sm font-medium mb-1 block">
-                Search
-              </label>
+              <label className="text-sm font-medium mb-1 block">Search</label>
               <div className="relative">
                 <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-gray-500" />
                 <Input
@@ -545,12 +539,12 @@ export default function StaffDirectoryPage() {
                 <SelectContent>
                   <SelectItem value="">All Departments</SelectItem>
                   {[
-                    'Mathematics',
-                    'Science',
-                    'English',
-                    'History',
-                    'Geography',
-                    'Administration',
+                    "Mathematics",
+                    "Science",
+                    "English",
+                    "History",
+                    "Geography",
+                    "Administration",
                   ].map((dept) => (
                     <SelectItem key={dept} value={dept}>
                       {dept}
@@ -591,7 +585,7 @@ export default function StaffDirectoryPage() {
                   <TableCell>
                     <div className="flex items-center space-x-3">
                       <Avatar>
-                        <AvatarImage src={staff.avatar || ''} />
+                        <AvatarImage src={staff.avatar || ""} />
                         <AvatarFallback>
                           {staff.first_name[0]}
                           {staff.last_name[0]}
@@ -622,14 +616,14 @@ export default function StaffDirectoryPage() {
                   <TableCell>{staff.department}</TableCell>
                   <TableCell>{staff.designation}</TableCell>
                   <TableCell>
-                    {format(new Date(staff.join_date), 'PPP')}
+                    {format(new Date(staff.join_date), "PPP")}
                   </TableCell>
                   <TableCell>
                     <span
                       className={`px-2 py-1 rounded-full text-xs ${
-                        staff.status === 'active'
-                          ? 'bg-green-100 text-green-700'
-                          : 'bg-yellow-100 text-yellow-700'
+                        staff.status === "active"
+                          ? "bg-green-100 text-green-700"
+                          : "bg-yellow-100 text-yellow-700"
                       }`}
                     >
                       {staff.status}
@@ -660,5 +654,5 @@ export default function StaffDirectoryPage() {
         </div>
       </Card>
     </div>
-  )
+  );
 }

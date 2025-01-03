@@ -1,9 +1,9 @@
-'use client'
+"use client";
 
-import { useState } from 'react'
-import { useQuery, useMutation } from '@tanstack/react-query'
-import { Card } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
+import { useState } from "react";
+import { useQuery, useMutation } from "@tanstack/react-query";
+import { Card } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import {
   Table,
   TableBody,
@@ -11,7 +11,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from '@/components/ui/table'
+} from "@/components/ui/table";
 import {
   Dialog,
   DialogContent,
@@ -20,7 +20,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from '@/components/ui/dialog'
+} from "@/components/ui/dialog";
 import {
   Form,
   FormControl,
@@ -29,27 +29,27 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form'
+} from "@/components/ui/form";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select'
-import { Input } from '@/components/ui/input'
-import { Textarea } from '@/components/ui/textarea'
-import { Calendar } from '@/components/ui/calendar'
+} from "@/components/ui/select";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Calendar } from "@/components/ui/calendar";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from '@/components/ui/popover'
-import { useToast } from '@/components/ui/use-toast'
-import { useForm } from 'react-hook-form'
-import { zodResolver } from '@hookform/resolvers/zod'
-import * as z from 'zod'
-import { format } from 'date-fns'
+} from "@/components/ui/popover";
+import { useToast } from "@/components/ui/use-toast";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
+import { format } from "date-fns";
 import {
   Plus,
   FileEdit,
@@ -62,158 +62,156 @@ import {
   BookCopy,
   Eye,
   QrCode,
-} from 'lucide-react'
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
-import { Progress } from '@/components/ui/progress'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+} from "lucide-react";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Progress } from "@/components/ui/progress";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 const bookSchema = z.object({
-  title: z.string().min(1, 'Title is required'),
-  isbn: z.string().min(1, 'ISBN is required'),
-  author: z.string().min(1, 'Author is required'),
-  publisher: z.string().min(1, 'Publisher is required'),
-  category: z.string().min(1, 'Category is required'),
+  title: z.string().min(1, "Title is required"),
+  isbn: z.string().min(1, "ISBN is required"),
+  author: z.string().min(1, "Author is required"),
+  publisher: z.string().min(1, "Publisher is required"),
+  category: z.string().min(1, "Category is required"),
   edition: z.string().optional(),
-  publication_year: z.string().min(1, 'Publication year is required'),
-  copies: z.string().min(1, 'Number of copies is required'),
-  price: z.string().min(1, 'Price is required'),
-  location: z.string().min(1, 'Shelf location is required'),
+  publication_year: z.string().min(1, "Publication year is required"),
+  copies: z.string().min(1, "Number of copies is required"),
+  price: z.string().min(1, "Price is required"),
+  location: z.string().min(1, "Shelf location is required"),
   description: z.string().optional(),
   cover_image: z.any().optional(),
-})
+});
 
-type BookFormData = z.infer<typeof bookSchema>
+type BookFormData = z.infer<typeof bookSchema>;
 
 export default function BookCatalogPage() {
-  const { toast } = useToast()
-  const [isDialogOpen, setIsDialogOpen] = useState(false)
-  const [selectedBook, setSelectedBook] = useState<any>(null)
-  const [selectedCategory, setSelectedCategory] = useState<string>('')
-  const [searchTerm, setSearchTerm] = useState('')
+  const { toast } = useToast();
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [selectedBook, setSelectedBook] = useState<any>(null);
+  const [selectedCategory, setSelectedCategory] = useState<string>("");
+  const [searchTerm, setSearchTerm] = useState("");
 
   const form = useForm<BookFormData>({
     resolver: zodResolver(bookSchema),
     defaultValues: {
-      title: '',
-      isbn: '',
-      author: '',
-      publisher: '',
-      category: '',
-      edition: '',
-      publication_year: '',
-      copies: '',
-      price: '',
-      location: '',
-      description: '',
+      title: "",
+      isbn: "",
+      author: "",
+      publisher: "",
+      category: "",
+      edition: "",
+      publication_year: "",
+      copies: "",
+      price: "",
+      location: "",
+      description: "",
     },
-  })
+  });
 
   // Get books data
   const { data: booksData, isLoading } = useQuery({
-    queryKey: ['books', selectedCategory, searchTerm],
+    queryKey: ["books", selectedCategory, searchTerm],
     queryFn: () => {
       // This would be replaced with an actual API call
       return Promise.resolve([
         {
           id: 1,
-          title: 'Introduction to Physics',
-          isbn: '978-3-16-148410-0',
-          author: 'Dr. Robert Smith',
-          publisher: 'Academic Press',
-          category: 'Science',
-          edition: '3rd Edition',
-          publication_year: '2023',
+          title: "Introduction to Physics",
+          isbn: "978-3-16-148410-0",
+          author: "Dr. Robert Smith",
+          publisher: "Academic Press",
+          category: "Science",
+          edition: "3rd Edition",
+          publication_year: "2023",
           copies: 5,
           available_copies: 3,
           price: 49.99,
-          location: 'Shelf A-12',
+          location: "Shelf A-12",
           description:
-            'A comprehensive introduction to physics for high school students.',
+            "A comprehensive introduction to physics for high school students.",
           cover_image: null,
-          status: 'available',
+          status: "available",
         },
         {
           id: 2,
-          title: 'World History',
-          isbn: '978-3-16-148410-1',
-          author: 'Sarah Williams',
-          publisher: 'History Books Inc.',
-          category: 'History',
-          edition: '2nd Edition',
-          publication_year: '2022',
+          title: "World History",
+          isbn: "978-3-16-148410-1",
+          author: "Sarah Williams",
+          publisher: "History Books Inc.",
+          category: "History",
+          edition: "2nd Edition",
+          publication_year: "2022",
           copies: 8,
           available_copies: 6,
           price: 39.99,
-          location: 'Shelf B-5',
+          location: "Shelf B-5",
           description:
-            'An in-depth look at world history from ancient times to modern era.',
+            "An in-depth look at world history from ancient times to modern era.",
           cover_image: null,
-          status: 'available',
+          status: "available",
         },
-      ])
+      ]);
     },
-  })
+  });
 
   // Get categories data
   const { data: categoriesData } = useQuery({
-    queryKey: ['book-categories'],
+    queryKey: ["book-categories"],
     queryFn: () => {
       // This would be replaced with an actual API call
       return Promise.resolve([
-        'Science',
-        'Mathematics',
-        'History',
-        'Literature',
-        'Technology',
-        'Arts',
-      ])
+        "Science",
+        "Mathematics",
+        "History",
+        "Literature",
+        "Technology",
+        "Arts",
+      ]);
     },
-  })
+  });
 
   const { mutate: saveBook, isLoading: isSaving } = useMutation({
     mutationFn: (data: BookFormData) => {
       // This would be replaced with an actual API call
-      return new Promise((resolve) => setTimeout(resolve, 1000))
+      return new Promise((resolve) => setTimeout(resolve, 1000));
     },
     onSuccess: () => {
       toast({
-        title: 'Success',
-        description: 'Book saved successfully.',
-      })
-      setIsDialogOpen(false)
-      form.reset()
+        title: "Success",
+        description: "Book saved successfully.",
+      });
+      setIsDialogOpen(false);
+      form.reset();
     },
     onError: () => {
       toast({
-        title: 'Error',
-        description: 'Failed to save book.',
-        variant: 'destructive',
-      })
+        title: "Error",
+        description: "Failed to save book.",
+        variant: "destructive",
+      });
     },
-  })
+  });
 
   const onSubmit = (data: BookFormData) => {
-    const formData = new FormData()
+    const formData = new FormData();
     Object.entries(data).forEach(([key, value]) => {
       if (value) {
-        if (key === 'cover_image' && value[0]) {
-          formData.append(key, value[0])
+        if (key === "cover_image" && value[0]) {
+          formData.append(key, value[0]);
         } else {
-          formData.append(key, value)
+          formData.append(key, value);
         }
       }
-    })
-    saveBook(data)
-  }
+    });
+    saveBook(data);
+  };
 
   return (
     <div className="container mx-auto py-6">
       <div className="flex justify-between items-center mb-6">
         <div>
           <h1 className="text-2xl font-bold">Book Catalog</h1>
-          <p className="text-gray-500">
-            Manage library books and resources
-          </p>
+          <p className="text-gray-500">Manage library books and resources</p>
         </div>
         <div className="space-x-2">
           <Button variant="outline">
@@ -229,12 +227,8 @@ export default function BookCatalogPage() {
             </DialogTrigger>
             <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
               <DialogHeader>
-                <DialogTitle>
-                  {selectedBook ? 'Edit' : 'Add'} Book
-                </DialogTitle>
-                <DialogDescription>
-                  Enter book details
-                </DialogDescription>
+                <DialogTitle>{selectedBook ? "Edit" : "Add"} Book</DialogTitle>
+                <DialogDescription>Enter book details</DialogDescription>
               </DialogHeader>
 
               <Form {...form}>
@@ -244,9 +238,7 @@ export default function BookCatalogPage() {
                 >
                   {/* Basic Information */}
                   <div className="space-y-4">
-                    <h3 className="text-lg font-semibold">
-                      Basic Information
-                    </h3>
+                    <h3 className="text-lg font-semibold">Basic Information</h3>
 
                     <div className="grid grid-cols-2 gap-4">
                       <FormField
@@ -326,10 +318,7 @@ export default function BookCatalogPage() {
                               </FormControl>
                               <SelectContent>
                                 {categoriesData?.map((category) => (
-                                  <SelectItem
-                                    key={category}
-                                    value={category}
-                                  >
+                                  <SelectItem key={category} value={category}>
                                     {category}
                                   </SelectItem>
                                 ))}
@@ -475,7 +464,7 @@ export default function BookCatalogPage() {
                       Cancel
                     </Button>
                     <Button type="submit" disabled={isSaving}>
-                      {isSaving ? 'Saving...' : 'Save'}
+                      {isSaving ? "Saving..." : "Save"}
                     </Button>
                   </DialogFooter>
                 </form>
@@ -533,9 +522,7 @@ export default function BookCatalogPage() {
         <div className="p-4">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div>
-              <label className="text-sm font-medium mb-1 block">
-                Search
-              </label>
+              <label className="text-sm font-medium mb-1 block">Search</label>
               <div className="relative">
                 <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-gray-500" />
                 <Input
@@ -548,9 +535,7 @@ export default function BookCatalogPage() {
             </div>
 
             <div>
-              <label className="text-sm font-medium mb-1 block">
-                Category
-              </label>
+              <label className="text-sm font-medium mb-1 block">Category</label>
               <Select
                 value={selectedCategory}
                 onValueChange={setSelectedCategory}
@@ -601,16 +586,12 @@ export default function BookCatalogPage() {
                   <TableCell>
                     <div className="flex items-center space-x-3">
                       <Avatar>
-                        <AvatarImage src={book.cover_image || ''} />
-                        <AvatarFallback>
-                          {book.title[0]}
-                        </AvatarFallback>
+                        <AvatarImage src={book.cover_image || ""} />
+                        <AvatarFallback>{book.title[0]}</AvatarFallback>
                       </Avatar>
                       <div>
                         <p className="font-medium">{book.title}</p>
-                        <p className="text-sm text-gray-500">
-                          {book.edition}
-                        </p>
+                        <p className="text-sm text-gray-500">{book.edition}</p>
                       </div>
                     </div>
                   </TableCell>
@@ -623,9 +604,7 @@ export default function BookCatalogPage() {
                         {book.available_copies} / {book.copies} available
                       </p>
                       <Progress
-                        value={
-                          (book.available_copies / book.copies) * 100
-                        }
+                        value={(book.available_copies / book.copies) * 100}
                       />
                     </div>
                   </TableCell>
@@ -633,9 +612,9 @@ export default function BookCatalogPage() {
                   <TableCell>
                     <span
                       className={`px-2 py-1 rounded-full text-xs ${
-                        book.status === 'available'
-                          ? 'bg-green-100 text-green-700'
-                          : 'bg-yellow-100 text-yellow-700'
+                        book.status === "available"
+                          ? "bg-green-100 text-green-700"
+                          : "bg-yellow-100 text-yellow-700"
                       }`}
                     >
                       {book.status}
@@ -657,7 +636,7 @@ export default function BookCatalogPage() {
                         size="sm"
                         onClick={() => {
                           // Edit book
-                          setSelectedBook(book)
+                          setSelectedBook(book);
                           form.reset({
                             title: book.title,
                             isbn: book.isbn,
@@ -665,14 +644,13 @@ export default function BookCatalogPage() {
                             publisher: book.publisher,
                             category: book.category,
                             edition: book.edition,
-                            publication_year:
-                              book.publication_year,
+                            publication_year: book.publication_year,
                             copies: book.copies.toString(),
                             price: book.price.toString(),
                             location: book.location,
                             description: book.description,
-                          })
-                          setIsDialogOpen(true)
+                          });
+                          setIsDialogOpen(true);
                         }}
                       >
                         <FileEdit className="h-4 w-4" />
@@ -695,5 +673,5 @@ export default function BookCatalogPage() {
         </div>
       </Card>
     </div>
-  )
+  );
 }

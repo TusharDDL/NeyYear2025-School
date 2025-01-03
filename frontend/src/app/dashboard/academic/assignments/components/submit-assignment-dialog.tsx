@@ -1,18 +1,18 @@
-'use client'
+"use client";
 
-import { useState } from 'react'
-import { useForm } from 'react-hook-form'
-import { zodResolver } from '@hookform/resolvers/zod'
-import * as z from 'zod'
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from '@/components/ui/dialog'
-import { Button } from '@/components/ui/button'
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
@@ -20,74 +20,71 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form'
-import { Input } from '@/components/ui/input'
-import { Assignment } from '@/services/academic'
-import academicService from '@/services/academic'
-import { useAuth } from '@/lib/auth'
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { Assignment } from "@/services/academic";
+import academicService from "@/services/academic";
+import { useAuth } from "@/lib/auth";
 
 const submissionSchema = z.object({
-  file: z.any().refine((files) => files?.length === 1, 'File is required'),
-})
+  file: z.any().refine((files) => files?.length === 1, "File is required"),
+});
 
-type SubmissionFormData = z.infer<typeof submissionSchema>
+type SubmissionFormData = z.infer<typeof submissionSchema>;
 
 interface SubmitAssignmentDialogProps {
-  assignment: Assignment
-  sectionId: number
+  assignment: Assignment;
+  sectionId: number;
 }
 
 export function SubmitAssignmentDialog({
   assignment,
   sectionId,
 }: SubmitAssignmentDialogProps) {
-  const [open, setOpen] = useState(false)
-  const queryClient = useQueryClient()
-  const { user } = useAuth()
+  const [open, setOpen] = useState(false);
+  const queryClient = useQueryClient();
+  const { user } = useAuth();
 
   // Get existing submission
   const { data: submissions } = useQuery({
-    queryKey: ['assignment-submissions', assignment.id],
+    queryKey: ["assignment-submissions", assignment.id],
     queryFn: () => academicService.getAssignmentSubmissions(assignment.id),
-  })
+  });
 
-  const userSubmission = submissions?.find(
-    (s) => s.student.id === user?.id
-  )
+  const userSubmission = submissions?.find((s) => s.student.id === user?.id);
 
   const form = useForm<SubmissionFormData>({
     resolver: zodResolver(submissionSchema),
-  })
+  });
 
   const { mutate: submitAssignment, isLoading } = useMutation({
-    mutationFn: (data: FormData) =>
-      academicService.submitAssignment(data),
+    mutationFn: (data: FormData) => academicService.submitAssignment(data),
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: ['assignment-submissions', assignment.id],
-      })
-      setOpen(false)
-      form.reset()
+        queryKey: ["assignment-submissions", assignment.id],
+      });
+      setOpen(false);
+      form.reset();
     },
-  })
+  });
 
   const onSubmit = (data: SubmissionFormData) => {
-    const formData = new FormData()
-    formData.append('assignment_id', assignment.id.toString())
-    formData.append('file', data.file[0])
-    submitAssignment(formData)
-  }
+    const formData = new FormData();
+    formData.append("assignment_id", assignment.id.toString());
+    formData.append("file", data.file[0]);
+    submitAssignment(formData);
+  };
 
-  const isOverdue = new Date(assignment.due_date) < new Date()
+  const isOverdue = new Date(assignment.due_date) < new Date();
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button
-          variant={userSubmission ? 'outline' : 'default'}
+          variant={userSubmission ? "outline" : "default"}
           disabled={isOverdue && !userSubmission}
         >
-          {userSubmission ? 'Update Submission' : 'Submit'}
+          {userSubmission ? "Update Submission" : "Submit"}
         </Button>
       </DialogTrigger>
       <DialogContent>
@@ -108,9 +105,7 @@ export function SubmitAssignmentDialog({
                 View Submission
               </a>
               {userSubmission.score !== null && (
-                <div className="text-sm">
-                  Score: {userSubmission.score}/100
-                </div>
+                <div className="text-sm">Score: {userSubmission.score}/100</div>
               )}
             </div>
             {userSubmission.remarks && (
@@ -150,12 +145,12 @@ export function SubmitAssignmentDialog({
                 Cancel
               </Button>
               <Button type="submit" disabled={isLoading}>
-                {isLoading ? 'Submitting...' : 'Submit Assignment'}
+                {isLoading ? "Submitting..." : "Submit Assignment"}
               </Button>
             </div>
           </form>
         </Form>
       </DialogContent>
     </Dialog>
-  )
+  );
 }

@@ -1,33 +1,33 @@
-'use client'
+"use client";
 
-import { format } from 'date-fns'
-import { useAuth } from '@/lib/auth'
-import { Timetable } from '@/services/academic'
+import { format } from "date-fns";
+import { useAuth } from "@/lib/auth";
+import { Timetable } from "@/services/academic";
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { EditTimetableEntryDialog } from './edit-timetable-entry-dialog'
+} from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { EditTimetableEntryDialog } from "./edit-timetable-entry-dialog";
 
 interface TimetableGridProps {
   timetable: {
-    day: string
-    entries?: Timetable[]
-  }[]
-  sectionId: number
+    day: string;
+    entries?: Timetable[];
+  }[];
+  sectionId: number;
 }
 
 export function TimetableGrid({ timetable, sectionId }: TimetableGridProps) {
-  const { user } = useAuth()
-  const isAdmin = user?.role === 'school_admin'
+  const { user } = useAuth();
+  const isAdmin = user?.role === "school_admin";
 
   const formatTime = (time: string) => {
-    return format(new Date(`1970-01-01T${time}`), 'h:mm a')
-  }
+    return format(new Date(`1970-01-01T${time}`), "h:mm a");
+  };
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4">
@@ -36,7 +36,8 @@ export function TimetableGrid({ timetable, sectionId }: TimetableGridProps) {
           <CardHeader>
             <CardTitle>{day}</CardTitle>
             <CardDescription>
-              {entries?.length || 0} {entries?.length === 1 ? 'class' : 'classes'}
+              {entries?.length || 0}{" "}
+              {entries?.length === 1 ? "class" : "classes"}
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -48,11 +49,9 @@ export function TimetableGrid({ timetable, sectionId }: TimetableGridProps) {
                 >
                   <div className="flex justify-between items-start">
                     <div>
-                      <h4 className="font-semibold">
-                        {entry.subject.name}
-                      </h4>
+                      <h4 className="font-semibold">{entry.subject.name}</h4>
                       <p className="text-sm text-gray-600">
-                        {formatTime(entry.start_time)} -{' '}
+                        {formatTime(entry.start_time)} -{" "}
                         {formatTime(entry.end_time)}
                       </p>
                     </div>
@@ -64,7 +63,7 @@ export function TimetableGrid({ timetable, sectionId }: TimetableGridProps) {
                     )}
                   </div>
                   <p className="text-sm">
-                    {entry.subject.teacher.first_name}{' '}
+                    {entry.subject.teacher.first_name}{" "}
                     {entry.subject.teacher.last_name}
                   </p>
                 </div>
@@ -79,5 +78,5 @@ export function TimetableGrid({ timetable, sectionId }: TimetableGridProps) {
         </Card>
       ))}
     </div>
-  )
+  );
 }

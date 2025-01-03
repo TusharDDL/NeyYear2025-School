@@ -1,11 +1,11 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { useForm } from 'react-hook-form';
-import * as z from 'zod';
-import { Button } from '@/components/ui/button';
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import * as z from "zod";
+import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
@@ -13,10 +13,10 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
-import { useIssueBook } from '@/lib/hooks';
-import { addDays, format } from 'date-fns';
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { useIssueBook } from "@/lib/hooks";
+import { addDays, format } from "date-fns";
 
 const formSchema = z.object({
   book_id: z.number(),
@@ -34,15 +34,15 @@ export function IssueBookForm({ bookId }: { bookId: number }) {
     resolver: zodResolver(formSchema),
     defaultValues: {
       book_id: bookId,
-      issue_date: format(new Date(), 'yyyy-MM-dd'),
-      due_date: format(addDays(new Date(), 14), 'yyyy-MM-dd'),
+      issue_date: format(new Date(), "yyyy-MM-dd"),
+      due_date: format(addDays(new Date(), 14), "yyyy-MM-dd"),
     },
   });
 
   function onSubmit(values: z.infer<typeof formSchema>) {
     issueBook(values, {
       onSuccess: () => {
-        router.push('/library/circulation');
+        router.push("/library/circulation");
       },
     });
   }
@@ -57,7 +57,11 @@ export function IssueBookForm({ bookId }: { bookId: number }) {
             <FormItem>
               <FormLabel>Member ID</FormLabel>
               <FormControl>
-                <Input type="number" {...field} onChange={e => field.onChange(parseInt(e.target.value))} />
+                <Input
+                  type="number"
+                  {...field}
+                  onChange={(e) => field.onChange(parseInt(e.target.value))}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -103,7 +107,7 @@ export function IssueBookForm({ bookId }: { bookId: number }) {
           )}
         />
         <Button type="submit" disabled={isLoading}>
-          {isLoading ? 'Issuing...' : 'Issue Book'}
+          {isLoading ? "Issuing..." : "Issue Book"}
         </Button>
       </form>
     </Form>

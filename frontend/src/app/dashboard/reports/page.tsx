@@ -1,9 +1,9 @@
-'use client'
+"use client";
 
-import { useQuery } from '@tanstack/react-query'
-import { useAuth } from '@/lib/auth'
-import { Card } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
+import { useQuery } from "@tanstack/react-query";
+import { useAuth } from "@/lib/auth";
+import { Card } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import {
   BarChart,
   Bar,
@@ -15,38 +15,39 @@ import {
   ResponsiveContainer,
   LineChart,
   Line,
-} from 'recharts'
-import { FileText, Users, Calendar, CreditCard } from 'lucide-react'
-import Link from 'next/link'
-import reportsService from '@/services/reports'
+} from "recharts";
+import { FileText, Users, Calendar, CreditCard } from "lucide-react";
+import Link from "next/link";
+import reportsService from "@/services/reports";
 
 export default function ReportsPage() {
-  const { user } = useAuth()
+  const { user } = useAuth();
 
   // Get overview data based on user role
   const { data: performanceData } = useQuery({
-    queryKey: ['student-performance'],
+    queryKey: ["student-performance"],
     queryFn: () => reportsService.getStudentPerformance(),
     enabled: !!user,
-  })
+  });
 
   const { data: attendanceData } = useQuery({
-    queryKey: ['attendance-report'],
+    queryKey: ["attendance-report"],
     queryFn: () => reportsService.getAttendanceReport(),
     enabled: !!user,
-  })
+  });
 
   const { data: feeData } = useQuery({
-    queryKey: ['fee-report'],
+    queryKey: ["fee-report"],
     queryFn: () => reportsService.getFeeReport(),
     enabled: !!user,
-  })
+  });
 
   const { data: classData } = useQuery({
-    queryKey: ['class-report'],
+    queryKey: ["class-report"],
     queryFn: () => reportsService.getClassReport(),
-    enabled: !!user && ['super_admin', 'school_admin', 'teacher'].includes(user.role),
-  })
+    enabled:
+      !!user && ["super_admin", "school_admin", "teacher"].includes(user.role),
+  });
 
   return (
     <div className="container mx-auto py-6">
@@ -96,15 +97,15 @@ export default function ReportsPage() {
               </div>
               <div>
                 <h3 className="font-semibold">Fee Reports</h3>
-                <p className="text-sm text-gray-500">
-                  Monitor fee collections
-                </p>
+                <p className="text-sm text-gray-500">Monitor fee collections</p>
               </div>
             </div>
           </Card>
         </Link>
 
-        {['super_admin', 'school_admin', 'teacher'].includes(user?.role || '') && (
+        {["super_admin", "school_admin", "teacher"].includes(
+          user?.role || "",
+        ) && (
           <Link href="/reports/class">
             <Card className="p-4 hover:bg-gray-50 transition-colors cursor-pointer">
               <div className="flex items-center space-x-4">
@@ -113,9 +114,7 @@ export default function ReportsPage() {
                 </div>
                 <div>
                   <h3 className="font-semibold">Class Reports</h3>
-                  <p className="text-sm text-gray-500">
-                    Class-wise analytics
-                  </p>
+                  <p className="text-sm text-gray-500">Class-wise analytics</p>
                 </div>
               </div>
             </Card>
@@ -185,9 +184,7 @@ export default function ReportsPage() {
             </p>
           </div>
           <div className="p-4 bg-yellow-50 rounded-lg">
-            <h3 className="text-sm font-medium text-yellow-600">
-              Pending
-            </h3>
+            <h3 className="text-sm font-medium text-yellow-600">Pending</h3>
             <p className="text-2xl font-bold text-yellow-700">
               ₹{feeData?.pending_amount || 0}
             </p>
@@ -201,7 +198,7 @@ export default function ReportsPage() {
                 ? Math.round(
                     (feeData.paid_amount /
                       (feeData.paid_amount + feeData.pending_amount)) *
-                      100
+                      100,
                   )
                 : 0}
               %
@@ -211,7 +208,9 @@ export default function ReportsPage() {
       </Card>
 
       {/* Class Overview */}
-      {['super_admin', 'school_admin', 'teacher'].includes(user?.role || '') && (
+      {["super_admin", "school_admin", "teacher"].includes(
+        user?.role || "",
+      ) && (
         <Card className="p-6">
           <div className="flex justify-between items-center mb-4">
             <h2 className="text-lg font-semibold">Class Overview</h2>
@@ -243,5 +242,5 @@ export default function ReportsPage() {
         </Card>
       )}
     </div>
-  )
+  );
 }

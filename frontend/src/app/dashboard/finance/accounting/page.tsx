@@ -1,9 +1,9 @@
-'use client'
+"use client";
 
-import { useState } from 'react'
-import { useQuery, useMutation } from '@tanstack/react-query'
-import { Card } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
+import { useState } from "react";
+import { useQuery, useMutation } from "@tanstack/react-query";
+import { Card } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import {
   Table,
   TableBody,
@@ -11,7 +11,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from '@/components/ui/table'
+} from "@/components/ui/table";
 import {
   Dialog,
   DialogContent,
@@ -20,7 +20,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from '@/components/ui/dialog'
+} from "@/components/ui/dialog";
 import {
   Form,
   FormControl,
@@ -29,27 +29,27 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form'
+} from "@/components/ui/form";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select'
-import { Input } from '@/components/ui/input'
-import { Textarea } from '@/components/ui/textarea'
-import { Calendar } from '@/components/ui/calendar'
+} from "@/components/ui/select";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Calendar } from "@/components/ui/calendar";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from '@/components/ui/popover'
-import { useToast } from '@/components/ui/use-toast'
-import { useForm } from 'react-hook-form'
-import { zodResolver } from '@hookform/resolvers/zod'
-import * as z from 'zod'
-import { format } from 'date-fns'
+} from "@/components/ui/popover";
+import { useToast } from "@/components/ui/use-toast";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
+import { format } from "date-fns";
 import {
   Plus,
   FileEdit,
@@ -64,84 +64,83 @@ import {
   TrendingUp,
   BarChart2,
   FileText,
-} from 'lucide-react'
-import { Progress } from '@/components/ui/progress'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+} from "lucide-react";
+import { Progress } from "@/components/ui/progress";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 const transactionSchema = z.object({
-  type: z.string().min(1, 'Transaction type is required'),
-  category: z.string().min(1, 'Category is required'),
-  amount: z.string().min(1, 'Amount is required'),
+  type: z.string().min(1, "Transaction type is required"),
+  category: z.string().min(1, "Category is required"),
+  amount: z.string().min(1, "Amount is required"),
   date: z.date({
-    required_error: 'Date is required',
+    required_error: "Date is required",
   }),
-  description: z.string().min(1, 'Description is required'),
-  payment_method: z.string().min(1, 'Payment method is required'),
+  description: z.string().min(1, "Description is required"),
+  payment_method: z.string().min(1, "Payment method is required"),
   reference: z.string().optional(),
   attachment: z.any().optional(),
-})
+});
 
-type TransactionFormData = z.infer<typeof transactionSchema>
+type TransactionFormData = z.infer<typeof transactionSchema>;
 
 export default function AccountingPage() {
-  const { toast } = useToast()
-  const [isDialogOpen, setIsDialogOpen] = useState(false)
-  const [selectedTransaction, setSelectedTransaction] = useState<any>(null)
-  const [selectedType, setSelectedType] = useState<string>('')
-  const [selectedCategory, setSelectedCategory] = useState<string>('')
-  const [searchTerm, setSearchTerm] = useState('')
-  const [dateRange, setDateRange] = useState<[Date | undefined, Date | undefined]>([
-    undefined,
-    undefined,
-  ])
+  const { toast } = useToast();
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [selectedTransaction, setSelectedTransaction] = useState<any>(null);
+  const [selectedType, setSelectedType] = useState<string>("");
+  const [selectedCategory, setSelectedCategory] = useState<string>("");
+  const [searchTerm, setSearchTerm] = useState("");
+  const [dateRange, setDateRange] = useState<
+    [Date | undefined, Date | undefined]
+  >([undefined, undefined]);
 
   const form = useForm<TransactionFormData>({
     resolver: zodResolver(transactionSchema),
     defaultValues: {
-      type: '',
-      category: '',
-      amount: '',
-      description: '',
-      payment_method: '',
-      reference: '',
+      type: "",
+      category: "",
+      amount: "",
+      description: "",
+      payment_method: "",
+      reference: "",
     },
-  })
+  });
 
   // Get transactions data
   const { data: transactionsData, isLoading } = useQuery({
-    queryKey: ['transactions', selectedType, selectedCategory, dateRange],
+    queryKey: ["transactions", selectedType, selectedCategory, dateRange],
     queryFn: () => {
       // This would be replaced with an actual API call
       return Promise.resolve([
         {
           id: 1,
-          type: 'income',
-          category: 'Fees',
+          type: "income",
+          category: "Fees",
           amount: 5000,
-          date: '2024-01-15',
-          description: 'Student fees collection',
-          payment_method: 'Bank Transfer',
-          reference: 'TXN123456',
-          status: 'completed',
+          date: "2024-01-15",
+          description: "Student fees collection",
+          payment_method: "Bank Transfer",
+          reference: "TXN123456",
+          status: "completed",
         },
         {
           id: 2,
-          type: 'expense',
-          category: 'Utilities',
+          type: "expense",
+          category: "Utilities",
           amount: 1200,
-          date: '2024-01-14',
-          description: 'Electricity bill payment',
-          payment_method: 'Bank Transfer',
-          reference: 'BILL789012',
-          status: 'completed',
+          date: "2024-01-14",
+          description: "Electricity bill payment",
+          payment_method: "Bank Transfer",
+          reference: "BILL789012",
+          status: "completed",
         },
-      ])
+      ]);
     },
-  })
+  });
 
   // Get accounting statistics
   const { data: statsData } = useQuery({
-    queryKey: ['accounting-stats'],
+    queryKey: ["accounting-stats"],
     queryFn: () => {
       // This would be replaced with an actual API call
       return Promise.resolve({
@@ -157,56 +156,56 @@ export default function AccountingPage() {
           Others: 7000,
         },
         income_breakdown: {
-          'Tuition Fees': 100000,
-          'Transport Fees': 25000,
-          'Library Fees': 15000,
+          "Tuition Fees": 100000,
+          "Transport Fees": 25000,
+          "Library Fees": 15000,
           Others: 10000,
         },
         monthly_trend: {
           income: [120000, 125000, 130000, 150000],
           expenses: [70000, 75000, 80000, 85000],
         },
-      })
+      });
     },
-  })
+  });
 
   const { mutate: saveTransaction, isLoading: isSaving } = useMutation({
     mutationFn: (data: TransactionFormData) => {
       // This would be replaced with an actual API call
-      return new Promise((resolve) => setTimeout(resolve, 1000))
+      return new Promise((resolve) => setTimeout(resolve, 1000));
     },
     onSuccess: () => {
       toast({
-        title: 'Success',
-        description: 'Transaction saved successfully.',
-      })
-      setIsDialogOpen(false)
-      form.reset()
+        title: "Success",
+        description: "Transaction saved successfully.",
+      });
+      setIsDialogOpen(false);
+      form.reset();
     },
     onError: () => {
       toast({
-        title: 'Error',
-        description: 'Failed to save transaction.',
-        variant: 'destructive',
-      })
+        title: "Error",
+        description: "Failed to save transaction.",
+        variant: "destructive",
+      });
     },
-  })
+  });
 
   const onSubmit = (data: TransactionFormData) => {
-    const formData = new FormData()
+    const formData = new FormData();
     Object.entries(data).forEach(([key, value]) => {
       if (value) {
-        if (key === 'attachment' && value[0]) {
-          formData.append(key, value[0])
-        } else if (key === 'date') {
-          formData.append(key, format(value, 'yyyy-MM-dd'))
+        if (key === "attachment" && value[0]) {
+          formData.append(key, value[0]);
+        } else if (key === "date") {
+          formData.append(key, format(value, "yyyy-MM-dd"));
         } else {
-          formData.append(key, value)
+          formData.append(key, value);
         }
       }
-    })
-    saveTransaction(data)
-  }
+    });
+    saveTransaction(data);
+  };
 
   return (
     <div className="container mx-auto py-6">
@@ -232,11 +231,9 @@ export default function AccountingPage() {
             <DialogContent>
               <DialogHeader>
                 <DialogTitle>
-                  {selectedTransaction ? 'Edit' : 'Add'} Transaction
+                  {selectedTransaction ? "Edit" : "Add"} Transaction
                 </DialogTitle>
-                <DialogDescription>
-                  Enter transaction details
-                </DialogDescription>
+                <DialogDescription>Enter transaction details</DialogDescription>
               </DialogHeader>
 
               <Form {...form}>
@@ -261,9 +258,7 @@ export default function AccountingPage() {
                           </FormControl>
                           <SelectContent>
                             <SelectItem value="income">Income</SelectItem>
-                            <SelectItem value="expense">
-                              Expense
-                            </SelectItem>
+                            <SelectItem value="expense">Expense</SelectItem>
                           </SelectContent>
                         </Select>
                         <FormMessage />
@@ -287,24 +282,21 @@ export default function AccountingPage() {
                             </SelectTrigger>
                           </FormControl>
                           <SelectContent>
-                            {form.watch('type') === 'income'
+                            {form.watch("type") === "income"
                               ? [
-                                  'Tuition Fees',
-                                  'Transport Fees',
-                                  'Library Fees',
-                                  'Others',
+                                  "Tuition Fees",
+                                  "Transport Fees",
+                                  "Library Fees",
+                                  "Others",
                                 ]
                               : [
-                                  'Salaries',
-                                  'Utilities',
-                                  'Supplies',
-                                  'Maintenance',
-                                  'Others',
+                                  "Salaries",
+                                  "Utilities",
+                                  "Supplies",
+                                  "Maintenance",
+                                  "Others",
                                 ].map((category) => (
-                                  <SelectItem
-                                    key={category}
-                                    value={category}
-                                  >
+                                  <SelectItem key={category} value={category}>
                                     {category}
                                   </SelectItem>
                                 ))}
@@ -341,11 +333,11 @@ export default function AccountingPage() {
                               <Button
                                 variant="outline"
                                 className={`w-full pl-3 text-left font-normal ${
-                                  !field.value && 'text-muted-foreground'
+                                  !field.value && "text-muted-foreground"
                                 }`}
                               >
                                 {field.value ? (
-                                  format(field.value, 'PPP')
+                                  format(field.value, "PPP")
                                 ) : (
                                   <span>Pick a date</span>
                                 )}
@@ -353,10 +345,7 @@ export default function AccountingPage() {
                               </Button>
                             </FormControl>
                           </PopoverTrigger>
-                          <PopoverContent
-                            className="w-auto p-0"
-                            align="start"
-                          >
+                          <PopoverContent className="w-auto p-0" align="start">
                             <Calendar
                               mode="single"
                               selected={field.value}
@@ -401,10 +390,10 @@ export default function AccountingPage() {
                           </FormControl>
                           <SelectContent>
                             {[
-                              'Cash',
-                              'Bank Transfer',
-                              'Credit Card',
-                              'Cheque',
+                              "Cash",
+                              "Bank Transfer",
+                              "Credit Card",
+                              "Cheque",
                             ].map((method) => (
                               <SelectItem key={method} value={method}>
                                 {method}
@@ -464,7 +453,7 @@ export default function AccountingPage() {
                       Cancel
                     </Button>
                     <Button type="submit" disabled={isSaving}>
-                      {isSaving ? 'Saving...' : 'Save'}
+                      {isSaving ? "Saving..." : "Save"}
                     </Button>
                   </DialogFooter>
                 </form>
@@ -528,9 +517,7 @@ export default function AccountingPage() {
       {/* Breakdown Charts */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
         <Card className="p-4">
-          <h3 className="text-lg font-semibold mb-4">
-            Income Breakdown
-          </h3>
+          <h3 className="text-lg font-semibold mb-4">Income Breakdown</h3>
           <div className="space-y-2">
             {Object.entries(statsData?.income_breakdown || {}).map(
               ([category, amount]) => (
@@ -540,20 +527,16 @@ export default function AccountingPage() {
                     <span>${amount.toLocaleString()}</span>
                   </div>
                   <Progress
-                    value={
-                      (Number(amount) / statsData?.total_income) * 100
-                    }
+                    value={(Number(amount) / statsData?.total_income) * 100}
                   />
                 </div>
-              )
+              ),
             )}
           </div>
         </Card>
 
         <Card className="p-4">
-          <h3 className="text-lg font-semibold mb-4">
-            Expense Breakdown
-          </h3>
+          <h3 className="text-lg font-semibold mb-4">Expense Breakdown</h3>
           <div className="space-y-2">
             {Object.entries(statsData?.expense_breakdown || {}).map(
               ([category, amount]) => (
@@ -563,13 +546,10 @@ export default function AccountingPage() {
                     <span>${amount.toLocaleString()}</span>
                   </div>
                   <Progress
-                    value={
-                      (Number(amount) / statsData?.total_expenses) *
-                      100
-                    }
+                    value={(Number(amount) / statsData?.total_expenses) * 100}
                   />
                 </div>
-              )
+              ),
             )}
           </div>
         </Card>
@@ -580,9 +560,7 @@ export default function AccountingPage() {
         <div className="p-4">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
             <div>
-              <label className="text-sm font-medium mb-1 block">
-                Search
-              </label>
+              <label className="text-sm font-medium mb-1 block">Search</label>
               <div className="relative">
                 <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-gray-500" />
                 <Input
@@ -595,13 +573,8 @@ export default function AccountingPage() {
             </div>
 
             <div>
-              <label className="text-sm font-medium mb-1 block">
-                Type
-              </label>
-              <Select
-                value={selectedType}
-                onValueChange={setSelectedType}
-              >
+              <label className="text-sm font-medium mb-1 block">Type</label>
+              <Select value={selectedType} onValueChange={setSelectedType}>
                 <SelectTrigger>
                   <SelectValue placeholder="All Types" />
                 </SelectTrigger>
@@ -614,9 +587,7 @@ export default function AccountingPage() {
             </div>
 
             <div>
-              <label className="text-sm font-medium mb-1 block">
-                Category
-              </label>
+              <label className="text-sm font-medium mb-1 block">Category</label>
               <Select
                 value={selectedCategory}
                 onValueChange={setSelectedCategory}
@@ -627,14 +598,14 @@ export default function AccountingPage() {
                 <SelectContent>
                   <SelectItem value="">All Categories</SelectItem>
                   {[
-                    'Tuition Fees',
-                    'Transport Fees',
-                    'Library Fees',
-                    'Salaries',
-                    'Utilities',
-                    'Supplies',
-                    'Maintenance',
-                    'Others',
+                    "Tuition Fees",
+                    "Transport Fees",
+                    "Library Fees",
+                    "Salaries",
+                    "Utilities",
+                    "Supplies",
+                    "Maintenance",
+                    "Others",
                   ].map((category) => (
                     <SelectItem key={category} value={category}>
                       {category}
@@ -655,11 +626,11 @@ export default function AccountingPage() {
                     className="w-full justify-start text-left font-normal"
                   >
                     {dateRange[0] && dateRange[1]
-                      ? `${format(dateRange[0], 'PP')} - ${format(
+                      ? `${format(dateRange[0], "PP")} - ${format(
                           dateRange[1],
-                          'PP'
+                          "PP",
                         )}`
-                      : 'Pick a date range'}
+                      : "Pick a date range"}
                     <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
                   </Button>
                 </PopoverTrigger>
@@ -670,9 +641,7 @@ export default function AccountingPage() {
                       from: dateRange[0],
                       to: dateRange[1],
                     }}
-                    onSelect={(range) =>
-                      setDateRange([range?.from, range?.to])
-                    }
+                    onSelect={(range) => setDateRange([range?.from, range?.to])}
                     initialFocus
                   />
                 </PopoverContent>
@@ -702,14 +671,14 @@ export default function AccountingPage() {
               {transactionsData?.map((transaction) => (
                 <TableRow key={transaction.id}>
                   <TableCell>
-                    {format(new Date(transaction.date), 'PPP')}
+                    {format(new Date(transaction.date), "PPP")}
                   </TableCell>
                   <TableCell>
                     <span
                       className={`px-2 py-1 rounded-full text-xs ${
-                        transaction.type === 'income'
-                          ? 'bg-green-100 text-green-700'
-                          : 'bg-red-100 text-red-700'
+                        transaction.type === "income"
+                          ? "bg-green-100 text-green-700"
+                          : "bg-red-100 text-red-700"
                       }`}
                     >
                       {transaction.type}
@@ -720,9 +689,9 @@ export default function AccountingPage() {
                   <TableCell>
                     <span
                       className={
-                        transaction.type === 'income'
-                          ? 'text-green-600'
-                          : 'text-red-600'
+                        transaction.type === "income"
+                          ? "text-green-600"
+                          : "text-red-600"
                       }
                     >
                       ${transaction.amount.toLocaleString()}
@@ -759,5 +728,5 @@ export default function AccountingPage() {
         </div>
       </Card>
     </div>
-  )
+  );
 }

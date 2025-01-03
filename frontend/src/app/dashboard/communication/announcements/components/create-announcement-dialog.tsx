@@ -1,18 +1,18 @@
-'use client'
+"use client";
 
-import { useState } from 'react'
-import { useForm } from 'react-hook-form'
-import { zodResolver } from '@hookform/resolvers/zod'
-import * as z from 'zod'
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from '@/components/ui/dialog'
-import { Button } from '@/components/ui/button'
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
@@ -20,77 +20,77 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form'
-import { Input } from '@/components/ui/input'
-import { Textarea } from '@/components/ui/textarea'
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select'
-import academicService from '@/services/academic'
-import communicationService from '@/services/communication'
+} from "@/components/ui/select";
+import academicService from "@/services/academic";
+import communicationService from "@/services/communication";
 
 const announcementSchema = z.object({
-  title: z.string().min(1, 'Title is required'),
-  content: z.string().min(1, 'Content is required'),
-  priority: z.enum(['low', 'medium', 'high']),
-  target_roles: z.array(z.string()).min(1, 'At least one role is required'),
+  title: z.string().min(1, "Title is required"),
+  content: z.string().min(1, "Content is required"),
+  priority: z.enum(["low", "medium", "high"]),
+  target_roles: z.array(z.string()).min(1, "At least one role is required"),
   target_sections: z.array(z.string()).optional(),
   file: z.any().optional(),
-})
+});
 
-type AnnouncementFormData = z.infer<typeof announcementSchema>
+type AnnouncementFormData = z.infer<typeof announcementSchema>;
 
 export function CreateAnnouncementDialog() {
-  const [open, setOpen] = useState(false)
-  const queryClient = useQueryClient()
+  const [open, setOpen] = useState(false);
+  const queryClient = useQueryClient();
 
   const { data: sections } = useQuery({
-    queryKey: ['sections'],
+    queryKey: ["sections"],
     queryFn: academicService.getSections,
-  })
+  });
 
   const form = useForm<AnnouncementFormData>({
     resolver: zodResolver(announcementSchema),
     defaultValues: {
-      title: '',
-      content: '',
-      priority: 'medium',
+      title: "",
+      content: "",
+      priority: "medium",
       target_roles: [],
       target_sections: [],
     },
-  })
+  });
 
   const { mutate: createAnnouncement, isLoading } = useMutation({
     mutationFn: (data: FormData) =>
       communicationService.createAnnouncement(data),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['announcements'] })
-      setOpen(false)
-      form.reset()
+      queryClient.invalidateQueries({ queryKey: ["announcements"] });
+      setOpen(false);
+      form.reset();
     },
-  })
+  });
 
   const onSubmit = (data: AnnouncementFormData) => {
-    const formData = new FormData()
-    formData.append('title', data.title)
-    formData.append('content', data.content)
-    formData.append('priority', data.priority)
-    formData.append('target_roles', JSON.stringify(data.target_roles))
+    const formData = new FormData();
+    formData.append("title", data.title);
+    formData.append("content", data.content);
+    formData.append("priority", data.priority);
+    formData.append("target_roles", JSON.stringify(data.target_roles));
     if (data.target_sections?.length) {
       formData.append(
-        'target_sections',
-        JSON.stringify(data.target_sections.map((id) => parseInt(id)))
-      )
+        "target_sections",
+        JSON.stringify(data.target_sections.map((id) => parseInt(id))),
+      );
     }
     if (data.file?.[0]) {
-      formData.append('attachment', data.file[0])
+      formData.append("attachment", data.file[0]);
     }
-    createAnnouncement(formData)
-  }
+    createAnnouncement(formData);
+  };
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -170,13 +170,13 @@ export function CreateAnnouncementDialog() {
                   <FormLabel>Target Roles</FormLabel>
                   <Select
                     onValueChange={(value) => {
-                      const currentValues = new Set(field.value)
+                      const currentValues = new Set(field.value);
                       if (currentValues.has(value)) {
-                        currentValues.delete(value)
+                        currentValues.delete(value);
                       } else {
-                        currentValues.add(value)
+                        currentValues.add(value);
                       }
-                      field.onChange(Array.from(currentValues))
+                      field.onChange(Array.from(currentValues));
                     }}
                     value={field.value[0]}
                   >
@@ -186,9 +186,7 @@ export function CreateAnnouncementDialog() {
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      <SelectItem value="school_admin">
-                        School Admin
-                      </SelectItem>
+                      <SelectItem value="school_admin">School Admin</SelectItem>
                       <SelectItem value="teacher">Teacher</SelectItem>
                       <SelectItem value="student">Student</SelectItem>
                       <SelectItem value="parent">Parent</SelectItem>
@@ -201,14 +199,14 @@ export function CreateAnnouncementDialog() {
                         className="bg-secondary text-secondary-foreground px-2 py-1 rounded-md text-sm flex items-center gap-1"
                       >
                         <span className="capitalize">
-                          {role.replace('_', ' ')}
+                          {role.replace("_", " ")}
                         </span>
                         <button
                           type="button"
                           onClick={() => {
                             field.onChange(
-                              field.value.filter((r) => r !== role)
-                            )
+                              field.value.filter((r) => r !== role),
+                            );
                           }}
                           className="text-secondary-foreground/50 hover:text-secondary-foreground"
                         >
@@ -230,13 +228,13 @@ export function CreateAnnouncementDialog() {
                   <FormLabel>Target Sections (Optional)</FormLabel>
                   <Select
                     onValueChange={(value) => {
-                      const currentValues = new Set(field.value)
+                      const currentValues = new Set(field.value);
                       if (currentValues.has(value)) {
-                        currentValues.delete(value)
+                        currentValues.delete(value);
                       } else {
-                        currentValues.add(value)
+                        currentValues.add(value);
                       }
-                      field.onChange(Array.from(currentValues))
+                      field.onChange(Array.from(currentValues));
                     }}
                     value={field.value?.[0]}
                   >
@@ -259,9 +257,9 @@ export function CreateAnnouncementDialog() {
                   <div className="flex flex-wrap gap-2 mt-2">
                     {field.value?.map((sectionId) => {
                       const section = sections?.find(
-                        (s) => s.id.toString() === sectionId
-                      )
-                      if (!section) return null
+                        (s) => s.id.toString() === sectionId,
+                      );
+                      if (!section) return null;
                       return (
                         <div
                           key={sectionId}
@@ -274,17 +272,15 @@ export function CreateAnnouncementDialog() {
                             type="button"
                             onClick={() => {
                               field.onChange(
-                                field.value?.filter(
-                                  (id) => id !== sectionId
-                                )
-                              )
+                                field.value?.filter((id) => id !== sectionId),
+                              );
                             }}
                             className="text-secondary-foreground/50 hover:text-secondary-foreground"
                           >
                             ×
                           </button>
                         </div>
-                      )
+                      );
                     })}
                   </div>
                   <FormMessage />
@@ -319,12 +315,12 @@ export function CreateAnnouncementDialog() {
                 Cancel
               </Button>
               <Button type="submit" disabled={isLoading}>
-                {isLoading ? 'Creating...' : 'Create Announcement'}
+                {isLoading ? "Creating..." : "Create Announcement"}
               </Button>
             </div>
           </form>
         </Form>
       </DialogContent>
     </Dialog>
-  )
+  );
 }

@@ -1,10 +1,10 @@
-'use client'
+"use client";
 
-import { useState } from 'react'
-import { format } from 'date-fns'
-import { FeeReport } from '@/services/reports'
-import { Card } from '@/components/ui/card'
-import { Input } from '@/components/ui/input'
+import { useState } from "react";
+import { format } from "date-fns";
+import { FeeReport } from "@/services/reports";
+import { Card } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
 import {
   Table,
   TableBody,
@@ -12,7 +12,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from '@/components/ui/table'
+} from "@/components/ui/table";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -20,54 +20,47 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu'
-import { Button } from '@/components/ui/button'
-import { Badge } from '@/components/ui/badge'
-import { MoreHorizontal, IndianRupee } from 'lucide-react'
-import { PaymentHistoryDialog } from './payment-history-dialog'
+} from "@/components/ui/dropdown-menu";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { MoreHorizontal, IndianRupee } from "lucide-react";
+import { PaymentHistoryDialog } from "./payment-history-dialog";
 
 interface FeeDetailsProps {
-  data: FeeReport[]
+  data: FeeReport[];
 }
 
 export function FeeDetails({ data }: FeeDetailsProps) {
-  const [searchTerm, setSearchTerm] = useState('')
+  const [searchTerm, setSearchTerm] = useState("");
   const [selectedStudent, setSelectedStudent] = useState<FeeReport | null>(
-    null
-  )
+    null,
+  );
 
   const filteredData = data.filter((student) =>
-    student.student_name.toLowerCase().includes(searchTerm.toLowerCase())
-  )
+    student.student_name.toLowerCase().includes(searchTerm.toLowerCase()),
+  );
 
   const getPaymentStatus = (
     totalFees: number,
     paidAmount: number,
-    pendingAmount: number
+    pendingAmount: number,
   ) => {
     if (pendingAmount === 0) {
       return (
         <Badge variant="default" className="bg-green-500">
           Paid
         </Badge>
-      )
-    } else if (
-      pendingAmount > 0 &&
-      paidAmount > 0
-    ) {
+      );
+    } else if (pendingAmount > 0 && paidAmount > 0) {
       return (
         <Badge variant="default" className="bg-yellow-500">
           Partial
         </Badge>
-      )
+      );
     } else {
-      return (
-        <Badge variant="destructive">
-          Pending
-        </Badge>
-      )
+      return <Badge variant="destructive">Pending</Badge>;
     }
-  }
+  };
 
   return (
     <>
@@ -107,35 +100,32 @@ export function FeeDetails({ data }: FeeDetailsProps) {
                   <TableCell>
                     <div className="flex items-baseline">
                       <IndianRupee className="h-3 w-3 mr-1" />
-                      {student.total_fees.toLocaleString('en-IN')}
+                      {student.total_fees.toLocaleString("en-IN")}
                     </div>
                   </TableCell>
                   <TableCell>
                     <div className="flex items-baseline text-green-600">
                       <IndianRupee className="h-3 w-3 mr-1" />
-                      {student.paid_amount.toLocaleString('en-IN')}
+                      {student.paid_amount.toLocaleString("en-IN")}
                     </div>
                   </TableCell>
                   <TableCell>
                     <div className="flex items-baseline text-red-600">
                       <IndianRupee className="h-3 w-3 mr-1" />
-                      {student.pending_amount.toLocaleString('en-IN')}
+                      {student.pending_amount.toLocaleString("en-IN")}
                     </div>
                   </TableCell>
                   <TableCell>
                     {getPaymentStatus(
                       student.total_fees,
                       student.paid_amount,
-                      student.pending_amount
+                      student.pending_amount,
                     )}
                   </TableCell>
                   <TableCell>
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
-                        <Button
-                          variant="ghost"
-                          className="h-8 w-8 p-0"
-                        >
+                        <Button variant="ghost" className="h-8 w-8 p-0">
                           <span className="sr-only">Open menu</span>
                           <MoreHorizontal className="h-4 w-4" />
                         </Button>
@@ -165,5 +155,5 @@ export function FeeDetails({ data }: FeeDetailsProps) {
         />
       )}
     </>
-  )
+  );
 }
