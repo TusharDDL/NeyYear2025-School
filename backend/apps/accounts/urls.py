@@ -16,5 +16,6 @@ urlpatterns = [
     path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('login/', views.UserViewSet.as_view({'post': 'login'}), name='login'),
     path('register/', views.UserViewSet.as_view({'post': 'create'}), name='register'),
+    path('users/me/', views.UserViewSet.as_view({'get': 'me'}), name='me'),
     path('users/<int:pk>/change-password/', views.UserViewSet.as_view({'post': 'change_password'}), name='change-password'),
 ]

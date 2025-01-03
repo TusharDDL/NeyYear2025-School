@@ -50,21 +50,23 @@ class UserViewSet(viewsets.ModelViewSet):
         serializer = LoginSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
-        user = User.objects.filter(
-            username=serializer.validated_data["username"]
-        ).first()
-        if user and user.check_password(serializer.validated_data["password"]):
-            refresh = RefreshToken.for_user(user)
+        from django_tenants.utils import schema_context
+        with schema_context(request.tenant.schema_name):
+            user = User.objects.filter(
+                username=serializer.validated_data["username"]
+            ).first()
+            if user and user.check_password(serializer.validated_data["password"]):
+                refresh = RefreshToken.for_user(user)
+                return Response(
+                    {
+                        "access": str(refresh.access_token),
+                        "refresh": str(refresh),
+                        "user": UserSerializer(user).data,
+                    }
+                )
             return Response(
-                {
-                    "access": str(refresh.access_token),
-                    "refresh": str(refresh),
-                    "user": UserSerializer(user).data,
-                }
+                {"detail": "Invalid credentials"}, status=status.HTTP_401_UNAUTHORIZED
             )
-        return Response(
-            {"detail": "Invalid credentials"}, status=status.HTTP_401_UNAUTHORIZED
-        )
 
     @action(detail=True, methods=["post"], permission_classes=[IsAuthenticated])
     def change_password(self, request, pk=None):
@@ -90,6 +92,12 @@ class UserViewSet(viewsets.ModelViewSet):
         )
         serializer.is_valid(raise_exception=True)
         serializer.save()
+        return Response(serializer.data)
+
+    @action(detail=False, methods=["get"])
+    def me(self, request):
+        """Get current user data."""
+        serializer = UserSerializer(request.user)
         return Response(serializer.data)
 
     @action(detail=False, methods=["post"])
